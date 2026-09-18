@@ -1,0 +1,2063 @@
+{
+ "01-01": {
+  "commemorations": [
+   "The Circumcision according to the Flesh of our Lord, God and Saviour Jesus Christ",
+   "Our Holy Father Basil the Great, Archbishop of Caesarea in Cappadocia"
+  ],
+  "rank": "great"
+ },
+ "01-02": {
+  "commemorations": [
+   "Our Holy Father Sylvester, Pope of Rome",
+   "Our Venerable Father Seraphim of Sarov"
+  ],
+  "cycle": "forefeast of the Theophany"
+ },
+ "01-03": {
+  "commemorations": [
+   "The Holy Prophet Malachi",
+   "The Holy Martyr Gordius"
+  ],
+  "cycle": "forefeast of the Theophany"
+ },
+ "01-04": {
+  "commemorations": [
+   "The Synaxis of the Holy Seventy Apostles"
+  ],
+  "cycle": "forefeast of the Theophany"
+ },
+ "01-05": {
+  "commemorations": [
+   "The Holy Martyrs Theopemptus and Theonas",
+   "Our Venerable Mother Syncletica"
+  ],
+  "cycle": "the eve of the Theophany"
+ },
+ "01-06": {
+  "commemorations": [
+   "The Holy Theophany of our Lord, God and Saviour Jesus Christ"
+  ],
+  "rank": "great"
+ },
+ "01-07": {
+  "commemorations": [
+   "The Synaxis of the Honourable and Glorious Prophet, Forerunner and Baptist John"
+  ],
+  "cycle": "afterfeast of the Theophany",
+  "rank": "vigil"
+ },
+ "01-08": {
+  "commemorations": [
+   "Our Venerable Father George the Chozebite",
+   "Our Venerable Mother Domnica"
+  ],
+  "cycle": "afterfeast of the Theophany"
+ },
+ "01-09": {
+  "commemorations": [
+   "The Holy Martyr Polyeuctus"
+  ],
+  "cycle": "afterfeast of the Theophany"
+ },
+ "01-10": {
+  "commemorations": [
+   "Our Holy Father Gregory, Bishop of Nyssa",
+   "Our Venerable Father Dometian, Bishop of Melitene"
+  ],
+  "cycle": "afterfeast of the Theophany"
+ },
+ "01-11": {
+  "commemorations": [
+   "Our Venerable Father Theodosius the Cenobiarch"
+  ],
+  "cycle": "afterfeast of the Theophany",
+  "rank": "polyeleos"
+ },
+ "01-12": {
+  "commemorations": [
+   "The Holy Martyr Tatiana"
+  ],
+  "cycle": "afterfeast of the Theophany"
+ },
+ "01-13": {
+  "commemorations": [
+   "The Holy Martyrs Hermylus and Stratonicus"
+  ],
+  "cycle": "afterfeast of the Theophany"
+ },
+ "01-14": {
+  "commemorations": [
+   "Our Venerable Fathers slain at Sinai and Raithu"
+  ],
+  "cycle": "leave-taking of the Theophany"
+ },
+ "01-15": {
+  "commemorations": [
+   "Our Venerable Fathers Paul of Thebes and John the Hut-dweller"
+  ]
+ },
+ "01-16": {
+  "commemorations": [
+   "The Veneration of the Precious Chains of the Holy Apostle Peter"
+  ]
+ },
+ "01-17": {
+  "commemorations": [
+   "Our Venerable and God-bearing Father Anthony the Great"
+  ],
+  "rank": "vigil"
+ },
+ "01-18": {
+  "commemorations": [
+   "Our Holy Fathers Athanasius and Cyril, Archbishops of Alexandria"
+  ],
+  "rank": "polyeleos"
+ },
+ "01-19": {
+  "commemorations": [
+   "Our Venerable Father Macarius of Egypt"
+  ]
+ },
+ "01-20": {
+  "commemorations": [
+   "Our Venerable and God-bearing Father Euthymius the Great"
+  ],
+  "rank": "vigil"
+ },
+ "01-21": {
+  "commemorations": [
+   "Our Venerable Father Maximus the Confessor",
+   "The Holy Martyr Neophytus"
+  ]
+ },
+ "01-22": {
+  "commemorations": [
+   "The Holy Apostle Timothy",
+   "Our Venerable Martyr Anastasius the Persian"
+  ]
+ },
+ "01-23": {
+  "commemorations": [
+   "The Holy Hieromartyr Clement, Bishop of Ancyra"
+  ]
+ },
+ "01-24": {
+  "commemorations": [
+   "Our Venerable Mother Xenia of Rome",
+   "Blessed Xenia of St Petersburg"
+  ]
+ },
+ "01-25": {
+  "commemorations": [
+   "Our Holy Father Gregory the Theologian, Archbishop of Constantinople"
+  ],
+  "rank": "vigil"
+ },
+ "01-26": {
+  "commemorations": [
+   "Our Venerable Father Xenophon and his companions"
+  ]
+ },
+ "01-27": {
+  "commemorations": [
+   "The Translation of the Relics of our Holy Father John Chrysostom"
+  ],
+  "rank": "polyeleos"
+ },
+ "01-28": {
+  "commemorations": [
+   "Our Venerable Father Ephraim the Syrian"
+  ]
+ },
+ "01-29": {
+  "commemorations": [
+   "The Translation of the Relics of the Holy Hieromartyr Ignatius the God-bearer"
+  ]
+ },
+ "01-30": {
+  "commemorations": [
+   "The Three Holy Hierarchs Basil the Great, Gregory the Theologian and John Chrysostom"
+  ],
+  "rank": "vigil"
+ },
+ "01-31": {
+  "commemorations": [
+   "The Holy Unmercenaries and Wonderworkers Cyrus and John"
+  ]
+ },
+ "02-01": {
+  "commemorations": [
+   "The Holy Martyr Tryphon"
+  ],
+  "cycle": "forefeast of the Meeting"
+ },
+ "02-02": {
+  "commemorations": [
+   "The Meeting of our Lord, God and Saviour Jesus Christ in the Temple"
+  ],
+  "rank": "great"
+ },
+ "02-03": {
+  "commemorations": [
+   "The Holy and Righteous Symeon the God-receiver and Anna the Prophetess"
+  ],
+  "cycle": "afterfeast of the Meeting",
+  "rank": "polyeleos"
+ },
+ "02-04": {
+  "commemorations": [
+   "Our Venerable Father Isidore of Pelusium"
+  ],
+  "cycle": "afterfeast of the Meeting"
+ },
+ "02-05": {
+  "commemorations": [
+   "The Holy Martyr Agatha"
+  ],
+  "cycle": "afterfeast of the Meeting"
+ },
+ "02-06": {
+  "commemorations": [
+   "Our Venerable Father Bucolus, Bishop of Smyrna",
+   "Our Holy Father Photius, Patriarch of Constantinople"
+  ],
+  "cycle": "afterfeast of the Meeting"
+ },
+ "02-07": {
+  "commemorations": [
+   "Our Venerable Father Parthenius, Bishop of Lampsacus",
+   "Our Venerable Father Luke of Hellas"
+  ],
+  "cycle": "afterfeast of the Meeting"
+ },
+ "02-08": {
+  "commemorations": [
+   "The Holy Great Martyr Theodore the Commander",
+   "The Holy Prophet Zachariah"
+  ],
+  "cycle": "afterfeast of the Meeting",
+  "rank": "polyeleos"
+ },
+ "02-09": {
+  "commemorations": [
+   "The Holy Martyr Nicephorus"
+  ],
+  "cycle": "leave-taking of the Meeting"
+ },
+ "02-10": {
+  "commemorations": [
+   "The Holy Hieromartyr Charalampus"
+  ],
+  "rank": "polyeleos"
+ },
+ "02-11": {
+  "commemorations": [
+   "The Holy Hieromartyr Blaise, Bishop of Sebaste"
+  ]
+ },
+ "02-12": {
+  "commemorations": [
+   "Our Holy Father Meletius, Archbishop of Antioch"
+  ]
+ },
+ "02-13": {
+  "commemorations": [
+   "Our Venerable Father Martinian"
+  ]
+ },
+ "02-14": {
+  "commemorations": [
+   "Our Venerable Father Auxentius",
+   "Our Holy Father Cyril, Equal-to-the-Apostles, Teacher of the Slavs"
+  ]
+ },
+ "02-15": {
+  "commemorations": [
+   "The Holy Apostle Onesimus"
+  ]
+ },
+ "02-16": {
+  "commemorations": [
+   "The Holy Martyrs Pamphilus and Porphyrius"
+  ]
+ },
+ "02-17": {
+  "commemorations": [
+   "The Holy Great Martyr Theodore the Recruit"
+  ],
+  "rank": "polyeleos"
+ },
+ "02-18": {
+  "commemorations": [
+   "Our Holy Father Leo the Great, Pope of Rome"
+  ]
+ },
+ "02-19": {
+  "commemorations": [
+   "The Holy Apostles Archippus and Philemon"
+  ]
+ },
+ "02-20": {
+  "commemorations": [
+   "Our Venerable Father Leo, Bishop of Catania"
+  ]
+ },
+ "02-21": {
+  "commemorations": [
+   "Our Venerable Father Timothy of Symbola",
+   "Our Holy Father Eustathius, Archbishop of Antioch"
+  ]
+ },
+ "02-22": {
+  "commemorations": [
+   "The Finding of the Relics of the Holy Martyrs at the Gate of Eugenius"
+  ]
+ },
+ "02-23": {
+  "commemorations": [
+   "The Holy Hieromartyr Polycarp, Bishop of Smyrna"
+  ]
+ },
+ "02-24": {
+  "commemorations": [
+   "The First and Second Findings of the Precious Head of the Forerunner"
+  ],
+  "rank": "polyeleos"
+ },
+ "02-25": {
+  "commemorations": [
+   "Our Holy Father Tarasius, Archbishop of Constantinople"
+  ]
+ },
+ "02-26": {
+  "commemorations": [
+   "Our Holy Father Porphyrius, Bishop of Gaza"
+  ]
+ },
+ "02-27": {
+  "commemorations": [
+   "Our Venerable Father Procopius the Decapolite"
+  ]
+ },
+ "02-28": {
+  "commemorations": [
+   "Our Venerable Father Basil the Confessor"
+  ]
+ },
+ "02-29": {
+  "commemorations": [
+   "Our Venerable Father Cassian the Roman"
+  ]
+ },
+ "03-01": {
+  "commemorations": [
+   "The Holy Venerable Martyr Eudocia"
+  ]
+ },
+ "03-02": {
+  "commemorations": [
+   "The Holy Hieromartyr Theodotus, Bishop of Cyrenia"
+  ]
+ },
+ "03-03": {
+  "commemorations": [
+   "The Holy Martyrs Eutropius, Cleonicus and Basiliscus"
+  ]
+ },
+ "03-04": {
+  "commemorations": [
+   "Our Venerable Father Gerasimus of the Jordan"
+  ]
+ },
+ "03-05": {
+  "commemorations": [
+   "The Holy Martyr Conon"
+  ]
+ },
+ "03-06": {
+  "commemorations": [
+   "The Forty-two Holy Martyrs of Amorion"
+  ]
+ },
+ "03-07": {
+  "commemorations": [
+   "The Holy Hieromartyrs of Cherson"
+  ]
+ },
+ "03-08": {
+  "commemorations": [
+   "Our Venerable Father Theophylact, Bishop of Nicomedia"
+  ]
+ },
+ "03-09": {
+  "commemorations": [
+   "The Holy Forty Martyrs of Sebaste"
+  ],
+  "rank": "vigil"
+ },
+ "03-10": {
+  "commemorations": [
+   "The Holy Martyr Quadratus of Corinth"
+  ]
+ },
+ "03-11": {
+  "commemorations": [
+   "Our Holy Father Sophronius, Patriarch of Jerusalem"
+  ]
+ },
+ "03-12": {
+  "commemorations": [
+   "Our Venerable Father Theophanes the Confessor",
+   "Our Holy Father Gregory the Dialogist, Pope of Rome"
+  ]
+ },
+ "03-13": {
+  "commemorations": [
+   "The Translation of the Relics of our Holy Father Nicephorus of Constantinople"
+  ]
+ },
+ "03-14": {
+  "commemorations": [
+   "Our Venerable Father Benedict of Nursia"
+  ]
+ },
+ "03-15": {
+  "commemorations": [
+   "The Holy Martyr Agapius and his companions"
+  ]
+ },
+ "03-16": {
+  "commemorations": [
+   "The Holy Martyrs Sabinus and Papas"
+  ]
+ },
+ "03-17": {
+  "commemorations": [
+   "Our Venerable Father Alexis the Man of God"
+  ]
+ },
+ "03-18": {
+  "commemorations": [
+   "Our Holy Father Cyril, Archbishop of Jerusalem"
+  ]
+ },
+ "03-19": {
+  "commemorations": [
+   "The Holy Martyrs Chrysanthus and Daria"
+  ]
+ },
+ "03-20": {
+  "commemorations": [
+   "Our Venerable Fathers slain at the Monastery of St Sabbas"
+  ]
+ },
+ "03-21": {
+  "commemorations": [
+   "Our Holy Father James the Confessor"
+  ]
+ },
+ "03-22": {
+  "commemorations": [
+   "The Holy Hieromartyr Basil of Ancyra"
+  ]
+ },
+ "03-23": {
+  "commemorations": [
+   "The Holy Venerable Martyr Nicon and his companions"
+  ]
+ },
+ "03-24": {
+  "commemorations": [
+   "Our Venerable Father Zachariah"
+  ],
+  "cycle": "forefeast of the Annunciation"
+ },
+ "03-25": {
+  "commemorations": [
+   "The Annunciation to our Most Holy Lady the Theotokos and Ever-Virgin Mary"
+  ],
+  "rank": "great"
+ },
+ "03-26": {
+  "commemorations": [
+   "The Synaxis of the Archangel Gabriel"
+  ],
+  "cycle": "leave-taking of the Annunciation",
+  "rank": "polyeleos"
+ },
+ "03-27": {
+  "commemorations": [
+   "The Holy Martyr Matrona of Thessalonica"
+  ]
+ },
+ "03-28": {
+  "commemorations": [
+   "Our Venerable Father Hilarion the New"
+  ]
+ },
+ "03-29": {
+  "commemorations": [
+   "Our Venerable Father Mark, Bishop of Arethusa"
+  ]
+ },
+ "03-30": {
+  "commemorations": [
+   "Our Venerable Father John Climacus, author of The Ladder"
+  ],
+  "rank": "polyeleos"
+ },
+ "03-31": {
+  "commemorations": [
+   "Our Holy Father Hypatius, Bishop of Gangra"
+  ]
+ },
+ "04-01": {
+  "commemorations": [
+   "Our Venerable Mother Mary of Egypt"
+  ],
+  "rank": "polyeleos"
+ },
+ "04-02": {
+  "commemorations": [
+   "Our Venerable Father Titus the Wonderworker"
+  ]
+ },
+ "04-03": {
+  "commemorations": [
+   "Our Venerable Father Nicetas the Confessor"
+  ]
+ },
+ "04-04": {
+  "commemorations": [
+   "Our Venerable Father Joseph the Hymnographer",
+   "Our Venerable Father George of Maleon"
+  ]
+ },
+ "04-05": {
+  "commemorations": [
+   "The Holy Martyrs Claudius, Diodorus and Victor"
+  ]
+ },
+ "04-06": {
+  "commemorations": [
+   "Our Holy Father Eutychius, Patriarch of Constantinople",
+   "Our Holy Father Methodius, Equal-to-the-Apostles, Teacher of the Slavs"
+  ]
+ },
+ "04-07": {
+  "commemorations": [
+   "Our Holy Father George, Bishop of Mytilene"
+  ]
+ },
+ "04-08": {
+  "commemorations": [
+   "The Holy Apostles Herodion, Agabus, Rufus and their companions"
+  ]
+ },
+ "04-09": {
+  "commemorations": [
+   "The Holy Martyr Eupsychius"
+  ]
+ },
+ "04-10": {
+  "commemorations": [
+   "The Holy Martyrs Terence, Pompeius and their companions"
+  ]
+ },
+ "04-11": {
+  "commemorations": [
+   "The Holy Hieromartyr Antipas, Bishop of Pergamum"
+  ]
+ },
+ "04-12": {
+  "commemorations": [
+   "Our Venerable Father Basil the Confessor, Bishop of Parium"
+  ]
+ },
+ "04-13": {
+  "commemorations": [
+   "The Holy Hieromartyr Artemon"
+  ]
+ },
+ "04-14": {
+  "commemorations": [
+   "Our Holy Father Martin the Confessor, Pope of Rome"
+  ]
+ },
+ "04-15": {
+  "commemorations": [
+   "The Holy Apostles Aristarchus, Pudens and Trophimus"
+  ]
+ },
+ "04-16": {
+  "commemorations": [
+   "The Holy Martyrs Agape, Irene and Chionia"
+  ]
+ },
+ "04-17": {
+  "commemorations": [
+   "Our Venerable Father Symeon of Persia",
+   "Our Venerable Father Acacius, Bishop of Melitene"
+  ]
+ },
+ "04-18": {
+  "commemorations": [
+   "Our Venerable Father John, disciple of St Gregory the Decapolite"
+  ]
+ },
+ "04-19": {
+  "commemorations": [
+   "Our Venerable Father John of the Old Cave"
+  ]
+ },
+ "04-20": {
+  "commemorations": [
+   "Our Venerable Father Theodore Trichinas"
+  ]
+ },
+ "04-21": {
+  "commemorations": [
+   "The Holy Hieromartyr Januarius and his companions"
+  ]
+ },
+ "04-22": {
+  "commemorations": [
+   "Our Venerable Father Theodore the Syceote"
+  ]
+ },
+ "04-23": {
+  "commemorations": [
+   "The Holy and Glorious Great Martyr George the Trophy-bearer"
+  ],
+  "rank": "vigil"
+ },
+ "04-24": {
+  "commemorations": [
+   "The Holy Martyr Sabbas the General"
+  ]
+ },
+ "04-25": {
+  "commemorations": [
+   "The Holy Apostle and Evangelist Mark"
+  ],
+  "rank": "vigil"
+ },
+ "04-26": {
+  "commemorations": [
+   "The Holy Hieromartyr Basil, Bishop of Amasea"
+  ]
+ },
+ "04-27": {
+  "commemorations": [
+   "The Holy Hieromartyr Symeon, kinsman of the Lord"
+  ]
+ },
+ "04-28": {
+  "commemorations": [
+   "The Holy Apostles Jason and Sosipater"
+  ]
+ },
+ "04-29": {
+  "commemorations": [
+   "The Nine Holy Martyrs of Cyzicus"
+  ]
+ },
+ "04-30": {
+  "commemorations": [
+   "The Holy Apostle James, brother of St John the Theologian"
+  ],
+  "rank": "polyeleos"
+ },
+ "05-01": {
+  "commemorations": [
+   "The Holy Prophet Jeremiah"
+  ]
+ },
+ "05-02": {
+  "commemorations": [
+   "The Translation of the Relics of our Holy Father Athanasius the Great"
+  ]
+ },
+ "05-03": {
+  "commemorations": [
+   "The Holy Martyrs Timothy and Maura"
+  ]
+ },
+ "05-04": {
+  "commemorations": [
+   "The Holy Martyr Pelagia of Tarsus"
+  ]
+ },
+ "05-05": {
+  "commemorations": [
+   "The Holy Great Martyr Irene"
+  ],
+  "rank": "polyeleos"
+ },
+ "05-06": {
+  "commemorations": [
+   "The Holy and Righteous Job the Long-suffering"
+  ]
+ },
+ "05-07": {
+  "commemorations": [
+   "The Commemoration of the Appearance of the Sign of the Cross over Jerusalem"
+  ]
+ },
+ "05-08": {
+  "commemorations": [
+   "The Holy Apostle and Evangelist John the Theologian"
+  ],
+  "rank": "vigil"
+ },
+ "05-09": {
+  "commemorations": [
+   "The Holy Prophet Isaiah",
+   "The Translation of the Relics of our Holy Father Nicholas of Myra"
+  ],
+  "rank": "polyeleos"
+ },
+ "05-10": {
+  "commemorations": [
+   "The Holy Apostle Simon the Zealot"
+  ]
+ },
+ "05-11": {
+  "commemorations": [
+   "Our Holy Fathers Cyril and Methodius, Equals-to-the-Apostles, Teachers of the Slavs"
+  ],
+  "rank": "polyeleos"
+ },
+ "05-12": {
+  "commemorations": [
+   "Our Holy Father Epiphanius, Bishop of Cyprus",
+   "Our Holy Father Germanus, Patriarch of Constantinople"
+  ]
+ },
+ "05-13": {
+  "commemorations": [
+   "The Holy Martyr Glyceria"
+  ]
+ },
+ "05-14": {
+  "commemorations": [
+   "The Holy Martyr Isidore of Chios"
+  ]
+ },
+ "05-15": {
+  "commemorations": [
+   "Our Venerable Father Pachomius the Great"
+  ]
+ },
+ "05-16": {
+  "commemorations": [
+   "Our Venerable Father Theodore the Sanctified"
+  ]
+ },
+ "05-17": {
+  "commemorations": [
+   "The Holy Apostle Andronicus and his fellow labourer Junia"
+  ]
+ },
+ "05-18": {
+  "commemorations": [
+   "The Holy Martyrs Peter, Dionysius and their companions"
+  ]
+ },
+ "05-19": {
+  "commemorations": [
+   "The Holy Hieromartyr Patrick, Bishop of Prusa"
+  ]
+ },
+ "05-20": {
+  "commemorations": [
+   "The Holy Martyr Thalelaeus"
+  ]
+ },
+ "05-21": {
+  "commemorations": [
+   "The Holy Emperor Constantine and his mother Helen, Equals-to-the-Apostles"
+  ],
+  "rank": "vigil"
+ },
+ "05-22": {
+  "commemorations": [
+   "The Holy Martyr Basiliscus"
+  ]
+ },
+ "05-23": {
+  "commemorations": [
+   "Our Venerable Father Michael the Confessor, Bishop of Synada"
+  ]
+ },
+ "05-24": {
+  "commemorations": [
+   "Our Venerable Father Symeon the Stylite of the Wonderful Mountain"
+  ]
+ },
+ "05-25": {
+  "commemorations": [
+   "The Third Finding of the Precious Head of the Forerunner"
+  ],
+  "rank": "polyeleos"
+ },
+ "05-26": {
+  "commemorations": [
+   "The Holy Apostle Carpus"
+  ]
+ },
+ "05-27": {
+  "commemorations": [
+   "The Holy Hieromartyr Therapon"
+  ]
+ },
+ "05-28": {
+  "commemorations": [
+   "Our Venerable Father Nicetas, Bishop of Chalcedon"
+  ]
+ },
+ "05-29": {
+  "commemorations": [
+   "The Holy Venerable Martyr Theodosia"
+  ]
+ },
+ "05-30": {
+  "commemorations": [
+   "Our Venerable Father Isaac of Dalmatia"
+  ]
+ },
+ "05-31": {
+  "commemorations": [
+   "The Holy Apostle Hermas",
+   "The Holy Martyr Hermias"
+  ]
+ },
+ "06-01": {
+  "commemorations": [
+   "The Holy Martyr Justin the Philosopher"
+  ]
+ },
+ "06-02": {
+  "commemorations": [
+   "Our Holy Father Nicephorus, Patriarch of Constantinople"
+  ]
+ },
+ "06-03": {
+  "commemorations": [
+   "The Holy Martyr Lucillian and his companions"
+  ]
+ },
+ "06-04": {
+  "commemorations": [
+   "Our Holy Father Metrophanes, Patriarch of Constantinople"
+  ]
+ },
+ "06-05": {
+  "commemorations": [
+   "The Holy Hieromartyr Dorotheus, Bishop of Tyre"
+  ]
+ },
+ "06-06": {
+  "commemorations": [
+   "Our Venerable Father Bessarion the Wonderworker",
+   "Our Venerable Father Hilarion the New"
+  ]
+ },
+ "06-07": {
+  "commemorations": [
+   "The Holy Hieromartyr Theodotus of Ancyra"
+  ]
+ },
+ "06-08": {
+  "commemorations": [
+   "The Translation of the Relics of the Holy Great Martyr Theodore the Commander"
+  ]
+ },
+ "06-09": {
+  "commemorations": [
+   "Our Holy Father Cyril, Archbishop of Alexandria"
+  ]
+ },
+ "06-10": {
+  "commemorations": [
+   "The Holy Hieromartyr Timothy, Bishop of Prusa"
+  ]
+ },
+ "06-11": {
+  "commemorations": [
+   "The Holy Apostles Bartholomew and Barnabas"
+  ],
+  "rank": "polyeleos"
+ },
+ "06-12": {
+  "commemorations": [
+   "Our Venerable Father Onuphrius the Great",
+   "Our Venerable Father Peter of Athos"
+  ]
+ },
+ "06-13": {
+  "commemorations": [
+   "The Holy Martyr Aquilina"
+  ]
+ },
+ "06-14": {
+  "commemorations": [
+   "The Holy Prophet Elisha",
+   "Our Holy Father Methodius, Patriarch of Constantinople"
+  ]
+ },
+ "06-15": {
+  "commemorations": [
+   "The Holy Prophet Amos"
+  ]
+ },
+ "06-16": {
+  "commemorations": [
+   "Our Holy Father Tychon the Wonderworker, Bishop of Amathus"
+  ]
+ },
+ "06-17": {
+  "commemorations": [
+   "The Holy Martyrs Manuel, Sabel and Ishmael"
+  ]
+ },
+ "06-18": {
+  "commemorations": [
+   "The Holy Martyr Leontius"
+  ]
+ },
+ "06-19": {
+  "commemorations": [
+   "The Holy Apostle Jude, the Brother of the Lord"
+  ],
+  "rank": "polyeleos"
+ },
+ "06-20": {
+  "commemorations": [
+   "The Holy Hieromartyr Methodius, Bishop of Patara"
+  ]
+ },
+ "06-21": {
+  "commemorations": [
+   "The Holy Martyr Julian of Tarsus"
+  ]
+ },
+ "06-22": {
+  "commemorations": [
+   "The Holy Hieromartyr Eusebius, Bishop of Samosata"
+  ]
+ },
+ "06-23": {
+  "commemorations": [
+   "The Holy Martyr Agrippina"
+  ]
+ },
+ "06-24": {
+  "commemorations": [
+   "The Nativity of the Honourable and Glorious Prophet, Forerunner and Baptist John"
+  ],
+  "rank": "vigil"
+ },
+ "06-25": {
+  "commemorations": [
+   "The Holy Venerable Martyr Febronia"
+  ]
+ },
+ "06-26": {
+  "commemorations": [
+   "Our Venerable Father David of Thessalonica"
+  ]
+ },
+ "06-27": {
+  "commemorations": [
+   "Our Venerable Father Sampson the Hospitable"
+  ]
+ },
+ "06-28": {
+  "commemorations": [
+   "The Translation of the Relics of the Holy Unmercenaries Cyrus and John"
+  ],
+  "cycle": "the eve of Ss Peter and Paul"
+ },
+ "06-29": {
+  "commemorations": [
+   "The Holy, Glorious and All-praised Apostles Peter and Paul"
+  ],
+  "rank": "great"
+ },
+ "06-30": {
+  "commemorations": [
+   "The Synaxis of the Holy, Glorious and All-praised Twelve Apostles"
+  ],
+  "rank": "vigil"
+ },
+ "07-01": {
+  "commemorations": [
+   "The Holy Unmercenaries and Wonderworkers Cosmas and Damian of Rome"
+  ]
+ },
+ "07-02": {
+  "commemorations": [
+   "The Deposition of the Precious Robe of the Theotokos at Blachernae"
+  ],
+  "rank": "polyeleos"
+ },
+ "07-03": {
+  "commemorations": [
+   "The Holy Martyr Hyacinth"
+  ]
+ },
+ "07-04": {
+  "commemorations": [
+   "Our Holy Father Andrew, Archbishop of Crete"
+  ]
+ },
+ "07-05": {
+  "commemorations": [
+   "Our Venerable Father Athanasius of Athos"
+  ],
+  "rank": "polyeleos"
+ },
+ "07-06": {
+  "commemorations": [
+   "Our Venerable Father Sisoes the Great"
+  ]
+ },
+ "07-07": {
+  "commemorations": [
+   "Our Venerable Fathers Thomas of Maleon and Acacius"
+  ]
+ },
+ "07-08": {
+  "commemorations": [
+   "The Holy Great Martyr Procopius"
+  ],
+  "rank": "polyeleos"
+ },
+ "07-09": {
+  "commemorations": [
+   "The Holy Hieromartyr Pancratius, Bishop of Taormina"
+  ]
+ },
+ "07-10": {
+  "commemorations": [
+   "The Forty-five Holy Martyrs of Nicopolis in Armenia"
+  ]
+ },
+ "07-11": {
+  "commemorations": [
+   "The Holy Great Martyr Euphemia the All-praised",
+   "The Holy Olga, Equal-to-the-Apostles, Princess of Kiev"
+  ],
+  "rank": "polyeleos"
+ },
+ "07-12": {
+  "commemorations": [
+   "The Holy Martyrs Proclus and Hilary"
+  ]
+ },
+ "07-13": {
+  "commemorations": [
+   "The Synaxis of the Archangel Gabriel"
+  ],
+  "rank": "polyeleos"
+ },
+ "07-14": {
+  "commemorations": [
+   "The Holy Apostle Aquila"
+  ]
+ },
+ "07-15": {
+  "commemorations": [
+   "The Holy Martyrs Cyricus and Julitta",
+   "The Holy Vladimir, Equal-to-the-Apostles, Great Prince of Kiev"
+  ],
+  "rank": "polyeleos"
+ },
+ "07-16": {
+  "commemorations": [
+   "The Holy Hieromartyr Athenogenes and his ten disciples"
+  ]
+ },
+ "07-17": {
+  "commemorations": [
+   "The Holy Great Martyr Marina"
+  ],
+  "rank": "polyeleos"
+ },
+ "07-18": {
+  "commemorations": [
+   "The Holy Martyr Emilian"
+  ]
+ },
+ "07-19": {
+  "commemorations": [
+   "Our Venerable Mother Macrina, sister of St Basil the Great",
+   "Our Venerable Father Dius"
+  ]
+ },
+ "07-20": {
+  "commemorations": [
+   "The Holy and Glorious Prophet Elias"
+  ],
+  "rank": "vigil"
+ },
+ "07-21": {
+  "commemorations": [
+   "Our Venerable Fathers Symeon the Fool-for-Christ and John his companion"
+  ]
+ },
+ "07-22": {
+  "commemorations": [
+   "The Holy Myrrh-bearer and Equal-to-the-Apostles Mary Magdalene"
+  ],
+  "rank": "polyeleos"
+ },
+ "07-23": {
+  "commemorations": [
+   "The Holy Martyrs Trophimus and Theophilus"
+  ]
+ },
+ "07-24": {
+  "commemorations": [
+   "The Holy Martyr Christina",
+   "The Holy Passion-bearers Boris and Gleb"
+  ],
+  "rank": "polyeleos"
+ },
+ "07-25": {
+  "commemorations": [
+   "The Dormition of the Holy Anna, mother of the Most Holy Theotokos"
+  ],
+  "rank": "polyeleos"
+ },
+ "07-26": {
+  "commemorations": [
+   "The Holy Hieromartyr Hermolaus and his companions"
+  ]
+ },
+ "07-27": {
+  "commemorations": [
+   "The Holy Great Martyr and Healer Panteleimon"
+  ],
+  "rank": "vigil"
+ },
+ "07-28": {
+  "commemorations": [
+   "The Holy Apostles and Deacons Prochorus, Nicanor, Timon and Parmenas"
+  ]
+ },
+ "07-29": {
+  "commemorations": [
+   "The Holy Martyr Callinicus"
+  ]
+ },
+ "07-30": {
+  "commemorations": [
+   "The Holy Apostles Silas and Silvanus"
+  ]
+ },
+ "07-31": {
+  "commemorations": [
+   "The Holy and Righteous Eudocimus"
+  ],
+  "cycle": "the eve of the Procession of the Cross"
+ },
+ "08-01": {
+  "commemorations": [
+   "The Procession of the Precious and Life-giving Cross",
+   "The Seven Holy Maccabee Martyrs, their mother Solomone and their teacher Eleazar"
+  ],
+  "cycle": "the Dormition Fast begins",
+  "rank": "polyeleos"
+ },
+ "08-02": {
+  "commemorations": [
+   "The Translation of the Relics of the Holy Protomartyr Stephen"
+  ]
+ },
+ "08-03": {
+  "commemorations": [
+   "Our Venerable Fathers Isaac, Dalmatus and Faustus"
+  ]
+ },
+ "08-04": {
+  "commemorations": [
+   "The Seven Holy Youths of Ephesus"
+  ]
+ },
+ "08-05": {
+  "commemorations": [
+   "The Holy Martyr Eusignius"
+  ],
+  "cycle": "forefeast of the Transfiguration"
+ },
+ "08-06": {
+  "commemorations": [
+   "The Holy Transfiguration of our Lord, God and Saviour Jesus Christ"
+  ],
+  "rank": "great"
+ },
+ "08-07": {
+  "commemorations": [
+   "The Holy Venerable Martyr Dometius"
+  ],
+  "cycle": "afterfeast of the Transfiguration"
+ },
+ "08-08": {
+  "commemorations": [
+   "Our Holy Father Emilian the Confessor, Bishop of Cyzicus"
+  ],
+  "cycle": "afterfeast of the Transfiguration"
+ },
+ "08-09": {
+  "commemorations": [
+   "The Holy Apostle Matthias"
+  ],
+  "cycle": "afterfeast of the Transfiguration",
+  "rank": "polyeleos"
+ },
+ "08-10": {
+  "commemorations": [
+   "The Holy Martyr and Archdeacon Laurence"
+  ],
+  "cycle": "afterfeast of the Transfiguration"
+ },
+ "08-11": {
+  "commemorations": [
+   "The Holy Martyr Euplus"
+  ],
+  "cycle": "afterfeast of the Transfiguration"
+ },
+ "08-12": {
+  "commemorations": [
+   "The Holy Martyrs Photius and Anicetas"
+  ],
+  "cycle": "afterfeast of the Transfiguration"
+ },
+ "08-13": {
+  "commemorations": [
+   "Our Venerable Father Maximus the Confessor"
+  ],
+  "cycle": "leave-taking of the Transfiguration"
+ },
+ "08-14": {
+  "commemorations": [
+   "The Holy Prophet Micah"
+  ],
+  "cycle": "forefeast of the Dormition"
+ },
+ "08-15": {
+  "commemorations": [
+   "The Dormition of our Most Holy Lady the Theotokos and Ever-Virgin Mary"
+  ],
+  "rank": "great"
+ },
+ "08-16": {
+  "commemorations": [
+   "The Translation of the Holy Image of our Lord Not-made-by-hands"
+  ],
+  "cycle": "afterfeast of the Dormition",
+  "rank": "polyeleos"
+ },
+ "08-17": {
+  "commemorations": [
+   "The Holy Martyr Myron"
+  ],
+  "cycle": "afterfeast of the Dormition"
+ },
+ "08-18": {
+  "commemorations": [
+   "The Holy Martyrs Florus and Laurus"
+  ],
+  "cycle": "afterfeast of the Dormition"
+ },
+ "08-19": {
+  "commemorations": [
+   "The Holy Martyr Andrew the General and his companions"
+  ],
+  "cycle": "afterfeast of the Dormition"
+ },
+ "08-20": {
+  "commemorations": [
+   "The Holy Prophet Samuel"
+  ],
+  "cycle": "afterfeast of the Dormition"
+ },
+ "08-21": {
+  "commemorations": [
+   "The Holy Apostle Thaddeus"
+  ],
+  "cycle": "afterfeast of the Dormition"
+ },
+ "08-22": {
+  "commemorations": [
+   "The Holy Martyr Agathonicus and his companions"
+  ],
+  "cycle": "afterfeast of the Dormition"
+ },
+ "08-23": {
+  "commemorations": [
+   "The Holy Hieromartyr Lupus"
+  ],
+  "cycle": "leave-taking of the Dormition"
+ },
+ "08-24": {
+  "commemorations": [
+   "The Holy Hieromartyr Eutyches"
+  ]
+ },
+ "08-25": {
+  "commemorations": [
+   "The Return of the Relics of the Holy Apostle Bartholomew",
+   "The Holy Apostle Titus"
+  ],
+  "rank": "polyeleos"
+ },
+ "08-26": {
+  "commemorations": [
+   "The Holy Martyrs Adrian and Natalia"
+  ]
+ },
+ "08-27": {
+  "commemorations": [
+   "Our Venerable Father Poemen the Great"
+  ]
+ },
+ "08-28": {
+  "commemorations": [
+   "Our Venerable Father Moses the Black"
+  ]
+ },
+ "08-29": {
+  "commemorations": [
+   "The Beheading of the Honourable and Glorious Prophet, Forerunner and Baptist John"
+  ],
+  "rank": "vigil"
+ },
+ "08-30": {
+  "commemorations": [
+   "Our Holy Fathers Alexander, John and Paul the New, Patriarchs of Constantinople"
+  ]
+ },
+ "08-31": {
+  "commemorations": [
+   "The Deposition of the Precious Sash of our Most Holy Lady the Theotokos"
+  ],
+  "rank": "polyeleos"
+ },
+ "09-01": {
+  "commemorations": [
+   "The Beginning of the Indiction, the Church New Year",
+   "Our Venerable Father Symeon the Stylite and his mother Martha"
+  ],
+  "rank": "vigil"
+ },
+ "09-02": {
+  "commemorations": [
+   "The Holy Martyr Mamas",
+   "Our Father John the Faster, Patriarch of Constantinople"
+  ]
+ },
+ "09-03": {
+  "commemorations": [
+   "The Holy Hieromartyr Anthimus, Bishop of Nicomedia",
+   "Our Venerable Father Theoctistus"
+  ]
+ },
+ "09-04": {
+  "commemorations": [
+   "The Holy Hieromartyr Babylas, Bishop of Antioch",
+   "The Holy Prophet and God-seer Moses"
+  ]
+ },
+ "09-05": {
+  "commemorations": [
+   "The Holy Prophet Zachariah, father of the Forerunner"
+  ]
+ },
+ "09-06": {
+  "commemorations": [
+   "The Commemoration of the Miracle of the Archangel Michael at Colossae"
+  ],
+  "rank": "polyeleos"
+ },
+ "09-07": {
+  "commemorations": [
+   "The Holy Martyr Sozon"
+  ],
+  "cycle": "forefeast of the Nativity of the Theotokos"
+ },
+ "09-08": {
+  "commemorations": [
+   "The Nativity of our Most Holy Lady the Theotokos and Ever-Virgin Mary"
+  ],
+  "rank": "great"
+ },
+ "09-09": {
+  "commemorations": [
+   "The Holy and Righteous Ancestors of God Joachim and Anna",
+   "The Holy Martyr Severian"
+  ],
+  "cycle": "afterfeast of the Nativity of the Theotokos",
+  "rank": "polyeleos"
+ },
+ "09-10": {
+  "commemorations": [
+   "The Holy Martyrs Menodora, Metrodora and Nymphodora"
+  ],
+  "cycle": "afterfeast of the Nativity of the Theotokos"
+ },
+ "09-11": {
+  "commemorations": [
+   "Our Venerable Mother Theodora of Alexandria"
+  ],
+  "cycle": "afterfeast of the Nativity of the Theotokos"
+ },
+ "09-12": {
+  "commemorations": [
+   "The Holy Hieromartyr Autonomus"
+  ],
+  "cycle": "leave-taking of the Nativity of the Theotokos"
+ },
+ "09-13": {
+  "commemorations": [
+   "The Dedication of the Church of the Holy Resurrection",
+   "The Holy Hieromartyr Cornelius the Centurion"
+  ],
+  "cycle": "forefeast of the Exaltation of the Cross",
+  "rank": "polyeleos"
+ },
+ "09-14": {
+  "commemorations": [
+   "The Universal Exaltation of the Precious and Life-giving Cross"
+  ],
+  "rank": "great"
+ },
+ "09-15": {
+  "commemorations": [
+   "The Holy Great Martyr Nicetas"
+  ],
+  "cycle": "afterfeast of the Exaltation"
+ },
+ "09-16": {
+  "commemorations": [
+   "The Holy Great Martyr Euphemia the All-praised"
+  ],
+  "cycle": "afterfeast of the Exaltation",
+  "rank": "polyeleos"
+ },
+ "09-17": {
+  "commemorations": [
+   "The Holy Martyrs Sophia and her daughters Faith, Hope and Love"
+  ],
+  "cycle": "afterfeast of the Exaltation"
+ },
+ "09-18": {
+  "commemorations": [
+   "Our Venerable Father Eumenius, Bishop of Gortyna"
+  ],
+  "cycle": "afterfeast of the Exaltation"
+ },
+ "09-19": {
+  "commemorations": [
+   "The Holy Martyrs Trophimus, Sabbatius and Dorymedon"
+  ],
+  "cycle": "afterfeast of the Exaltation"
+ },
+ "09-20": {
+  "commemorations": [
+   "The Holy Great Martyr Eustathius Placidas and his companions"
+  ],
+  "cycle": "afterfeast of the Exaltation",
+  "rank": "polyeleos"
+ },
+ "09-21": {
+  "commemorations": [
+   "The Holy Apostle Quadratus"
+  ],
+  "cycle": "leave-taking of the Exaltation"
+ },
+ "09-22": {
+  "commemorations": [
+   "The Holy Hieromartyr Phocas, Bishop of Sinope"
+  ]
+ },
+ "09-23": {
+  "commemorations": [
+   "The Conception of the Honourable and Glorious Prophet, Forerunner and Baptist John"
+  ],
+  "rank": "polyeleos"
+ },
+ "09-24": {
+  "commemorations": [
+   "The Holy Protomartyr and Equal-to-the-Apostles Thecla"
+  ],
+  "rank": "polyeleos"
+ },
+ "09-25": {
+  "commemorations": [
+   "Our Venerable Mother Euphrosyne of Alexandria"
+  ]
+ },
+ "09-26": {
+  "commemorations": [
+   "The Repose of the Holy Apostle and Evangelist John the Theologian"
+  ],
+  "rank": "vigil"
+ },
+ "09-27": {
+  "commemorations": [
+   "The Holy Martyr Callistratus and his companions"
+  ]
+ },
+ "09-28": {
+  "commemorations": [
+   "Our Venerable Father Chariton the Confessor"
+  ]
+ },
+ "09-29": {
+  "commemorations": [
+   "Our Venerable Father Cyriacus the Hermit"
+  ]
+ },
+ "09-30": {
+  "commemorations": [
+   "The Holy Hieromartyr Gregory, Enlightener of Armenia"
+  ]
+ },
+ "10-01": {
+  "commemorations": [
+   "The Protection of our Most Holy Lady the Theotokos",
+   "The Holy Apostle Ananias",
+   "Our Venerable Father Romanus the Melodist"
+  ],
+  "rank": "vigil"
+ },
+ "10-02": {
+  "commemorations": [
+   "The Holy Hieromartyr Cyprian and the Holy Martyr Justina"
+  ]
+ },
+ "10-03": {
+  "commemorations": [
+   "The Holy Hieromartyr Dionysius the Areopagite"
+  ],
+  "rank": "polyeleos"
+ },
+ "10-04": {
+  "commemorations": [
+   "The Holy Hieromartyr Hierotheus, Bishop of Athens"
+  ]
+ },
+ "10-05": {
+  "commemorations": [
+   "The Holy Martyr Charitina"
+  ]
+ },
+ "10-06": {
+  "commemorations": [
+   "The Holy and Glorious Apostle Thomas"
+  ],
+  "rank": "vigil"
+ },
+ "10-07": {
+  "commemorations": [
+   "The Holy Martyrs Sergius and Bacchus"
+  ]
+ },
+ "10-08": {
+  "commemorations": [
+   "Our Venerable Mother Pelagia"
+  ]
+ },
+ "10-09": {
+  "commemorations": [
+   "The Holy Apostle James, son of Alphaeus",
+   "Our Venerable Father Andronicus and his wife Athanasia"
+  ],
+  "rank": "polyeleos"
+ },
+ "10-10": {
+  "commemorations": [
+   "The Holy Martyrs Eulampius and Eulampia"
+  ]
+ },
+ "10-11": {
+  "commemorations": [
+   "The Holy Apostle Philip, one of the Seven Deacons",
+   "Our Venerable Father Theophanes the Branded"
+  ]
+ },
+ "10-12": {
+  "commemorations": [
+   "The Holy Martyrs Probus, Tarachus and Andronicus"
+  ]
+ },
+ "10-13": {
+  "commemorations": [
+   "The Holy Martyrs Carpus, Papylus, Agathodorus and Agathonica"
+  ]
+ },
+ "10-14": {
+  "commemorations": [
+   "Our Venerable Mother Paraskeva of Serbia",
+   "The Holy Martyrs Nazarius, Gervase, Protase and Celsus"
+  ],
+  "rank": "polyeleos"
+ },
+ "10-15": {
+  "commemorations": [
+   "Our Venerable Father Euthymius the New",
+   "The Holy Venerable Martyr Lucian of Antioch"
+  ]
+ },
+ "10-16": {
+  "commemorations": [
+   "The Holy Martyr Longinus the Centurion"
+  ]
+ },
+ "10-17": {
+  "commemorations": [
+   "The Holy Prophet Hosea",
+   "Our Venerable Martyr Andrew of Crete"
+  ]
+ },
+ "10-18": {
+  "commemorations": [
+   "The Holy Apostle and Evangelist Luke"
+  ],
+  "rank": "vigil"
+ },
+ "10-19": {
+  "commemorations": [
+   "The Holy Prophet Joel",
+   "The Holy Martyr Varus",
+   "Our Venerable Father John of Kronstadt"
+  ]
+ },
+ "10-20": {
+  "commemorations": [
+   "The Holy Great Martyr Artemius"
+  ],
+  "rank": "polyeleos"
+ },
+ "10-21": {
+  "commemorations": [
+   "Our Venerable Father Hilarion the Great"
+  ],
+  "rank": "polyeleos"
+ },
+ "10-22": {
+  "commemorations": [
+   "Our Holy Father Abercius, Equal-to-the-Apostles and Wonderworker of Hierapolis",
+   "The Seven Holy Youths of Ephesus"
+  ],
+  "rank": "polyeleos"
+ },
+ "10-23": {
+  "commemorations": [
+   "The Holy Apostle James, the Brother of the Lord"
+  ],
+  "rank": "vigil"
+ },
+ "10-24": {
+  "commemorations": [
+   "The Holy Martyr Arethas and his companions"
+  ]
+ },
+ "10-25": {
+  "commemorations": [
+   "The Holy Martyrs and Notaries Marcian and Martyrius"
+  ]
+ },
+ "10-26": {
+  "commemorations": [
+   "The Holy and Glorious Great Martyr Demetrius the Myrrh-streaming"
+  ],
+  "rank": "vigil"
+ },
+ "10-27": {
+  "commemorations": [
+   "The Holy Martyr Nestor"
+  ]
+ },
+ "10-28": {
+  "commemorations": [
+   "The Holy Martyrs Terence and Neonilla",
+   "Our Venerable Father Stephen of St Sabbas"
+  ]
+ },
+ "10-29": {
+  "commemorations": [
+   "The Holy Venerable Martyr Anastasia the Roman",
+   "Our Venerable Father Abramius the Recluse"
+  ]
+ },
+ "10-30": {
+  "commemorations": [
+   "The Holy Hieromartyr Zenobius and his sister Zenobia"
+  ]
+ },
+ "10-31": {
+  "commemorations": [
+   "The Holy Apostles Stachys, Amplias and their companions",
+   "The Holy Martyr Epimachus"
+  ]
+ },
+ "11-01": {
+  "commemorations": [
+   "The Holy Unmercenaries and Wonderworkers Cosmas and Damian of Asia"
+  ],
+  "rank": "polyeleos"
+ },
+ "11-02": {
+  "commemorations": [
+   "The Holy Martyrs Acindynus, Pegasius, Aphthonius, Elpidephorus and Anempodistus"
+  ]
+ },
+ "11-03": {
+  "commemorations": [
+   "The Holy Martyrs Acepsimas, Joseph and Aithalas"
+  ]
+ },
+ "11-04": {
+  "commemorations": [
+   "Our Venerable Father Joannicius the Great"
+  ]
+ },
+ "11-05": {
+  "commemorations": [
+   "The Holy Martyrs Galaction and Episteme"
+  ]
+ },
+ "11-06": {
+  "commemorations": [
+   "Our Holy Father Paul the Confessor, Archbishop of Constantinople"
+  ]
+ },
+ "11-07": {
+  "commemorations": [
+   "The Thirty-three Holy Martyrs of Melitene",
+   "Our Venerable Father Lazarus of Mount Galesius"
+  ]
+ },
+ "11-08": {
+  "commemorations": [
+   "The Synaxis of the Archangel Michael and all the Bodiless Powers of Heaven"
+  ],
+  "rank": "vigil"
+ },
+ "11-09": {
+  "commemorations": [
+   "The Holy Martyrs Onesiphorus and Porphyrius",
+   "Our Venerable Mother Matrona"
+  ]
+ },
+ "11-10": {
+  "commemorations": [
+   "The Holy Apostles Erastus, Olympas, Rodion and their companions"
+  ]
+ },
+ "11-11": {
+  "commemorations": [
+   "The Holy Great Martyr Menas",
+   "The Holy Martyr Victor",
+   "Our Venerable Father Theodore the Studite"
+  ],
+  "rank": "polyeleos"
+ },
+ "11-12": {
+  "commemorations": [
+   "Our Holy Father John the Merciful, Patriarch of Alexandria",
+   "Our Venerable Father Nilus the Faster"
+  ]
+ },
+ "11-13": {
+  "commemorations": [
+   "Our Holy Father John Chrysostom, Archbishop of Constantinople"
+  ],
+  "rank": "vigil"
+ },
+ "11-14": {
+  "commemorations": [
+   "The Holy and All-praised Apostle Philip"
+  ],
+  "rank": "vigil"
+ },
+ "11-15": {
+  "commemorations": [
+   "The Holy Martyrs Gurias, Samonas and Habib"
+  ],
+  "cycle": "the Nativity Fast begins"
+ },
+ "11-16": {
+  "commemorations": [
+   "The Holy Apostle and Evangelist Matthew"
+  ],
+  "rank": "vigil"
+ },
+ "11-17": {
+  "commemorations": [
+   "Our Holy Father Gregory the Wonderworker, Bishop of Neocaesarea"
+  ]
+ },
+ "11-18": {
+  "commemorations": [
+   "The Holy Martyr Plato",
+   "The Holy Martyr Romanus"
+  ]
+ },
+ "11-19": {
+  "commemorations": [
+   "The Holy Prophet Obadiah",
+   "The Holy Martyr Barlaam"
+  ]
+ },
+ "11-20": {
+  "commemorations": [
+   "Our Venerable Father Gregory the Decapolite",
+   "Our Holy Father Proclus, Archbishop of Constantinople"
+  ],
+  "cycle": "forefeast of the Entrance of the Theotokos"
+ },
+ "11-21": {
+  "commemorations": [
+   "The Entrance of our Most Holy Lady the Theotokos into the Temple"
+  ],
+  "rank": "great"
+ },
+ "11-22": {
+  "commemorations": [
+   "The Holy Apostle Philemon and his companions"
+  ],
+  "cycle": "afterfeast of the Entrance"
+ },
+ "11-23": {
+  "commemorations": [
+   "Our Holy Father Amphilochius, Bishop of Iconium"
+  ],
+  "cycle": "afterfeast of the Entrance"
+ },
+ "11-24": {
+  "commemorations": [
+   "The Holy Great Martyr Catherine",
+   "The Holy Great Martyr Mercurius"
+  ],
+  "cycle": "afterfeast of the Entrance",
+  "rank": "polyeleos"
+ },
+ "11-25": {
+  "commemorations": [
+   "The Holy Hieromartyr Clement, Pope of Rome",
+   "The Holy Hieromartyr Peter of Alexandria"
+  ],
+  "cycle": "leave-taking of the Entrance",
+  "rank": "polyeleos"
+ },
+ "11-26": {
+  "commemorations": [
+   "Our Venerable Father Alypius the Stylite"
+  ]
+ },
+ "11-27": {
+  "commemorations": [
+   "The Holy Great Martyr James the Persian"
+  ],
+  "rank": "polyeleos"
+ },
+ "11-28": {
+  "commemorations": [
+   "Our Venerable Martyr Stephen the New"
+  ]
+ },
+ "11-29": {
+  "commemorations": [
+   "The Holy Martyr Paramonus and his companions"
+  ]
+ },
+ "11-30": {
+  "commemorations": [
+   "The Holy and All-praised Apostle Andrew the First-called"
+  ],
+  "rank": "vigil"
+ },
+ "12-01": {
+  "commemorations": [
+   "The Holy Prophet Nahum"
+  ]
+ },
+ "12-02": {
+  "commemorations": [
+   "The Holy Prophet Habakkuk"
+  ]
+ },
+ "12-03": {
+  "commemorations": [
+   "The Holy Prophet Zephaniah"
+  ]
+ },
+ "12-04": {
+  "commemorations": [
+   "The Holy Great Martyr Barbara",
+   "Our Venerable Father John of Damascus"
+  ],
+  "rank": "polyeleos"
+ },
+ "12-05": {
+  "commemorations": [
+   "Our Venerable and God-bearing Father Sabbas the Sanctified"
+  ],
+  "rank": "vigil"
+ },
+ "12-06": {
+  "commemorations": [
+   "Our Holy Father Nicholas the Wonderworker, Archbishop of Myra in Lycia"
+  ],
+  "rank": "vigil"
+ },
+ "12-07": {
+  "commemorations": [
+   "Our Holy Father Ambrose, Bishop of Milan"
+  ]
+ },
+ "12-08": {
+  "commemorations": [
+   "Our Venerable Father Patapius"
+  ]
+ },
+ "12-09": {
+  "commemorations": [
+   "The Conception of the Most Holy Theotokos by the Holy Anna"
+  ],
+  "rank": "polyeleos"
+ },
+ "12-10": {
+  "commemorations": [
+   "The Holy Martyrs Menas, Hermogenes and Eugraphus"
+  ]
+ },
+ "12-11": {
+  "commemorations": [
+   "Our Venerable Father Daniel the Stylite"
+  ]
+ },
+ "12-12": {
+  "commemorations": [
+   "Our Holy Father Spyridon the Wonderworker, Bishop of Trimythous"
+  ],
+  "rank": "vigil"
+ },
+ "12-13": {
+  "commemorations": [
+   "The Holy Martyrs Eustratius, Auxentius, Eugene, Mardarius and Orestes"
+  ],
+  "rank": "polyeleos"
+ },
+ "12-14": {
+  "commemorations": [
+   "The Holy Martyrs Thyrsus, Leucius and Philemon"
+  ]
+ },
+ "12-15": {
+  "commemorations": [
+   "The Holy Hieromartyr Eleutherius"
+  ]
+ },
+ "12-16": {
+  "commemorations": [
+   "The Holy Prophet Haggai"
+  ]
+ },
+ "12-17": {
+  "commemorations": [
+   "The Holy Prophet Daniel and the Three Holy Youths"
+  ],
+  "rank": "polyeleos"
+ },
+ "12-18": {
+  "commemorations": [
+   "The Holy Martyr Sebastian and his companions"
+  ]
+ },
+ "12-19": {
+  "commemorations": [
+   "The Holy Martyr Boniface"
+  ]
+ },
+ "12-20": {
+  "commemorations": [
+   "The Holy Hieromartyr Ignatius the God-bearer"
+  ],
+  "cycle": "forefeast of the Nativity",
+  "rank": "polyeleos"
+ },
+ "12-21": {
+  "commemorations": [
+   "The Holy Martyr Juliana"
+  ],
+  "cycle": "forefeast of the Nativity"
+ },
+ "12-22": {
+  "commemorations": [
+   "The Holy Great Martyr Anastasia the Deliverer from Potions"
+  ],
+  "cycle": "forefeast of the Nativity"
+ },
+ "12-23": {
+  "commemorations": [
+   "The Ten Holy Martyrs of Crete"
+  ],
+  "cycle": "forefeast of the Nativity"
+ },
+ "12-24": {
+  "commemorations": [
+   "The Holy Venerable Martyr Eugenia"
+  ],
+  "cycle": "the eve of the Nativity"
+ },
+ "12-25": {
+  "commemorations": [
+   "The Nativity according to the Flesh of our Lord, God and Saviour Jesus Christ"
+  ],
+  "rank": "great"
+ },
+ "12-26": {
+  "commemorations": [
+   "The Synaxis of our Most Holy Lady the Theotokos"
+  ],
+  "cycle": "afterfeast of the Nativity",
+  "rank": "polyeleos"
+ },
+ "12-27": {
+  "commemorations": [
+   "The Holy Protomartyr and Archdeacon Stephen"
+  ],
+  "cycle": "afterfeast of the Nativity",
+  "rank": "polyeleos"
+ },
+ "12-28": {
+  "commemorations": [
+   "The Twenty Thousand Holy Martyrs burned at Nicomedia"
+  ],
+  "cycle": "afterfeast of the Nativity"
+ },
+ "12-29": {
+  "commemorations": [
+   "The Holy Innocents slain at Bethlehem"
+  ],
+  "cycle": "afterfeast of the Nativity"
+ },
+ "12-30": {
+  "commemorations": [
+   "The Holy Martyr Anysia"
+  ],
+  "cycle": "afterfeast of the Nativity"
+ },
+ "12-31": {
+  "commemorations": [
+   "Our Venerable Mother Melania the Younger"
+  ],
+  "cycle": "leave-taking of the Nativity"
+ }
+}

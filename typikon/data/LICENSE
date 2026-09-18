@@ -1,0 +1,12 @@
+The menologion in this directory — menologion.json — is covered by the GNU
+General Public License version 2, the same as the rest of this project. See
+the LICENSE file at the root.
+
+It was composed for this project from the common Byzantine tradition, in the
+standard English formulae. The tradition is nobody's property; the wording
+here is this project's contribution to it, and the licence asks only that
+what you build on it stays as free as what you were given.
+
+Supplementary sets fetched by `typikon --update-menaion` are NOT covered by
+this and are NOT distributed here. They belong to whoever published them; the
+fetcher puts a copy on your machine for your own use. See typikon/menaia.py.

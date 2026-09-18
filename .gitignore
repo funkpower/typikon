@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+
+# Supplementary commemoration sets are fetched, never committed — they are
+# other people's work. See typikon/menaia.py.
+typikon/data/*.json
+!typikon/data/menologion.json
