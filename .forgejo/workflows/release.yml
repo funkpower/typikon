@@ -1,96 +1,64 @@
 name: release
 
 # Tag-driven. Cargo.toml carries the version; the tag only points at it, and the
-# first job refuses to go on if the two disagree — a release tagged v0.3.0 that
-# publishes 0.2.0 is not recoverable, because PyPI will not let a version be
-# reused even after it is yanked.
+# first step refuses to go on if the two disagree — a release tagged v0.3.0 that
+# publishes 0.2.0 cannot be undone, because PyPI will not let a version be reused
+# even after it is yanked.
 on:
   push:
     tags: ['v*']
 
+# One job on purpose. Splitting build from publish would mean passing wheels
+# between jobs through actions/upload-artifact, which is a JavaScript action: the
+# runner executes it with `node` inside this container, and a Rust image has none.
+# Everything a release needs fits in one job, so nothing has to be handed over.
 jobs:
-  verify:
+  publish:
     runs-on: docker
     container:
       image: rust:1.98-bookworm
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        run: |
+          git init -q .
+          git remote add origin "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
+          git fetch -q --depth 1 origin "$GITHUB_SHA"
+          git checkout -q FETCH_HEAD
+
       - name: Tag must match Cargo.toml
         run: |
           tag="${GITHUB_REF_NAME#v}"
           crate=$(grep -m1 '^version = ' Cargo.toml | cut -d'"' -f2)
           echo "tag=$tag crate=$crate"
           [ "$tag" = "$crate" ] || { echo "::error::tag $tag != Cargo.toml $crate"; exit 1; }
+
       - name: Tests
         run: cargo test
 
-  build:
-    needs: verify
-    runs-on: docker
-    container:
-      image: rust:1.98-bookworm
-    strategy:
-      matrix:
-        target: [x86_64-unknown-linux-gnu, aarch64-unknown-linux-gnu]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build wheel
+      - name: Build wheels and sdist
         run: |
           apt-get update && apt-get install -y --no-install-recommends python3 python3-venv
           python3 -m venv /tmp/venv
-          /tmp/venv/bin/pip install --quiet maturin[zig]
-          # --zig cross-compiles against an older glibc than the build image
-          # ships, so the wheel is not silently pinned to bookworm's.
-          /tmp/venv/bin/maturin build --release --zig \
-            --target ${{ matrix.target }} --out dist
-      - uses: actions/upload-artifact@v3
-        with:
-          name: wheels-${{ matrix.target }}
-          path: dist
-
-  sdist:
-    needs: verify
-    runs-on: docker
-    container:
-      image: rust:1.98-bookworm
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build sdist
-        run: |
-          apt-get update && apt-get install -y --no-install-recommends python3 python3-venv
-          python3 -m venv /tmp/venv
-          /tmp/venv/bin/pip install --quiet maturin
+          /tmp/venv/bin/pip install --quiet 'maturin[zig]' twine
+          # --zig cross-compiles against an older glibc than this image ships, so
+          # the wheel is not silently pinned to bookworm's.
+          for target in x86_64-unknown-linux-gnu aarch64-unknown-linux-gnu; do
+            rustup target add "$target"
+            /tmp/venv/bin/maturin build --release --zig --target "$target" --out dist
+          done
           /tmp/venv/bin/maturin sdist --out dist
-      - uses: actions/upload-artifact@v3
-        with:
-          name: sdist
-          path: dist
+          ls -l dist
 
-  publish:
-    needs: [build, sdist]
-    runs-on: docker
-    container:
-      image: python:3.12-bookworm
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          path: dist
-      - name: Collect
-        run: |
-          mkdir -p upload
-          find dist -name '*.whl' -o -name '*.tar.gz' | xargs -I{} cp {} upload/
-          ls -l upload
       - name: Publish
         env:
-          # A PROJECT-SCOPED token, not an account-wide one. PyPI's trusted
+          # A project-scoped token, not the account-wide one. PyPI's trusted
           # publishing is OIDC and supports GitHub, GitLab, Google Cloud Build and
           # ActiveState — not Forgejo — so this forge has to hold a long-lived
           # credential. Scoping it to this one project is the whole of the
-          # mitigation available: if the forge is compromised, the blast radius is
-          # releases of typikon rather than every package the account owns.
+          # mitigation available: if the forge is compromised, what is lost is the
+          # ability to publish typikon rather than every package the account owns.
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
-          pip install --quiet twine
-          twine check upload/*
-          twine upload --non-interactive upload/*
+          /tmp/venv/bin/twine check dist/*
+          /tmp/venv/bin/twine upload --non-interactive dist/*

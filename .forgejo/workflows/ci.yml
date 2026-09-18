@@ -21,17 +21,18 @@ jobs:
     container:
       image: rust:1.98-bookworm
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Cache cargo
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: cargo-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
-          restore-keys: cargo-${{ runner.os }}-
+      # Not actions/checkout. That is a JavaScript action: the runner executes it
+      # with `node` *inside this container*, and a Rust image carries no node, so
+      # the job dies at the first step with "node: executable file not found in
+      # $PATH". actions/cache and actions/upload-artifact are the same. Using an
+      # image that also carries node would mean installing Rust on every run;
+      # cloning by hand costs four lines and keeps the lean image.
+      - name: Checkout
+        run: |
+          git init -q .
+          git remote add origin "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
+          git fetch -q --depth 1 origin "$GITHUB_SHA"
+          git checkout -q FETCH_HEAD
 
       # No `cargo fmt --check`. The tables in this crate are aligned by hand —
       # MONTHS, JURISDICTIONS — and rustfmt wants one entry per line, which loses
