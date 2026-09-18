@@ -62,6 +62,13 @@ jobs:
           /tmp/venv/bin/maturin build --release --out dist
           /tmp/venv/bin/pip install --quiet --no-index --find-links dist typikon
           /tmp/venv/bin/python -m pytest tests/python -q
+          # The bindings resolve the default jurisdiction themselves, and once
+          # read only the config file while the CLI read the environment first.
+          # The two then answered for different churches on the same machine.
+          cli=$(TYPIKON_JURISDICTION=rocor ./target/release/typikon \
+                  --date 2026-03-18 --format tsv --fields jurisdiction | tail -1)
+          py=$(TYPIKON_JURISDICTION=rocor /tmp/venv/bin/python -c "import typikon, datetime; print(typikon.describe(datetime.date(2026, 3, 18)).jurisdiction)")
+          test "$cli" = "$py" || { echo "cli=$cli python=$py"; exit 1; }
 
       - name: Type stubs
         run: |
@@ -73,3 +80,8 @@ jobs:
           n: int = d.days_to_pascha
           EOF
           /tmp/venv/bin/python -m mypy --strict /tmp/typecheck.py
+
+      - name: README examples
+        run: |
+          cargo build --release
+          python3 tests/readme-examples.py

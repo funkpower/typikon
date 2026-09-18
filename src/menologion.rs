@@ -237,7 +237,7 @@ pub fn movable_feast_for(civil: Date, mv: &Movables) -> Option<(&'static str, Op
         (mv.fathers_first_council, "The Sunday of the Fathers of the First Council", None),
         (mv.clean_monday, "Clean Monday \u{2014} the first day of the Great Fast", None),
         // A sentinel that can never match, keeping the array a fixed size.
-        (Date(i32::MIN), "", None),
+        (Date::from_jdn(i32::MIN), "", None),
     ];
     table
         .iter()

@@ -155,12 +155,28 @@ fn list_jurisdictions() {
     println!("  calendar or thirteen days behind it?\n");
 }
 
-fn elide(text: &str, width: usize) -> String {
+/// Cut a title to `width` characters, on a word boundary where there is one,
+/// and mark it with an ellipsis.
+///
+/// The halfway point has to be found with `char_indices`. Taking it as
+/// `cut.len() / 2` is a byte index into a string counted in characters, and
+/// every movable feast title carries an em dash, so at the widths where the
+/// midpoint landed inside one this panicked: 80 columns among them.
+pub fn elide(text: &str, width: usize) -> String {
+    if width == 0 {
+        return String::new();
+    }
     if text.chars().count() <= width {
         return text.to_string();
     }
     let cut: String = text.chars().take(width - 1).collect();
-    let head = match cut[cut.len() / 2..].find(' ') {
+    let midpoint = cut
+        .char_indices()
+        .nth(cut.chars().count() / 2)
+        .map_or(cut.len(), |(i, _)| i);
+    // Only break on a word if one falls in the second half; otherwise a single
+    // long word would be cut back to almost nothing.
+    let head = match cut[midpoint..].find(' ') {
         Some(_) => match cut.trim_end().rfind(' ') {
             Some(i) => &cut[..i],
             None => &cut,
@@ -467,7 +483,7 @@ fn today() -> Date {
         .unwrap_or(0);
     // Local midnight, via the offset the system reports for now.
     let local = secs + local_offset_secs(secs);
-    Date(2440588 + (local.div_euclid(86400)) as i32)
+    Date::from_jdn(2440588 + (local.div_euclid(86400)) as i32)
 }
 
 /// Seconds east of UTC, read from /etc/localtime through the `date` command

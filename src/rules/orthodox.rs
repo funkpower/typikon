@@ -8,11 +8,17 @@
 //! life and a law, and the Eastern Catholic churches, which do have law about
 //! this, are handled in their own module.
 //!
-//! A saint of vigil or polyeleos rank lifts the weekday discipline of a fast:
-//! to wine and oil inside the Great Fast, as far as fish in the three lesser
-//! fasts. That is why the printed calendars mark so many Wednesdays in the
-//! Nativity Fast for wine and oil, and it is the rank in the menologion that
-//! decides it.
+//! A ranked saint lifts the weekday discipline of a fast, and how far depends
+//! on both the rank and the season:
+//!
+//! | | Great Fast | Dormition | Nativity, Apostles |
+//! |---|---|---|---|
+//! | vigil or polyeleos | wine and oil | wine and oil | wine and oil |
+//! | great feast | wine and oil | wine and oil | fish |
+//!
+//! No saint of any rank brings fish into the Great Fast or the Dormition Fast.
+//! That is why the printed calendars mark so many Wednesdays in the Nativity
+//! Fast for wine and oil, and it is the rank in the menologion that decides it.
 //!
 //! Where usages differ, this follows the common published rule and says so in
 //! the reason. The known divergences:

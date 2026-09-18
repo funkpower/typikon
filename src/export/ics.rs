@@ -112,7 +112,17 @@ pub fn to_ics(days: &[Day], name: &str, stamp: &str) -> String {
 
         lines.extend([
             "BEGIN:VEVENT".into(),
-            format!("UID:{}-{}@typikon", start, d.jurisdiction),
+            // The tradition and the discipline change what the event says, so
+            // they belong in its identity. Without them a client subscribed to
+            // two feeds treats them as one event and keeps whichever arrived
+            // last.
+            format!(
+                "UID:{}-{}-{}-{}@typikon",
+                start,
+                d.jurisdiction,
+                d.tradition,
+                if d.shown_at_typikon { "typikon" } else { "particular" }
+            ),
             format!("DTSTAMP:{stamp}"),
             format!("DTSTART;VALUE=DATE:{start}"),
             format!("DTEND;VALUE=DATE:{end}"),

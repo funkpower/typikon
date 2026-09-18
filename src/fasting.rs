@@ -97,9 +97,11 @@ pub struct Fast {
     /// The rule that decided it, so the answer can be argued with.
     pub reason: String,
     pub obligation: Option<Obligation>,
-    /// The binding minimum, where one exists. `None` for most jurisdictions,
-    /// which is the honest answer rather than a softening.
-    pub binds: Level,
+    /// The binding minimum, where one exists at all. `None` for most
+    /// jurisdictions, which is the honest answer rather than a softening:
+    /// their tradition legislates no binding fast, which is a different fact
+    /// from a day that happens to bind nothing.
+    pub binds: Option<Level>,
 }
 
 impl Fast {
@@ -108,7 +110,7 @@ impl Fast {
             level,
             reason: reason.to_string(),
             obligation,
-            binds: Level::None,
+            binds: None,
         }
     }
 
@@ -128,7 +130,7 @@ impl Fast {
             level,
             reason: reason.to_string(),
             obligation: Some(Obligation::Obligatory),
-            binds,
+            binds: Some(binds),
         }
     }
 }

@@ -21,6 +21,10 @@ tradition title commemorations fast fastLabel emoji reason obligation binds
 pascha daysToPascha julianOffset
 ```
 
+`fastLabel`, `emoji` and `reason` are **presentation**: the fields are always
+there, and their wording is not stable. Key on `fast`, `season`, `rank`,
+`obligation` and `binds`.
+
 Adding a field is a **minor** change, so read the object by key and ignore what
 you do not recognise. `season`, `cycle`, `feast`, `rank`, `sign` and
 `obligation` are null on ordinary days.
@@ -32,6 +36,9 @@ Two semantics worth stating because the names do not carry them:
   about -263, not the days until the next one.
 - **`julianOffset`** is reported for every jurisdiction, including those that
   do not use the Julian menologion.
+- **`binds` is null unless the day binds.** Most jurisdictions legislate no
+  binding fast at all, which is a different fact from a day that happens to
+  oblige nothing, and the null says which.
 
 ### The fasting levels
 
@@ -46,8 +53,14 @@ freely.
 
 ### The command line
 
-Flag names and what they do, the exit codes (0 success, 2 usage error), and the
-column names `--format csv` accepts. `--json` and `--ics` remain as shorthand
+Flag names and what they do, the column names `--format csv` accepts, and the
+exit codes:
+
+| | |
+|---|---|
+| 0 | it answered |
+| 1 | it ran and the result is incomplete, as when a fetched menaion is missing days |
+| 2 | it was asked for something it could not do | `--json` and `--ics` remain as shorthand
 for `--format`.
 
 ### The Rust and Python APIs
@@ -63,8 +76,9 @@ rather than camelCase, which is the one deliberate difference between them.
 
 - **The text output.** It is for a person to read, and it changes when a better
   arrangement is found. Parse the JSON, CSV or TSV instead.
-- **The `reason` strings.** They explain a decision to a reader; they are not
-  identifiers. Key on `fast`, `season` and `obligation`.
+- **`reason`, `fastLabel` and `emoji`.** They explain and present a decision to
+  a reader; they are not identifiers. The fields themselves are stable, their
+  wording is not.
 - **The menologion.** Commemorations get added, corrected and reworded. See
   below.
 - **Anything not listed above**, including every private item and the layout of

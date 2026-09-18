@@ -25,7 +25,7 @@ use std::fmt;
 /// A newtype over the JDN rather than a (y, m, d) triple, so that day
 /// arithmetic cannot go wrong at a month or year boundary.
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
-pub struct Date(pub i32);
+pub struct Date(i32);
 
 /// A date in the Julian calendar. Deliberately a *different type* from `Date`:
 /// mixing the two is the single most common way calendar code goes wrong, and
@@ -122,6 +122,17 @@ fn jdn_to_julian(jdn: i32) -> (i32, u32, u32) {
 }
 
 impl Date {
+    /// The Julian Day Number this date is stored as. The representation is an
+    /// implementation detail; this is the supported way to read it.
+    pub fn jdn(self) -> i32 {
+        self.0
+    }
+
+    /// A date from a Julian Day Number.
+    pub fn from_jdn(jdn: i32) -> Date {
+        Date(jdn)
+    }
+
     pub fn from_ymd(year: i32, month: u32, day: u32) -> Option<Date> {
         if !(1..=12).contains(&month) || day == 0 || day > days_in_month(year, month) {
             return None;

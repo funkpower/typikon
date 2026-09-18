@@ -336,7 +336,7 @@ $ typikon -j rocor --date 2026-03-18 --json --indent 2
   "emoji": "🥬",
   "reason": "a weekday of the Great Fast",
   "obligation": "customary",
-  "binds": "none",
+  "binds": null,
   "pascha": "2026-04-12",
   "daysToPascha": 25,
   "julianOffset": 13
@@ -443,6 +443,8 @@ It lands in `~/.local/share/typikon/` and is overlaid automatically.
 named years and its invariants across the two centuries from 1900, 146,000
 calendar round-trips from 1800 to 2200, the fast on every day that is not open
 to interpretation, and every jurisdiction over the twenty-one years from 2020.
+Every title the program can print is cut at every width it can be asked to
+print at, because that is where it once crashed.
 
 It is a calendar, not an authority. If it disagrees with the one your parish
 prints, your parish is right. Please open an issue.

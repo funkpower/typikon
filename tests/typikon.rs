@@ -313,10 +313,10 @@ fn christmas_on_a_friday_does_not_ask_you_to_abstain() {
 
 #[test]
 fn ruthenian_strict_days_bind_strictly_and_the_rest_bind_to_meat() {
-    assert_eq!(at("2026-02-16", "ruthenian").binds, Level::WineOil);
-    assert_eq!(at("2026-04-03", "ruthenian").binds, Level::WineOil);
-    assert_eq!(at("2026-02-18", "ruthenian").binds, Level::Dairy);
-    assert_eq!(at("2026-10-09", "ruthenian").binds, Level::None);
+    assert_eq!(at("2026-02-16", "ruthenian").binds, Some(Level::WineOil));
+    assert_eq!(at("2026-04-03", "ruthenian").binds, Some(Level::WineOil));
+    assert_eq!(at("2026-02-18", "ruthenian").binds, Some(Level::Dairy));
+    assert_eq!(at("2026-10-09", "ruthenian").binds, None);
 }
 
 // ──────────────────────────── the menologion ──────────────────────────────
@@ -375,8 +375,10 @@ fn every_jurisdiction_holds_together_for_twenty_years() {
             assert!(!day.commemorations.is_empty(), "{} {}", jur.key, day.date);
             assert!(!day.title().is_empty(), "{} {}", jur.key, day.date);
             // `binds` may never be stricter than the level it sits under.
-            assert!(day.binds >= day.fast, "{} {}: binds {:?} > fast {:?}",
-                    jur.key, day.date, day.binds, day.fast);
+            if let Some(binds) = day.binds {
+                assert!(binds >= day.fast, "{} {}: binds {:?} > fast {:?}",
+                        jur.key, day.date, binds, day.fast);
+            }
         }
     }
 }
@@ -534,19 +536,19 @@ fn the_typikon_discipline_can_be_shown_without_losing_the_obligation() {
     let clean = describe(d("2026-02-16"), jur);
     assert_eq!(clean.fast, Level::Strict);
     assert_eq!(clean.obligation, Some(Obligation::Obligatory));
-    assert_eq!(clean.binds, Level::WineOil);
+    assert_eq!(clean.binds, Some(Level::WineOil));
 
     // A Wednesday of the Great Fast: xerophagy kept, meat alone binding.
     let wed = describe(d("2026-02-18"), jur);
     assert_eq!(wed.fast, Level::Xerophagy);
     assert_eq!(wed.obligation, Some(Obligation::Obligatory));
-    assert_eq!(wed.binds, Level::Dairy);
+    assert_eq!(wed.binds, Some(Level::Dairy));
 
     // A Thursday of the Great Fast: kept, and binding on no one.
     let thu = describe(d("2026-02-19"), jur);
     assert_eq!(thu.fast, Level::Xerophagy);
     assert_eq!(thu.obligation, Some(Obligation::Customary));
-    assert_eq!(thu.binds, Level::None);
+    assert_eq!(thu.binds, None);
 }
 
 #[test]
@@ -567,8 +569,10 @@ fn the_typikon_discipline_is_never_laxer_than_the_law_it_reports() {
     let jur = ruthenian_at_typikon();
     for n in 0..365 {
         let day = describe(d("2026-01-01") + n, jur);
-        assert!(day.binds >= day.fast, "{}: binds {:?} stricter than kept {:?}",
-                day.date, day.binds, day.fast);
+        if let Some(binds) = day.binds {
+            assert!(binds >= day.fast, "{}: binds {:?} stricter than kept {:?}",
+                    day.date, binds, day.fast);
+        }
     }
 }
 

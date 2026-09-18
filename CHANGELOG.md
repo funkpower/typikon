@@ -14,11 +14,14 @@ version.
 
 Everything below changes what a day reports against pre-1.0 versions.
 
-- A saint of vigil or polyeleos rank now relaxes a weekday of a fast: to wine
-  and oil inside the Great Fast, as far as fish in the Nativity, Apostles' and
-  Dormition Fasts. 74 days across 2020 to 2030 had been reported stricter than
-  any published calendar keeps them, St Nicholas and the Forty Martyrs of
-  Sebaste among them.
+- A ranked saint now relaxes a weekday of a fast. A saint of vigil or polyeleos
+  rank reaches wine and oil; a great feast reaches fish in the Nativity and
+  Apostles' Fasts and wine and oil elsewhere. No saint of any rank brings fish
+  into the Great Fast or the Dormition Fast. Days that had been reported
+  stricter than any published calendar keeps them now are not, St Nicholas on a
+  Wednesday of the Nativity Fast and the Forty Martyrs of Sebaste among them;
+  on the new calendar it changes 104 days between 1 January 2020
+  and 31 December 2030.
 - The Annunciation is tested before Great Friday and Great Saturday. In the
   years it falls on either it had been absorbed into them: reported as a total
   fast, demoted to a bullet, and its rank overwritten. It now lifts those days
@@ -36,6 +39,19 @@ Everything below changes what a day reports against pre-1.0 versions.
   no longer report any day as binding. They had borrowed Ruthenian particular
   law, which is not their law.
 
+### Interfaces
+
+- `binds` is null unless the day binds, rather than the string `"none"`. Most
+  jurisdictions legislate no binding fast at all, which is a different fact
+  from a day that happens to oblige nothing.
+- iCalendar UIDs carry the tradition and the discipline. Two feeds of the same
+  day that say different things were sharing an identity, so a client treated
+  them as one event.
+- `Date`'s Julian Day Number is behind `jdn()` and `from_jdn()` rather than a
+  public field.
+- `fastLabel`, `emoji` and `reason` are documented as presentation: the fields
+  are stable, their wording is not.
+
 ### Added
 
 - Greek and Slavic usage as an explicit axis, per jurisdiction and overridable
@@ -48,6 +64,17 @@ Everything below changes what a day reports against pre-1.0 versions.
 - ACROD, the American Carpatho-Russian Orthodox Diocese.
 - `--set-default` remembers the tradition and the discipline alongside the
   jurisdiction.
+
+### Fixed
+
+- The seven-day view no longer panics. It cut a title at a byte index into a
+  string it had counted in characters, and every movable feast title carries an
+  em dash, so at fourteen terminal widths, 80 among them, it aborted with exit
+  101. Every title the program can print is now cut at every width it can be
+  asked to print at, in a test.
+- The Python bindings honour `TYPIKON_JURISDICTION`. They read the config file
+  where the command line reads the environment first, so the two answered for
+  different churches on the same machine.
 
 ### Packaging
 

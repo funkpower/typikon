@@ -71,7 +71,12 @@ fn resolve(
 ) -> PyResult<&'static Jurisdiction> {
     let saved = crate::config::saved();
 
-    let name = jurisdiction.map(str::to_owned).or(saved.jurisdiction);
+    // The environment beats the file, which is the order main.rs uses. Reading
+    // only the file meant TYPIKON_JURISDICTION moved the command line and left
+    // the bindings behind, so the two answered for different churches on the
+    // same machine, which is the exact failure the note above is about.
+    let (default_name, _) = crate::config::default_jurisdiction();
+    let name = jurisdiction.map(str::to_owned).or(default_name);
     let base = jurisdictions::resolve(name.as_deref())
         .map_err(|n| PyValueError::new_err(format!("unknown jurisdiction {n:?}")))?;
 
@@ -217,8 +222,8 @@ impl PyDay {
     }
 
     #[getter]
-    fn binds(&self) -> &'static str {
-        self.inner.binds.key()
+    fn binds(&self) -> Option<&'static str> {
+        self.inner.binds.map(|b| b.key())
     }
 
     #[getter]

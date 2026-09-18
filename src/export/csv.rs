@@ -47,7 +47,7 @@ fn cell(day: &Day, column: &str) -> String {
             Some(crate::fasting::Obligation::Customary) => "customary".into(),
             None => String::new(),
         },
-        "binds" => day.binds.key().to_string(),
+        "binds" => day.binds.map(|b| b.key()).unwrap_or("").to_string(),
         "pascha" => day.pascha.iso(),
         "days_to_pascha" => day.days_to_pascha.to_string(),
         "julian_offset" => day.julian_offset.to_string(),

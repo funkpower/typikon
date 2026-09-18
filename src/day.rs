@@ -34,7 +34,14 @@ pub struct Day {
     pub emoji: &'static str,
     pub reason: String,
     pub obligation: Option<Obligation>,
-    pub binds: Level,
+    /// The minimum a church's particular law requires of this day. `None`
+    /// where nothing binds, which for most jurisdictions is every day: the
+    /// Orthodox Church legislates the fast as tradition rather than precept.
+    /// Distinguishing that from "binds, at level none" is why it is an option.
+    pub binds: Option<Level>,
+    /// Whether the level shown is the Typikon's rather than this church's own
+    /// particular law.
+    pub shown_at_typikon: bool,
     pub pascha: Date,
     /// Days from this day to Pascha, **signed**, and to the Pascha of this
     /// day's own civil year. Negative after Pascha has passed: 31 December
@@ -86,7 +93,7 @@ pub struct DayJson<'a> {
     pub emoji: &'a str,
     pub reason: &'a str,
     pub obligation: Option<&'a str>,
-    pub binds: &'a str,
+    pub binds: Option<&'a str>,
     pub pascha: String,
     pub days_to_pascha: i32,
     pub julian_offset: i32,
@@ -116,7 +123,7 @@ impl Day {
                 Obligation::Obligatory => "obligatory",
                 Obligation::Customary => "customary",
             }),
-            binds: self.binds.key(),
+            binds: self.binds.map(|b| b.key()),
             pascha: self.pascha.iso(),
             days_to_pascha: self.days_to_pascha,
             julian_offset: self.julian_offset,
@@ -200,12 +207,12 @@ pub fn describe_with(date: Date, jur: &'static Jurisdiction, men: &Menologion) -
     if !std::ptr::eq(shown, rule) {
         fast.obligation = match rule.obligation_for.and_then(|f| f(&ctx)) {
             Some((reason, binds)) => {
-                fast.binds = binds;
+                fast.binds = Some(binds);
                 fast.reason = format!("{} \u{2014} {reason}", fast.reason);
                 Some(Obligation::Obligatory)
             }
             None => {
-                fast.binds = Level::None;
+                fast.binds = None;
                 if fast.level == Level::None { None } else { Some(Obligation::Customary) }
             }
         };
@@ -230,6 +237,7 @@ pub fn describe_with(date: Date, jur: &'static Jurisdiction, men: &Menologion) -
         reason,
         obligation,
         binds,
+        shown_at_typikon: !std::ptr::eq(shown, rule),
         pascha: mv.pascha,
         days_to_pascha: mv.pascha - date,
         julian_offset: date.julian_offset(),
