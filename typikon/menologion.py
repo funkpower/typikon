@@ -74,8 +74,19 @@ def load(name="menologion"):
     return m
 
 
+_overlaid = {}
+
+
 def for_jurisdiction(jur):
-    """The common menologion with any supplementary sets overlaid."""
+    """The common menologion with any supplementary sets overlaid.
+
+    Cached per jurisdiction: the overlay copies all 366 days, and rebuilding it
+    for every date asked about made a year of a jurisdiction with a
+    supplementary set ten times slower than one without.
+    """
+    key = (jur.key, jur.menaia)
+    if key in _overlaid:
+        return _overlaid[key]
     m = load()
     for extra in jur.menaia:
         try:
@@ -83,6 +94,7 @@ def for_jurisdiction(jur):
         except FileNotFoundError:
             # A supplementary set is optional; its absence is not an error.
             pass
+    _overlaid[key] = m
     return m
 
 

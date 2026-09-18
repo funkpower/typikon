@@ -16,8 +16,15 @@ reason. The known divergences:
     given wine and oil. Several jurisdictions print them as strict.
   - **Lazarus Saturday** is given wine and oil; caviar is the traditional
     addition, which this vocabulary has no level for.
+  - **Great Week** is kept at xerophagy on its weekdays whatever saint falls in
+    it, because the days of the Passion outrank the menologion.
   - **Monastic practice**, and the Holy Mountain in particular, is stricter
     than any of this throughout.
+
+A saint of vigil or polyeleos rank lifts the weekday discipline of a fast — to
+wine and oil inside the Great Fast, as far as fish in the three lesser fasts.
+That is why the printed calendars mark so many Wednesdays in the Nativity Fast
+for wine and oil, and it is the rank in the menologion that decides it.
 
 A calendar cannot settle those. Your bishop and your spiritual father can.
 """
@@ -25,7 +32,7 @@ A calendar cannot settle those. Your bishop and your spiritual father can.
 import datetime as dt
 
 from ..fasting import (Fast, STRICT, XEROPHAGY, WINE_OIL, FISH, DAIRY, NONE,
-                       CUSTOMARY)
+                       CUSTOMARY, laxest, stricter, strictest)
 from ..seasons import (GREAT_FAST, GREAT_WEEK, BRIGHT_WEEK, CHEESEFARE_WEEK,
                        APOSTLES, DORMITION, NATIVITY_FAST, PENTECOST_WEEK,
                        CHRISTMASTIDE)
@@ -43,12 +50,29 @@ VOCABULARY = {
 
 
 def _relaxed_by_feast(rank):
-    """How far a feast lifts an ordinary Wednesday or Friday fast."""
+    """How far a feast lifts a fast day."""
     if rank == "great":
         return FISH
     if rank in ("vigil", "polyeleos"):
         return WINE_OIL
     return None
+
+
+def _for_feast(level, ctx, cap, reason):
+    """Relax `level` for the day's saint, never past `cap`, never tightening.
+
+    This is the rule the printed calendars are applying when they mark a
+    Wednesday in the Nativity Fast for wine and oil: the day's rank lifts the
+    weekday discipline. Inside the Great Fast the lift stops at wine and oil —
+    no saint brings fish into Lent — and elsewhere it stops at fish.
+    """
+    relaxed = _relaxed_by_feast(ctx.rank)
+    if relaxed is None:
+        return Fast(level, reason, CUSTOMARY)
+    lifted = strictest(laxest(level, relaxed), cap)
+    if lifted == level or stricter(lifted, level):
+        return Fast(level, reason, CUSTOMARY)
+    return Fast(lifted, f"{ctx.feast} \u2014 the fast is relaxed", CUSTOMARY)
 
 
 def fast_for(ctx):
@@ -71,6 +95,19 @@ def fast_for(ctx):
 
     # ── The Great Fast and Great Week
     if season in (GREAT_FAST, GREAT_WEEK):
+        # The Annunciation is tested before the strict days, not after. It can
+        # land on Great Friday or Great Saturday, and when it does the feast
+        # still lifts the total fast to wine and oil -- it does not vanish.
+        if md == (3, 25):
+            if ctx.civil in (mv["great_friday"], mv["holy_saturday"]):
+                return Fast(WINE_OIL,
+                            "the Annunciation, on a day of the total fast",
+                            CUSTOMARY)
+            return Fast(FISH, "the Annunciation", CUSTOMARY)
+        if ctx.civil == mv["palm_sunday"]:
+            return Fast(FISH, "Palm Sunday", CUSTOMARY)
+        if ctx.civil == mv["lazarus_saturday"]:
+            return Fast(WINE_OIL, "Lazarus Saturday", CUSTOMARY)
         if ctx.civil == mv["clean_monday"]:
             return Fast(STRICT, "the first day of the Great Fast", CUSTOMARY)
         if ctx.civil == mv["great_friday"]:
@@ -78,18 +115,14 @@ def fast_for(ctx):
         if ctx.civil == mv["holy_saturday"]:
             # The one Saturday of the year kept without oil.
             return Fast(XEROPHAGY, "Great and Holy Saturday", CUSTOMARY)
-        if md == (3, 25):
-            return Fast(FISH, "the Annunciation", CUSTOMARY)
         if ctx.civil == mv["great_thursday"]:
             return Fast(WINE_OIL, "Great and Holy Thursday", CUSTOMARY)
+        # Great Week keeps its own rank; a saint does not lift it.
+        if season == GREAT_WEEK:
+            return Fast(XEROPHAGY, f"a weekday of the {season}", CUSTOMARY)
         if weekend:
             return Fast(WINE_OIL, f"Saturday and Sunday of the {season}", CUSTOMARY)
-        return Fast(XEROPHAGY, f"a weekday of the {season}", CUSTOMARY)
-
-    if ctx.civil == mv["palm_sunday"]:
-        return Fast(FISH, "Palm Sunday", CUSTOMARY)
-    if ctx.civil == mv["lazarus_saturday"]:
-        return Fast(WINE_OIL, "Lazarus Saturday", CUSTOMARY)
+        return _for_feast(XEROPHAGY, ctx, WINE_OIL, f"a weekday of the {season}")
 
     # ── Cheesefare: meat is set aside for good, everything else stays,
     #    Wednesday and Friday included.
@@ -101,28 +134,36 @@ def fast_for(ctx):
     # ── The Nativity Fast, which tightens for its last five days
     if season == NATIVITY_FAST:
         if md == (12, 24):
+            # The eve is relaxed to wine and oil on a Saturday or Sunday,
+            # because the Liturgy of St Basil is served with Vespers.
+            if weekend:
+                return Fast(WINE_OIL, "the eve of the Nativity, on a weekend",
+                            CUSTOMARY)
             return Fast(XEROPHAGY, "the eve of the Nativity", CUSTOMARY)
         if md == (11, 21):
             return Fast(FISH, "the Entrance of the Theotokos", CUSTOMARY)
         if md >= (12, 20):
             if wd in (TUE, THU) or weekend:
                 return Fast(WINE_OIL, "the forefeast of the Nativity", CUSTOMARY)
-            return Fast(XEROPHAGY, "the forefeast of the Nativity", CUSTOMARY)
+            return _for_feast(XEROPHAGY, ctx, WINE_OIL,
+                              "the forefeast of the Nativity")
         if weekend:
             return Fast(FISH, "Saturday and Sunday of the Nativity Fast", CUSTOMARY)
         if wd in (TUE, THU):
-            return Fast(WINE_OIL, "Tuesday and Thursday of the Nativity Fast", CUSTOMARY)
-        return Fast(XEROPHAGY, "Monday, Wednesday and Friday of the Nativity Fast",
-                    CUSTOMARY)
+            return _for_feast(WINE_OIL, ctx, FISH,
+                              "Tuesday and Thursday of the Nativity Fast")
+        return _for_feast(XEROPHAGY, ctx, FISH,
+                          "Monday, Wednesday and Friday of the Nativity Fast")
 
     # ── The Apostles' Fast, kept the same way
     if season == APOSTLES:
         if weekend:
             return Fast(FISH, "Saturday and Sunday of the Apostles' Fast", CUSTOMARY)
         if wd in (TUE, THU):
-            return Fast(WINE_OIL, "Tuesday and Thursday of the Apostles' Fast", CUSTOMARY)
-        return Fast(XEROPHAGY, "Monday, Wednesday and Friday of the Apostles' Fast",
-                    CUSTOMARY)
+            return _for_feast(WINE_OIL, ctx, FISH,
+                              "Tuesday and Thursday of the Apostles' Fast")
+        return _for_feast(XEROPHAGY, ctx, FISH,
+                          "Monday, Wednesday and Friday of the Apostles' Fast")
 
     # ── The Dormition Fast, kept like the Great Fast
     if season == DORMITION:
@@ -130,10 +171,13 @@ def fast_for(ctx):
             return Fast(FISH, "the Transfiguration", CUSTOMARY)
         if weekend:
             return Fast(WINE_OIL, "Saturday and Sunday of the Dormition Fast", CUSTOMARY)
-        return Fast(XEROPHAGY, "a weekday of the Dormition Fast", CUSTOMARY)
+        return _for_feast(XEROPHAGY, ctx, WINE_OIL,
+                          "a weekday of the Dormition Fast")
 
     # ── The three fixed fast days outside any season
     if md == (1, 5):
+        if weekend:
+            return Fast(WINE_OIL, "the eve of Theophany, on a weekend", CUSTOMARY)
         return Fast(XEROPHAGY, "the eve of Theophany", CUSTOMARY)
     if md == (9, 14):
         return Fast(WINE_OIL, "the Exaltation of the Holy Cross", CUSTOMARY)

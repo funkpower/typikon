@@ -24,7 +24,7 @@ $ typikon
 ## Install
 
 ```console
-$ pip install typikon
+$ pipx install git+https://git.pumpin.online/funkpower/typikon
 ```
 
 Or run it straight out of a checkout — it has no dependencies and needs only

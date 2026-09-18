@@ -4,7 +4,9 @@ Every date in this library exists twice. There is the **civil** date — what a
 phone says, always Gregorian — and the **ecclesiastical** date, the day the
 Church calls it. For a church on the new calendar those are the same date. For
 one on the old calendar they differ by the drift between the Julian and
-Gregorian reckonings: thirteen days from 1900 to 2099, fourteen from 2100.
+Gregorian reckonings: thirteen days from 1900 until 14 March 2100, and
+fourteen from the 15th -- the day after a Julian 29 February that the
+Gregorian calendar does not have.
 
 Keeping both is what makes a single menologion serve every jurisdiction. The
 Nativity is 25 December in the Julian and the Gregorian books alike; the two
@@ -84,8 +86,9 @@ def from_julian(year, month, day):
 def julian_offset(date):
     """How many days the Julian reckoning currently lags the Gregorian one.
 
-    Thirteen for our lifetimes; fourteen from 14 March 2100. Reported rather
-    than assumed so a caller can show it.
+    Thirteen for our lifetimes; fourteen from 15 March 2100, the day after a
+    Julian 29 February the Gregorian calendar does not have. Computed rather
+    than assumed, so nothing here breaks at the boundary.
     """
     jy, jm, jd = to_julian(date)
     return (gregorian_to_jdn(date.year, date.month, date.day)

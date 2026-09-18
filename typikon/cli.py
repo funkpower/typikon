@@ -187,7 +187,11 @@ def main(argv=None):
         print(f"typikon: unknown jurisdiction {name!r}; try --list", file=sys.stderr)
         return 2
 
-    if args.year:
+    if args.year is not None:
+        if not 1 <= args.year <= 9999:
+            print(f"typikon: {args.year} is not a year this calendar reaches",
+                  file=sys.stderr)
+            return 2
         mv = year_of(args.year, jur)
         print(f"\n  {args.year} · {jur.name}\n")
         for k in ("publican_pharisee", "meatfare", "cheesefare", "clean_monday",
@@ -200,7 +204,15 @@ def main(argv=None):
         print()
         return 0
 
-    start = dt.date.fromisoformat(args.date) if args.date else dt.date.today()
+    if args.date:
+        try:
+            start = dt.date.fromisoformat(args.date)
+        except ValueError:
+            print(f"typikon: {args.date!r} is not a date \u2014 expected YYYY-MM-DD",
+                  file=sys.stderr)
+            return 2
+    else:
+        start = dt.date.today()
     days = week(start, args.days, jur)
 
     if args.json:

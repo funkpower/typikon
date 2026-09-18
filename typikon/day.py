@@ -98,6 +98,10 @@ class Day:
         return out
 
 
+# How the degrees of solemnity order against each other, for the days when a
+# movable feast and a fixed one fall together.
+_RANKS = {"great": 3, "vigil": 2, "polyeleos": 1}
+
 _WEEKDAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
              "Saturday", "Sunday")
 _MONTHS = ("January", "February", "March", "April", "May", "June", "July",
@@ -120,13 +124,26 @@ def describe(date, jurisdiction=None):
     rank = entry.get("rank")
     cycle = entry.get("cycle")
 
-    # A movable feast outranks whatever the fixed calendar holds that day.
+    # When a movable feast and a fixed one land together, the higher rank is
+    # the day's feast and the other joins the commemorations. Letting the
+    # movable one win unconditionally lost the Annunciation whenever it fell in
+    # Great Week -- the Great Feast of the Incarnation demoted to a bullet, and
+    # its rank overwritten with the lesser one the fasting rules then read.
+    fixed_feast = commemorations[0] if rank in ("great", "vigil") else None
     mov_title, mov_rank = _menologion.movable_feast_for(date, mv)
-    if mov_title:
+
+    if mov_title and fixed_feast and _RANKS.get(rank, 0) > _RANKS.get(mov_rank, 0):
+        feast = fixed_feast
+        if mov_title not in commemorations:
+            commemorations.insert(1, mov_title)
+    elif mov_title:
         feast = mov_title
-        rank = mov_rank or rank
+        if _RANKS.get(mov_rank, 0) >= _RANKS.get(rank, 0):
+            rank = mov_rank
+        if fixed_feast and fixed_feast not in commemorations:
+            commemorations.insert(1, fixed_feast)
     else:
-        feast = commemorations[0] if rank in ("great", "vigil") else None
+        feast = fixed_feast
 
     ctx = _Context(
         civil=date, fixed=(fm, fd), fixed_year=fy, weekday=date.weekday(),

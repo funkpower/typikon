@@ -1,5 +1,11 @@
 """Which season of the year a day falls in.
 
+The Great Fast here runs from Clean Monday through Palm Sunday. The Forty Days
+proper end on the Friday before Lazarus Saturday — ``great_fast_end`` in the
+movable cycle, which is what the fasting rules count from — but a season is a
+label for a reader, and a Palm Sunday belonging to no season at all is worse
+than one belonging loosely to the Fast.
+
 The movable seasons are counted from Pascha and so are compared as civil
 dates. The fixed ones — the Nativity and Dormition Fasts, the fast-free days
 after the Nativity — are compared in **ecclesiastical** space, against the date
@@ -41,7 +47,11 @@ def season_for(civil, fixed_md, mv, apostles_end):
         return BRIGHT_WEEK
     if mv["great_week_start"] <= civil <= mv["holy_saturday"]:
         return GREAT_WEEK
-    if mv["clean_monday"] <= civil <= mv["great_fast_end"]:
+    # Lazarus Saturday and Palm Sunday sit between the Forty Days, which end on
+    # the Friday before them, and Great Week, which begins after them. Leaving
+    # that gap unnamed left both days with no season at all, and any rule that
+    # keyed on the season fell through to "no fast" on Palm Sunday.
+    if mv["clean_monday"] <= civil <= mv["palm_sunday"]:
         return GREAT_FAST
     if mv["cheesefare_week_start"] <= civil <= mv["cheesefare"]:
         return CHEESEFARE_WEEK

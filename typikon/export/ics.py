@@ -10,7 +10,10 @@ import datetime as dt
 
 __all__ = ["to_ics"]
 
-_FOLD = 73
+# RFC 5545: a content line SHOULD NOT be longer than 75 **octets**, excluding
+# the line break. Counting characters instead put a line with four emoji eight
+# octets over, and the em-dashes three each.
+_FOLD = 75
 
 
 _BACKSLASH = chr(92)
@@ -33,12 +36,20 @@ def _esc(text):
 
 
 def _fold(line):
-    """RFC 5545 wants lines under 75 octets, continued with a leading space."""
-    out = [line[:_FOLD]]
-    rest = line[_FOLD:]
-    while rest:
-        out.append(" " + rest[:_FOLD - 1])
-        rest = rest[_FOLD - 1:]
+    """Break a content line on octets, continued with a leading space.
+
+    The split never falls inside a character: the budget is spent per
+    codepoint, so a four-octet emoji moves to the next line whole.
+    """
+    out, cur, used = [], [], 0
+    for ch in line:
+        n = len(ch.encode("utf-8"))
+        if used + n > _FOLD:
+            out.append("".join(cur))
+            cur, used = [" "], 1
+        cur.append(ch)
+        used += n
+    out.append("".join(cur))
     return "\r\n".join(out)
 
 

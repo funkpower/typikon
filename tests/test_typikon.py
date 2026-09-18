@@ -7,10 +7,10 @@ import pytest
 
 from typikon import describe, gregorian_pascha, julian_pascha, resolve
 from typikon.calendars import from_julian, julian_offset, to_julian
-from typikon.day import week
+from typikon.day import week, year_of
 from typikon.export import to_ics, to_json
 from typikon.fasting import (DAIRY, FISH, NONE, OBLIGATORY, STRICT, WINE_OIL,
-                             XEROPHAGY)
+                             XEROPHAGY, stricter)
 
 
 # ───────────────────────────── the paschalion ─────────────────────────────
@@ -228,3 +228,141 @@ def test_a_calendar_name_resolves_without_naming_a_church():
     assert resolve("new").menologion == "revised_julian"
     assert resolve("western").paschalion == "gregorian"
     assert resolve(None).key == "new"
+
+
+# ─────────────────── regressions, each from a real defect ──────────────────
+
+def test_the_annunciation_is_never_lost_to_great_friday():
+    """It can fall on Great Friday or Great Saturday, and when it does the
+    feast lifts the total fast rather than disappearing into it."""
+    for when, jurisdiction in ((dt.date(2016, 3, 25), "western"),
+                               (dt.date(2005, 3, 25), "western"),
+                               (dt.date(2029, 4, 7), "rocor"),
+                               (dt.date(2018, 4, 7), "rocor")):
+        d = describe(when, jurisdiction)
+        assert d.church_date == "25 March", when
+        assert "Annunciation" in d.feast, when
+        assert d.rank == "great", when
+        assert d.fast == WINE_OIL, (when, d.fast)
+
+
+def test_kyriopascha_and_the_annunciation_in_bright_week_stay_fast_free():
+    assert describe(dt.date(2035, 3, 25), "western").fast == NONE
+    assert describe(dt.date(2075, 4, 7), "rocor").fast == NONE
+
+
+def test_palm_sunday_and_lazarus_saturday_are_still_the_fast():
+    """Both fall between the Forty Days and Great Week. Leaving that gap
+    outside every season made the Byzantine Catholic rule report no fast at
+    all on Palm Sunday."""
+    for jurisdiction in ("ruthenian", "ugcc", "melkite", "goarch", "rocor"):
+        for year in (2025, 2026, 2027):
+            mv = year_of(year, jurisdiction)
+            for when in (mv["lazarus_saturday"], mv["palm_sunday"]):
+                d = describe(when, jurisdiction)
+                assert d.season is not None, (jurisdiction, when)
+                assert d.fast != NONE, (jurisdiction, when, d.fast)
+                assert d.reason, (jurisdiction, when)
+
+
+def test_a_ranked_saint_relaxes_a_weekday_of_a_fasting_season():
+    """The rank is why the printed calendars mark so many Wednesdays in the
+    Nativity Fast for wine and oil."""
+    # The Nativity of the Forerunner, a great feast inside the Apostles' Fast.
+    assert describe(dt.date(2020, 6, 24), "goarch").fast == FISH
+    # The Forty Martyrs of Sebaste, the textbook relaxation of a Lenten weekday.
+    assert describe(dt.date(2022, 3, 9), "goarch").fast == WINE_OIL
+    # St Nicholas, a vigil saint on a Wednesday of the Nativity Fast.
+    assert describe(dt.date(2023, 12, 6), "goarch").fast == WINE_OIL
+
+
+def test_no_saint_brings_fish_into_the_great_fast_or_lifts_great_week():
+    for d in week(dt.date(2022, 3, 7), 40, "goarch"):
+        if d.season == "Great Fast" and d.church_date != "25 March":
+            assert not stricter(FISH, d.fast) or d.fast != FISH, d.date
+        if d.season == "Great and Holy Week" and d.church_date != "25 March":
+            assert d.fast in (STRICT, XEROPHAGY, WINE_OIL), (d.date, d.fast)
+
+
+def test_the_eves_relax_when_they_fall_on_a_weekend():
+    """The Liturgy of St Basil is served with Vespers, so the eve is kept at
+    wine and oil rather than xerophagy."""
+    assert describe(dt.date(2022, 12, 24), "goarch").fast == WINE_OIL
+    assert describe(dt.date(2023, 12, 24), "goarch").fast == WINE_OIL
+    assert describe(dt.date(2025, 1, 5), "goarch").fast == WINE_OIL
+    # A weekday eve is still xerophagy.
+    assert describe(dt.date(2024, 12, 24), "goarch").fast == XEROPHAGY
+
+
+def test_the_apostles_fast_is_empty_when_pascha_is_late():
+    """A late Pascha can leave the fast with no days at all, which is correct
+    rather than a bug -- and the old calendar never has that problem."""
+    goarch = [d for d in week(dt.date(2024, 5, 1), 120, "goarch")
+              if d.season == "Apostles' Fast"]
+    rocor = [d for d in week(dt.date(2024, 5, 1), 120, "rocor")
+             if d.season == "Apostles' Fast"]
+    assert goarch == []
+    assert len(rocor) > 0
+
+
+# ──────────────────────── invariants, not samples ──────────────────────────
+
+def test_the_paschalion_invariants_hold_for_two_centuries():
+    for year in range(1900, 2101):
+        j, g = julian_pascha(year), gregorian_pascha(year)
+        assert j.weekday() == 6, year
+        assert g.weekday() == 6, year
+        assert dt.date(year, 4, 4) <= j <= dt.date(year, 5, 8), (year, j)
+        assert dt.date(year, 3, 22) <= g <= dt.date(year, 4, 25), (year, g)
+
+
+def test_every_civil_date_round_trips_through_the_julian_calendar():
+    day, last = dt.date(1800, 1, 1), dt.date(2200, 12, 31)
+    while day <= last:
+        y, m, d = to_julian(day)
+        assert from_julian(y, m, d) == day, day
+        day += dt.timedelta(1)
+
+
+def test_the_julian_offset_widens_the_day_after_a_julian_leap_day():
+    for before, after in ((dt.date(1900, 3, 13), dt.date(1900, 3, 14)),
+                          (dt.date(2100, 3, 14), dt.date(2100, 3, 15)),
+                          (dt.date(2200, 3, 15), dt.date(2200, 3, 16))):
+        assert julian_offset(after) == julian_offset(before) + 1, after
+
+
+def test_ics_content_lines_stay_within_seventy_five_octets():
+    for jurisdiction in ("goarch", "rocor", "ruthenian"):
+        text = to_ics(week(dt.date(2026, 1, 1), 365, jurisdiction))
+        for line in text.split("\r\n"):
+            assert len(line.encode()) <= 75, (jurisdiction, line)
+
+
+def test_every_jurisdiction_holds_together_for_twenty_years():
+    """The regression net. Replaces a loop that asserted only truthiness and
+    so could not fail: "none" is a truthy string."""
+    from typikon import JURISDICTIONS
+    from typikon.fasting import LEVELS
+    for key in JURISDICTIONS:
+        for d in week(dt.date(2020, 1, 1), 366 * 21 // 4, key):
+            assert d.fast in LEVELS, (key, d.date, d.fast)
+            assert d.binds in LEVELS, (key, d.date, d.binds)
+            assert d.commemorations, (key, d.date)
+            assert not stricter(d.binds, d.fast), (key, d.date)
+            assert d.title, (key, d.date)
+
+
+# ──────────────────────────────── the CLI ──────────────────────────────────
+
+def test_the_cli_rejects_a_malformed_date_instead_of_traversing_a_traceback():
+    from typikon.cli import main
+    assert main(["-d", "tomorrow"]) == 2
+    assert main(["-d", "2026-02-30"]) == 2
+    assert main(["--year", "99999"]) == 2
+    assert main(["--jurisdiction", "atlantis"]) == 2
+
+
+def test_the_cli_elides_on_a_word():
+    from typikon.cli import _elide
+    assert _elide("The Radiant and Life-giving Resurrection", 24) == "The Radiant and…"
+    assert _elide("Short", 24) == "Short"
