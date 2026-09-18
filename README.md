@@ -271,6 +271,12 @@ widgets for Hyprland (Quickshell), waybar and eww, all reading the JSON above.
 
 ![The menologion widget](https://git.pumpin.online/funkpower/menologion/raw/branch/main/docs/nativity-fast.png)
 
+## Releasing
+
+`main` is always releasable; a `vX.Y.Z` tag on it builds the wheels and publishes
+to PyPI. [docs/releasing.md](docs/releasing.md) has the workflow, and what has to
+be set up before the first one.
+
 ## Licence
 
 GPL-2.0-only. See [LICENSE](LICENSE). The menologion is under it too;
