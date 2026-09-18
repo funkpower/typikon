@@ -161,8 +161,18 @@ fn elide(text: &str, width: usize) -> String {
     format!("{}\u{2026}", head.trim_end_matches([' ', ',', ';']))
 }
 
-fn print_days(days: &[Day], jur: &Jurisdiction, source: Source, verbose: bool) {
+/// How this run's reckoning reads, for the header of either view.
+fn describe_reckoning(jur: &Jurisdiction) -> String {
     let rule = rules::get(jur.rule);
+    let shown = jur.discipline.map(rules::get).unwrap_or(rule);
+    if std::ptr::eq(shown, rule) {
+        rule.title.to_string()
+    } else {
+        format!("{}, obliging under {}", shown.title, rule.title)
+    }
+}
+
+fn print_days(days: &[Day], jur: &Jurisdiction, source: Source, verbose: bool) {
     if let [d] = days {
         let mut head = format!("  {} {}", d.weekday.name(), d.date.long());
         let civil_md = format!("{} {}", d.date.day(), typikon::calendars::MONTHS[(d.date.month() - 1) as usize]);
@@ -176,13 +186,12 @@ fn print_days(days: &[Day], jur: &Jurisdiction, source: Source, verbose: bool) {
             Source::Config => "   (from config)".into(),
             Source::Default => String::new(),
         };
-        let shown = jur.discipline.map(rules::get).unwrap_or(rule);
-        let discipline = if std::ptr::eq(shown, rule) {
-            rule.title.to_string()
-        } else {
-            format!("{}, obliging under {}", shown.title, rule.title)
-        };
-        println!("  {} \u{b7} {discipline} \u{b7} {} usage{from}", jur.name, jur.tradition.key());
+        println!(
+            "  {} \u{b7} {} \u{b7} {} usage{from}",
+            jur.name,
+            describe_reckoning(jur),
+            jur.tradition.key()
+        );
         println!();
         let sign = d.rank.map(|r| format!("{} ", r.sign())).unwrap_or_default();
         if d.emoji.is_empty() {
@@ -217,7 +226,7 @@ fn print_days(days: &[Day], jur: &Jurisdiction, source: Source, verbose: bool) {
         return;
     }
 
-    println!("\n  {} \u{b7} {}\n", jur.name, rule.title);
+    println!("\n  {} \u{b7} {}\n", jur.name, describe_reckoning(jur));
     // The glyph is two columns wide in a terminal and one char to Rust, which
     // is why the arithmetic below looks off by one.
     let fixed = 2 + 2 + 10 + 1 + 1 + 32;
