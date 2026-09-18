@@ -9,4 +9,4 @@ what you build on it stays as free as what you were given.
 
 Supplementary sets fetched by `typikon --update-menaion` are NOT covered by
 this and are NOT distributed here. They belong to whoever published them; the
-fetcher puts a copy on your machine for your own use. See typikon/menaia.py.
+fetcher puts a copy on your machine for your own use. See src/menaia.rs.

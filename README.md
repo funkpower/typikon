@@ -23,17 +23,22 @@ $ typikon
 
 ## Install
 
+One static binary, no runtime to install first.
+
 ```console
-$ pipx install git+https://git.pumpin.online/funkpower/typikon
+$ cargo install --git https://git.pumpin.online/funkpower/typikon
 ```
 
-Or run it straight out of a checkout. It has no dependencies and needs only
-Python 3.9.
+Or build it from a checkout:
 
 ```console
 $ git clone https://git.pumpin.online/funkpower/typikon
-$ cd typikon && python -m typikon.cli
+$ cd typikon && cargo build --release
+$ install -Dm755 target/release/typikon ~/.local/bin/typikon
 ```
+
+The menologion is compiled in, so the binary answers for every day of the year
+on its own: no data file to find, no network, nothing to go stale.
 
 ## Which calendar?
 
@@ -126,20 +131,30 @@ neighbour.
 
 ## As a library
 
-```python
-import typikon
+```rust
+use typikon::calendars::Date;
+use typikon::day::describe;
+use typikon::jurisdictions::resolve;
 
-d = typikon.today("rocor")
-d.church_date      # '5 September'
-d.fast             # 'xerophagy'
-d.title            # 'The Holy Prophet Zachariah, father of the Forerunner'
-d.is_obligatory    # False
+let rocor = resolve(Some("rocor"))?;
+let day = describe(Date::from_ymd(2026, 9, 18).unwrap(), rocor);
 
-typikon.julian_pascha(2027)      # datetime.date(2027, 5, 2)
-typikon.gregorian_pascha(2027)   # datetime.date(2027, 3, 28)
+day.church_date;     // "5 September"
+day.fast;            // Level::Xerophagy
+day.title();         // "The Holy Prophet Zachariah, father of the Forerunner"
+day.is_obligatory(); // false
 
-for day in typikon.week(date, 7, "antiochian"):
-    ...
+typikon::paschalion::julian_pascha(2027);     // 2027-05-02
+typikon::paschalion::gregorian_pascha(2027);  // 2027-03-28
+```
+
+The levels are an ordered enum, strictest first, so `a < b` reads as "a is
+stricter than b" and a feast can only ever relax a fast:
+
+```rust
+Level::Xerophagy.relaxed_to(Level::Fish, Level::WineOil)  // WineOil: no saint
+                                                          // brings fish into Lent
+Level::Fish.relaxed_to(Level::WineOil, Level::WineOil)    // Fish: never tightens
 ```
 
 ## The menologion
@@ -150,7 +165,7 @@ church both keep the Nativity on 25 December; they disagree about which morning
 that is, and that disagreement lives in the calendar conversion, not in the
 data.
 
-`typikon/data/menologion.json` covers all 366 days with the principal
+`data/menologion.json`, compiled into the binary, covers all 366 days with the principal
 commemorations of the common Byzantine tradition, ranked so the fasting rules
 know when a feast lifts a Wednesday. It was composed for this project and is
 under the same licence as the code. It is a working set, not a complete
@@ -165,14 +180,18 @@ $ typikon --list-menaia
 $ typikon --update-menaion ruthenian
 ```
 
-It lands beside the packaged menologion and is overlaid automatically.
+It lands in `~/.local/share/typikon/` and is overlaid automatically.
 
 ## Accuracy
 
-`typikon` is pinned by 60 tests against published calendars: the paschalion
-for six years by both reckonings, the Julian drift across the 2100 boundary,
-the fast on every day that is not open to interpretation, and a full year in
-every jurisdiction.
+`typikon` is pinned against published calendars: the paschalion for six years
+by both reckonings and its invariants across two centuries, 146,000 calendar
+round-trips from 1800 to 2200, the fast on every day that is not open to
+interpretation, and every jurisdiction over twenty years.
+
+It was ported from a Python implementation, and the port was checked by
+running both over 199,446 day-records, 26 jurisdictions across 21 years, and
+requiring every field of every record to match.
 
 It is a calendar, not an authority. If it disagrees with the one your parish
 prints, your parish is right. Please open an issue.
@@ -187,4 +206,4 @@ widgets for Hyprland (Quickshell), waybar and eww, all reading the JSON above.
 ## Licence
 
 GPL-2.0-only. See [LICENSE](LICENSE). The menologion is under it too;
-`typikon/data/LICENSE` says so and notes what the fetched sets are not.
+`data/LICENSE` says so and notes what the fetched sets are not.

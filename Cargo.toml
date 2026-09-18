@@ -1,0 +1,30 @@
+[package]
+name = "typikon"
+version = "0.2.0"
+edition = "2021"
+rust-version = "1.74"
+description = "The Orthodox liturgical day: feasts, seasons and the fast, computed rather than fetched"
+license = "GPL-2.0-only"
+repository = "https://git.pumpin.online/funkpower/typikon"
+readme = "README.md"
+keywords = ["orthodox", "liturgical", "calendar", "byzantine", "pascha"]
+categories = ["command-line-utilities", "date-and-time"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+clap = { version = "4", features = ["derive"] }
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[[bin]]
+name = "typikon"
+path = "src/main.rs"
+
+[lib]
+name = "typikon"
+path = "src/lib.rs"
