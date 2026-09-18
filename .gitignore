@@ -2,7 +2,4 @@
 **/*.rs.bk
 .venv/
 *.egg-info/
-
-# python build and test artefacts
-__pycache__/
-*.py[cod]
+/dist

@@ -425,8 +425,11 @@ It lands in `~/.local/share/typikon/` and is overlaid automatically.
 
 ## Further reading
 
-[docs/calendars.md](docs/calendars.md) sets out which churches keep which
-reckoning, how the split came about, what is modelled here and what is not.
+- [docs/calendars.md](docs/calendars.md) sets out which churches keep which
+  reckoning, how the split came about, what is modelled here and what is not.
+- [docs/versioning.md](docs/versioning.md) says what counts as the public
+  surface, and how a correction to the calendar itself is announced.
+- [CHANGELOG.md](CHANGELOG.md) carries those announcements.
 
 ## Accuracy
 

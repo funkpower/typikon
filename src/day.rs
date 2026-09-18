@@ -36,7 +36,13 @@ pub struct Day {
     pub obligation: Option<Obligation>,
     pub binds: Level,
     pub pascha: Date,
+    /// Days from this day to Pascha, **signed**, and to the Pascha of this
+    /// day's own civil year. Negative after Pascha has passed: 31 December
+    /// reports about -263, not the couple of hundred days until the next one.
     pub days_to_pascha: i32,
+    /// How far the Julian reckoning currently lags the Gregorian one: 13 until
+    /// 14 March 2100, 14 after it. Reported for every jurisdiction, including
+    /// the ones that do not use it.
     pub julian_offset: i32,
 }
 
