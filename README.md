@@ -40,6 +40,15 @@ $ install -Dm755 target/release/typikon ~/.local/bin/typikon
 The menologion is compiled in, so the binary answers for every day of the year
 on its own: no data file to find, no network, nothing to go stale.
 
+For Python, there is a wheel:
+
+```console
+$ pip install typikon
+```
+
+The menologion is compiled into that too, so it carries no data files and needs
+no network either.
+
 ## Which calendar?
 
 Three things get conflated constantly, and keeping them apart is most of what
@@ -164,6 +173,37 @@ Level::Xerophagy.relaxed_to(Level::Fish, Level::WineOil)  // WineOil: no saint
                                                           // brings fish into Lent
 Level::Fish.relaxed_to(Level::WineOil, Level::WineOil)    // Fish: never tightens
 ```
+
+## From Python
+
+```python
+import datetime, typikon
+
+day = typikon.describe(datetime.date(2026, 9, 18))
+
+day.church_date     # '5 September'
+day.fast            # 'xerophagy'
+day.title           # 'The Holy Prophet Zachariah, father of the Forerunner'
+day.is_obligatory() # False
+
+typikon.today()
+typikon.pascha(2027)                                  # datetime.date(2027, 5, 2)
+typikon.week(datetime.date(2026, 4, 12), 7)           # seven consecutive days
+typikon.describe(d, jurisdiction='rocor')
+[j['key'] for j in typikon.jurisdictions()]
+```
+
+Dates in and out are `datetime.date`. `to_dict()` gives exactly the fields
+`--json` gives, so anything already reading the CLI's output can read a `Day`
+without changing shape — there is a test that holds the two to that.
+
+Given no `jurisdiction=`, the library reads the same configured default the
+command line does. Calling the engine's own resolver instead would have quietly
+answered for a different church than `typikon --set-default` selected, which is
+the kind of disagreement nobody notices until a fast day is wrong.
+
+The wheel is abi3, so one build serves every Python from 3.9 up. It ships
+`py.typed` and a stub file, and `mypy --strict` is clean against it.
 
 ## The menologion
 

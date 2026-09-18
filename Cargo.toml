@@ -14,12 +14,12 @@ categories = ["command-line-utilities", "date-and-time"]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 clap = { version = "4", features = ["derive"] }
+pyo3 = { version = "0.27.2", features = ["extension-module", "abi3-py39"], optional = true }
 
 [profile.release]
 strip = true
 lto = true
 codegen-units = 1
-panic = "abort"
 
 [[bin]]
 name = "typikon"
@@ -28,3 +28,10 @@ path = "src/main.rs"
 [lib]
 name = "typikon"
 path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+
+[features]
+# Only maturin turns this on. pyo3's extension-module feature leaves the Python
+# symbols to be resolved by the interpreter at load time, so a normal `cargo
+# build` of the CLI would fail to link if it were on by default.
+python = ["dep:pyo3"]

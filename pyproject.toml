@@ -1,0 +1,40 @@
+[build-system]
+requires = ["maturin>=1.9,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "typikon"
+description = "The Orthodox liturgical day: feasts, seasons and the fast, computed rather than fetched"
+readme = "README.md"
+license = "GPL-2.0-only"
+license-files = ["LICENSE"]
+requires-python = ">=3.9"
+keywords = ["orthodox", "liturgical", "calendar", "byzantine", "pascha", "fasting"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Religion",
+    "Topic :: Software Development :: Libraries",
+    "Typing :: Typed",
+]
+# maturin takes it from Cargo.toml, so there is one place to bump.
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://git.pumpin.online/funkpower/typikon"
+Repository = "https://git.pumpin.online/funkpower/typikon"
+
+[tool.maturin]
+bindings = "pyo3"
+module-name = "typikon._typikon"
+# Mixed layout: the compiled module is private and python/typikon wraps it, which
+# is what lets the wheel carry py.typed and a stub file. A bare extension module
+# has nowhere to put either.
+python-source = "python"
+# The crate also builds a CLI, and the pyo3 dependency is optional so that
+# `cargo build` of it does not try to link against a Python that is not there.
+# This is the only place the feature gets turned on.
+features = ["python"]
+strip = true

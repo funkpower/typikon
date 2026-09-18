@@ -9,3 +9,6 @@ pub mod menologion;
 pub mod paschalion;
 pub mod rules;
 pub mod seasons;
+
+#[cfg(feature = "python")]
+mod python;
