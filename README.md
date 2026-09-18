@@ -143,12 +143,12 @@ desktop widget on the same machine cannot end up disagreeing about the same
 day. Override any of it for one run with the flags, or set
 `TYPIKON_JURISDICTION`.
 
-Twenty-three jurisdictions ship: the old-calendar churches (Moscow, ROCOR,
-Serbia, Georgia, Jerusalem, the Holy Mountain, Poland, Macedonia), the
+Twenty Orthodox jurisdictions ship: the old-calendar churches (Moscow, ROCOR,
+Serbia, Georgia, Jerusalem, the Holy Mountain, Poland, Macedonia, ACROD), the
 new-calendar ones (Constantinople, Greece, GOARCH, Antioch, the OCA, Romania,
-Bulgaria, Cyprus, Albania, Ukraine), the Finnish Orthodox Church, alone among
-the Orthodox in keeping the Gregorian Paschalion, and, as an add-on, four
-Byzantine Catholic churches.
+Bulgaria, Cyprus, Albania, Ukraine), and the Finnish Orthodox Church, alone
+among the Orthodox in keeping the Gregorian Paschalion. Four Byzantine
+Catholic churches ship alongside them.
 
 ## The Byzantine Catholic churches
 
