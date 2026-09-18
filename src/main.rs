@@ -39,8 +39,13 @@ struct Args {
 
     /// Show the day at the Typikon's full discipline rather than only what
     /// your church's particular law requires. Obligations are still reported.
-    #[arg(long)]
+    #[arg(long, conflicts_with = "no_typikon")]
     typikon: bool,
+
+    /// Show only what your church's particular law requires, overriding a
+    /// `typikon = true` remembered in the config.
+    #[arg(long)]
+    no_typikon: bool,
 
     /// YYYY-MM-DD (default: today)
     #[arg(short, long)]
@@ -345,7 +350,13 @@ fn run() -> Result<i32, String> {
         Some(t) => jurisdictions::Tradition::parse(t)
             .ok_or_else(|| format!("unknown tradition {t:?}; try slavic or greek"))?,
     };
-    let discipline = if args.typikon || saved.typikon {
+    // A flag either way beats the file; with neither, the file decides.
+    let typikon = if args.no_typikon {
+        false
+    } else {
+        args.typikon || saved.typikon
+    };
+    let discipline = if typikon {
         Some(jurisdictions::RuleKind::Orthodox)
     } else {
         base.discipline

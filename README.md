@@ -7,18 +7,33 @@ Everything derives from the paschalion and the fixed calendar, so it needs no
 network, cannot go stale, and answers for any year you ask about. No API key,
 no service that might be gone next year, no cache to invalidate.
 
-![typikon on the command line](docs/cli.png)
-
 ```console
-$ typikon
+$ typikon --jurisdiction rocor --date 2026-03-18
+
   Wednesday 18 March 2026   — 5 March in the church calendar
-  Russian Orthodox Church Outside Russia · the Typikon
+  Russian Orthodox Church Outside Russia · the Typikon · slavic usage
 
   🥬  The Holy Martyr Conon
 
       xerophagy — no oil or wine
       a weekday of the Great Fast
       Great Fast
+```
+
+A week at a time, which is what you want the day before a fast begins:
+
+```console
+$ typikon --jurisdiction antiochian --date 2027-04-26 --days 7
+
+  Antiochian Orthodox Church · the Typikon
+
+  🥬 Mon 26 Apr  xerophagy — no oil or wine      The Holy Hieromartyr Basil, Bishop…
+  🥬 Tue 27 Apr  xerophagy — no oil or wine      The Holy Hieromartyr Symeon, kinsman…
+  🥬 Wed 28 Apr  xerophagy — no oil or wine      The Holy Apostles Jason and Sosipater
+  🫒 Thu 29 Apr  wine and oil permitted          Great and Holy Thursday
+  ⛔ Fri 30 Apr  no food until evening           Great and Holy Friday
+  🥬  Sat 1 May  xerophagy — no oil or wine      Great and Holy Saturday
+  🍖  Sun 2 May  no fast                         The Radiant and Life-giving…
 ```
 
 ## Install
@@ -80,6 +95,21 @@ differences are modelled, and each is visible in the output:
 Every jurisdiction carries the usage its books follow. `--tradition slavic` or
 `--tradition greek` overrides it, which is what you want for a parish that does
 not match its jurisdiction's default.
+
+```console
+$ typikon -j goarch --date 2026-10-01 --format tsv --fields rank,sign,fast,title
+rank	sign	fast	title
+vigil	✚	none	The Protection of our Most Holy Lady the Theotokos
+```
+
+```console
+$ typikon -j goarch --date 2026-10-01 --tradition slavic --format tsv --fields rank,sign,fast,title
+rank	sign	fast	title
+great	⊕	none	The Protection of our Most Holy Lady the Theotokos
+```
+
+The rank is not decoration: it is what lifts a Wednesday or Friday fast, so the
+usage changes what you eat as well as what you sing.
 
 ### Which calendar?
 
@@ -151,18 +181,43 @@ For an Eastern Catholic church the two come apart sharply, and reporting only
 the law makes the Great Fast look like four days of abstinence a year. That is
 what binds; it is not what is kept.
 
+What the law requires, which is the first four days of the Great Fast:
+
 ```console
-$ typikon -j ruthenian --typikon
+$ typikon -j ruthenian --no-typikon --days 4 --date 2026-02-16
+
+  Byzantine Catholic Metropolia of Pittsburgh · Ruthenian particular law
+
+  🥬 Mon 16 Feb* no meat, fish, eggs or dairy    Clean Monday — the first day of the…
+  🥬 Tue 17 Feb  no meat, fish, eggs or dairy    The Holy Great Martyr Theodore the…
+  🥬 Wed 18 Feb* no meat, fish, eggs or dairy    Our Holy Father Leo, Pope of Rome (461)
+  🥬 Thu 19 Feb  no meat, fish, eggs or dairy    The Holy Apostle Archippus
+
+  * obligatory. Everything unmarked is customary and does not bind.
 ```
 
-shows the day at the Typikon's full discipline while still reporting what your
-own church's law obliges, and still marking it. A week of the Great Fast under
-Ruthenian law is seven days of "no meat, fish, eggs or dairy" with three of
-them starred; the same week at the Typikon's discipline runs from a total fast
-on Clean Monday through xerophagy, wine and oil, and a saint's relaxation, with
-the same three days starred. Nothing about the obligation changes.
+And what is kept, with `--typikon`:
 
-It is a no-op for a jurisdiction already reckoning by the Typikon.
+```console
+$ typikon -j ruthenian --typikon --days 4 --date 2026-02-16
+
+  Byzantine Catholic Metropolia of Pittsburgh · the Typikon, obliging under Ruthenian particular law
+
+  ⛔ Mon 16 Feb* no food until evening           Clean Monday — the first day of the…
+  🫒 Tue 17 Feb  wine and oil permitted          The Holy Great Martyr Theodore the…
+  🥬 Wed 18 Feb* xerophagy — no oil or wine      Our Holy Father Leo, Pope of Rome (461)
+  🥬 Thu 19 Feb  xerophagy — no oil or wine      The Holy Apostle Archippus
+
+  * obligatory. Everything unmarked is customary and does not bind.
+```
+
+The same three days are starred in both. That is the point: the flag changes
+what is *kept*, not what *binds*. Tuesday relaxes to wine and oil because St
+Theodore the Recruit is of polyeleos rank, which is the menologion doing its
+work.
+
+`--no-typikon` forces the law back, for when the config remembers otherwise.
+Either way it is a no-op for a jurisdiction already reckoning by the Typikon.
 
 Where usages differ (Great Thursday, the Exaltation, Lazarus Saturday), this
 follows the common published rule and names it in the day's reason so you can
@@ -175,10 +230,39 @@ spiritual father can.
 ```console
 $ typikon --days 7                       # for a person
 $ typikon --format json --days 7         # for a bar, a widget, a script
-$ typikon --format csv --days 365        # for a spreadsheet
-$ typikon --format tsv --fields date,fast,title
 $ typikon --format ics --days 365 > orthodox.ics
-$ typikon --year 2027                    # a year's key dates, to check against yours
+```
+
+Delimited output, for a spreadsheet or a pipeline. RFC 4180 quoting, one header
+row, one row per day:
+
+```console
+$ typikon -j rocor --date 2026-03-16 --days 3 --format csv \
+      --fields date,church_date,fast,title
+
+date,church_date,fast,title
+2026-03-16,3 March,xerophagy,"The Holy Martyrs Eutropius, Cleonicus and Basiliscus"
+2026-03-17,4 March,xerophagy,Our Venerable Father Gerasimus of the Jordan
+2026-03-18,5 March,xerophagy,The Holy Martyr Conon
+```
+
+A year's key dates, to check against the one your parish prints:
+
+```console
+$ typikon --year 2027 -j goarch
+
+  2027 · Greek Orthodox Archdiocese of America
+
+    publican pharisee    2027-02-21  Sun
+    meatfare             2027-03-07  Sun
+    cheesefare           2027-03-14  Sun
+    clean monday         2027-03-15  Mon
+    great fast end       2027-04-23  Fri
+    lazarus saturday     2027-04-24  Sat
+    palm sunday          2027-04-25  Sun
+    great friday         2027-04-30  Fri
+    pascha               2027-05-02  Sun
+    …
 ```
 
 Every day of vigil rank or above carries the mark its books print beside it:
@@ -193,6 +277,38 @@ still work as shorthand.
 The JSON shape is flat and stable. Front ends are the thing most likely to be
 written by someone else, and a schema that shifts underneath them is a bad
 neighbour.
+
+```console
+$ typikon -j rocor --date 2026-03-18 --json --indent 2
+{
+  "date": "2026-03-18",
+  "weekday": "Wednesday",
+  "jurisdiction": "rocor",
+  "calendar": "old",
+  "churchDate": "5 March",
+  "season": "Great Fast",
+  "cycle": null,
+  "feast": null,
+  "rank": null,
+  "sign": null,
+  "tradition": "slavic",
+  "title": "The Holy Martyr Conon",
+  "commemorations": [
+    "The Holy Martyr Conon"
+  ],
+  "fast": "xerophagy",
+  "fastLabel": "xerophagy — no oil or wine",
+  "emoji": "🥬",
+  "reason": "a weekday of the Great Fast",
+  "obligation": "customary",
+  "binds": "none",
+  "pascha": "2026-04-12",
+  "daysToPascha": 25,
+  "julianOffset": 13
+}
+```
+
+One day is an object; several are `{"days": [...]}`.
 
 ## As a library
 
