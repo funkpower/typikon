@@ -167,6 +167,8 @@ pub const JURISDICTIONS: &[Jurisdiction] = &[
     Jurisdiction { key: "polish", name: "Polish Orthodox Church", paschalion: JulP, menologion: JulMen, rule: Orth, tradition: Sl, menaia: NO_MENAIA,
         note: "Returned to the Julian menologion in 2014 after decades on the Revised Julian; some parishes kept the new calendar." },
     Jurisdiction { key: "macedonian", name: "Macedonian Orthodox Church", paschalion: JulP, menologion: JulMen, rule: Orth, tradition: Sl, menaia: NO_MENAIA, note: "" },
+    Jurisdiction { key: "acrod", name: "American Carpatho-Russian Orthodox Diocese", paschalion: JulP, menologion: JulMen, rule: Orth, tradition: Sl, menaia: NO_MENAIA,
+        note: "The Carpatho-Rusyn diocese under Constantinople, formed from the Greek Catholic parishes that returned to Orthodoxy in 1938. The diocese publishes both an old-calendar and a new-calendar cycle and its parishes keep one or the other; this entry is the old one, and `--calendar new --tradition slavic` is the other." },
 
     // new calendar
     Jurisdiction { key: "constantinople", name: "Ecumenical Patriarchate", paschalion: JulP, menologion: RevJul, rule: Orth, tradition: Gk, menaia: NO_MENAIA, note: "" },
