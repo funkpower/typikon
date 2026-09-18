@@ -120,10 +120,18 @@ spiritual father can.
 ## Output
 
 ```console
-$ typikon --json --days 7        # for a bar, a widget, a script
-$ typikon --ics --days 365 > orthodox.ics
-$ typikon --year 2027            # a year's key dates, to check against yours
+$ typikon --days 7                       # for a person
+$ typikon --format json --days 7         # for a bar, a widget, a script
+$ typikon --format csv --days 365        # for a spreadsheet
+$ typikon --format tsv --fields date,fast,title
+$ typikon --format ics --days 365 > orthodox.ics
+$ typikon --year 2027                    # a year's key dates, to check against yours
 ```
+
+`--no-emoji` drops the glyphs from every format, for a terminal or a bar
+without them. `--list-fields` prints the columns `csv` and `tsv` can take, and
+`--fields` picks a subset in the order you name them. `--json` and `--ics`
+still work as shorthand.
 
 The JSON shape is flat and stable. Front ends are the thing most likely to be
 written by someone else, and a schema that shifts underneath them is a bad

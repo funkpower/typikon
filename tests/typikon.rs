@@ -406,3 +406,62 @@ fn a_feast_can_only_relax_a_fast_never_tighten_it() {
     // No rank means no change.
     assert_eq!(Level::Xerophagy.relaxed_to(Level::Xerophagy, Level::Fish), Level::Xerophagy);
 }
+
+// ───────────────────────── the delimited formats ──────────────────────────
+
+#[test]
+fn csv_has_a_header_and_one_row_per_day() {
+    use typikon::export::to_delimited;
+    let days = week(d("2026-01-01"), 5, resolve(Some("rocor")).unwrap());
+    let text = to_delimited(&days, ',', &[]);
+    let lines: Vec<&str> = text.trim_end().split('\n').collect();
+    assert_eq!(lines.len(), 6, "header plus five days");
+    assert!(lines[0].starts_with("date,weekday,"));
+    assert!(lines[1].starts_with("2026-01-01,Thursday,rocor,old,"));
+}
+
+#[test]
+fn csv_quotes_the_fields_that_need_it() {
+    use typikon::export::to_delimited;
+    // Commemorations are full of commas, and joined with semicolons besides.
+    let days = week(d("2026-09-18"), 1, resolve(Some("rocor")).unwrap());
+    let text = to_delimited(&days, ',', &["title".to_string()]);
+    let row = text.trim_end().split('\n').nth(1).unwrap();
+    assert!(row.starts_with('"'), "a title with a comma must be quoted: {row}");
+    assert!(row.ends_with('"'));
+    // A quote inside a field doubles rather than escaping.
+    assert_eq!(row.matches("\"\"").count(), 0);
+}
+
+#[test]
+fn tsv_uses_tabs_and_a_chosen_column_order() {
+    use typikon::export::to_delimited;
+    let days = week(d("2026-04-12"), 1, resolve(Some("new")).unwrap());
+    let cols = vec!["fast".to_string(), "date".to_string()];
+    let text = to_delimited(&days, '\t', &cols);
+    let lines: Vec<&str> = text.trim_end().split('\n').collect();
+    assert_eq!(lines[0], "fast\tdate");
+    assert_eq!(lines[1], "none\t2026-04-12");
+}
+
+#[test]
+fn an_unknown_column_is_caught_before_anything_is_printed() {
+    use typikon::export::csv::unknown_column;
+    assert!(unknown_column(&["date".to_string(), "fast".to_string()]).is_none());
+    assert_eq!(
+        unknown_column(&["date".to_string(), "nonsense".to_string()]).map(String::as_str),
+        Some("nonsense")
+    );
+}
+
+#[test]
+fn every_advertised_column_actually_renders() {
+    use typikon::export::{csv::COLUMNS, to_delimited};
+    let days = week(d("2026-02-16"), 1, resolve(Some("ruthenian")).unwrap());
+    let cols: Vec<String> = COLUMNS.iter().map(|c| c.to_string()).collect();
+    let text = to_delimited(&days, '\t', &cols);
+    let lines: Vec<&str> = text.trim_end().split('\n').collect();
+    // Every column produces a cell, even the empty ones.
+    assert_eq!(lines[0].split('\t').count(), COLUMNS.len());
+    assert_eq!(lines[1].split('\t').count(), COLUMNS.len());
+}

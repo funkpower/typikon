@@ -1,14 +1,26 @@
 //! The command line.
 
-use clap::Parser;
+use clap::{Parser, ValueEnum};
 
 use typikon::calendars::Date;
 use typikon::config::{self, Source};
 use typikon::day::{week, year_of, Day};
-use typikon::export::{to_ics, to_json};
+use typikon::export::{to_delimited, to_ics, to_json};
 use typikon::jurisdictions::{self, Jurisdiction, CALENDARS, JURISDICTIONS};
 use typikon::menaia;
 use typikon::rules;
+
+/// The shapes this can print in. `text` is for a person, `json` for a front
+/// end, `csv` and `tsv` for a spreadsheet or a pipeline, `ics` for a calendar
+/// you subscribe to.
+#[derive(Clone, Copy, PartialEq, Eq, ValueEnum)]
+enum Format {
+    Text,
+    Json,
+    Csv,
+    Tsv,
+    Ics,
+}
 
 #[derive(Parser)]
 #[command(
@@ -29,13 +41,29 @@ struct Args {
     #[arg(short = 'n', long, default_value_t = 1)]
     days: i32,
 
-    /// Machine-readable output
-    #[arg(long)]
+    /// How to print it
+    #[arg(short = 'f', long, value_enum, default_value_t = Format::Text)]
+    format: Format,
+
+    /// Shorthand for --format json
+    #[arg(long, conflicts_with = "ics")]
     json: bool,
 
-    /// An iCalendar feed
+    /// Shorthand for --format ics
     #[arg(long)]
     ics: bool,
+
+    /// Leave the glyphs out, for a terminal or a bar without them
+    #[arg(long)]
+    no_emoji: bool,
+
+    /// Columns for csv and tsv, comma-separated; see --list-fields
+    #[arg(long, value_name = "LIST", value_delimiter = ',')]
+    fields: Vec<String>,
+
+    /// List the columns csv and tsv can print
+    #[arg(long)]
+    list_fields: bool,
 
     /// Indent JSON output
     #[arg(long)]
@@ -141,7 +169,11 @@ fn print_days(days: &[Day], jur: &Jurisdiction, source: Source, verbose: bool) {
         };
         println!("  {} \u{b7} {}{from}", jur.name, rule.title);
         println!();
-        println!("  {}  {}", d.emoji, d.title());
+        if d.emoji.is_empty() {
+            println!("  {}", d.title());
+        } else {
+            println!("  {}  {}", d.emoji, d.title());
+        }
         if let Some(c) = &d.cycle {
             println!("      {c}");
         }
@@ -177,9 +209,11 @@ fn print_days(days: &[Day], jur: &Jurisdiction, source: Source, verbose: bool) {
     let room = cols.saturating_sub(fixed + 1).max(24);
     for d in days {
         let mark = if d.is_obligatory() { "*" } else { " " };
+        // The glyph column collapses entirely when there is no glyph, rather
+        // than leaving a hole where one used to be.
+        let glyph = if d.emoji.is_empty() { String::new() } else { format!("{} ", d.emoji) };
         println!(
-            "  {} {:>10}{mark} {:<32}{}",
-            d.emoji,
+            "  {glyph}{:>10}{mark} {:<32}{}",
             d.date.short(),
             d.fast_label,
             elide(d.title(), room)
@@ -196,6 +230,15 @@ fn run() -> Result<i32, String> {
 
     if args.list {
         list_jurisdictions();
+        return Ok(0);
+    }
+
+    if args.list_fields {
+        println!("\n  Columns for --format csv and --format tsv:\n");
+        for c in typikon::export::csv::COLUMNS {
+            println!("    {c}");
+        }
+        println!("\n  Pick a subset with --fields date,fast,title\n");
         return Ok(0);
     }
 
@@ -279,15 +322,40 @@ fn run() -> Result<i32, String> {
             .ok_or_else(|| format!("{s:?} is not a date \u{2014} expected YYYY-MM-DD"))?,
         None => today(),
     };
-    let days = week(start, args.days, jur);
-
-    if args.json {
-        println!("{}", to_json(&days, args.indent));
-        return Ok(0);
+    let mut days = week(start, args.days, jur);
+    if args.no_emoji {
+        for d in &mut days {
+            d.emoji = "";
+        }
     }
-    if args.ics {
-        print!("{}", to_ics(&days, &format!("{} \u{2014} Typikon", jur.name), &stamp()));
-        return Ok(0);
+
+    // The boolean flags predate --format and still mean what they did.
+    let format = if args.json {
+        Format::Json
+    } else if args.ics {
+        Format::Ics
+    } else {
+        args.format
+    };
+
+    match format {
+        Format::Json => {
+            println!("{}", to_json(&days, args.indent));
+            return Ok(0);
+        }
+        Format::Ics => {
+            print!("{}", to_ics(&days, &format!("{} \u{2014} Typikon", jur.name), &stamp()));
+            return Ok(0);
+        }
+        Format::Csv | Format::Tsv => {
+            if let Some(bad) = typikon::export::csv::unknown_column(&args.fields) {
+                return Err(format!("no such column {bad:?}; try --list-fields"));
+            }
+            let sep = if format == Format::Csv { ',' } else { '\t' };
+            print!("{}", to_delimited(&days, sep, &args.fields));
+            return Ok(0);
+        }
+        Format::Text => {}
     }
 
     print_days(&days, jur, source, args.verbose);
