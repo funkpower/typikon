@@ -14,6 +14,9 @@ use pyo3::exceptions::{PyValueError, PyOSError};
 use pyo3::prelude::*;
 use pyo3::types::{PyDate, PyDict, PyList};
 
+use std::collections::HashMap;
+use std::sync::{Mutex, OnceLock};
+
 use crate::calendars::Date;
 use crate::day;
 use crate::fasting::Obligation;
@@ -41,24 +44,62 @@ fn from_date<'py>(py: Python<'py>, d: Date) -> PyResult<Bound<'py, PyDate>> {
     PyDate::new(py, y, m as u8, day as u8)
 }
 
-/// Resolve a jurisdiction name, or the configured default when given none.
+/// jurisdiction key, tradition key, and whether the Typikon's full discipline was
+/// asked for — enough to tell one override from another.
+type Interned = HashMap<(&'static str, &'static str, bool), &'static Jurisdiction>;
+
+/// Build the jurisdiction a call should reckon by: the named one, or the saved
+/// default, with the saved tradition and discipline applied on top.
 ///
-/// The same two steps the CLI takes, and for the same reason: `jurisdictions::
-/// resolve(None)` answers with a built-in default that knows nothing about the
-/// machine it is running on, so calling it directly would quietly ignore whatever
-/// `typikon --set-default` wrote and hand Python a different day than the command
-/// line gives for the same date.
-fn resolve(name: Option<&str>) -> PyResult<&'static Jurisdiction> {
-    let configured;
-    let name = match name {
-        Some(n) => Some(n),
-        None => {
-            configured = crate::config::default_jurisdiction().0;
-            configured.as_deref()
-        }
+/// This mirrors main.rs deliberately and has to keep mirroring it. A Jurisdiction
+/// is no longer just a key — it carries a tradition and a discipline, and the CLI
+/// reads all three from config before it reckons anything. A binding that resolved
+/// only the key would answer a different fast than the command line does on the
+/// same machine for the same date: xerophagy on a Lenten Wednesday reads as
+/// wine_oil, which is not a cosmetic difference in a tool whose whole job is to
+/// say what may be eaten.
+///
+/// The overridden jurisdictions are interned rather than leaked per call. main.rs
+/// leaks one per run and is then done; a library gets called in a loop, and one
+/// leak per call is a slow leak. The set of combinations is bounded by
+/// jurisdictions x traditions x discipline, so a map of them is small and never
+/// grows past it.
+fn resolve(
+    jurisdiction: Option<&str>,
+    tradition: Option<&str>,
+    typikon: Option<bool>,
+) -> PyResult<&'static Jurisdiction> {
+    let saved = crate::config::saved();
+
+    let name = jurisdiction.map(str::to_owned).or(saved.jurisdiction);
+    let base = jurisdictions::resolve(name.as_deref())
+        .map_err(|n| PyValueError::new_err(format!("unknown jurisdiction {n:?}")))?;
+
+    let trad = match tradition.map(str::to_owned).or(saved.tradition) {
+        None => base.tradition,
+        Some(t) => jurisdictions::Tradition::parse(&t).ok_or_else(|| {
+            PyValueError::new_err(format!("unknown tradition {t:?}; try slavic or greek"))
+        })?,
     };
-    jurisdictions::resolve(name)
-        .map_err(|n| PyValueError::new_err(format!("unknown jurisdiction {n:?}")))
+    let full = typikon.unwrap_or(saved.typikon);
+    let discipline = if full {
+        Some(jurisdictions::RuleKind::Orthodox)
+    } else {
+        base.discipline
+    };
+
+    if trad == base.tradition && discipline == base.discipline {
+        return Ok(base);
+    }
+
+    static INTERNED: OnceLock<Mutex<Interned>> = OnceLock::new();
+    let mut map = INTERNED
+        .get_or_init(|| Mutex::new(HashMap::new()))
+        .lock()
+        .map_err(|_| PyValueError::new_err("jurisdiction cache poisoned"))?;
+    Ok(map.entry((base.key, trad.key(), full)).or_insert_with(|| {
+        Box::leak(Box::new(Jurisdiction { tradition: trad, discipline, ..*base }))
+    }))
 }
 
 /// One day, fully reckoned.
@@ -250,16 +291,26 @@ impl PyDay {
 
 /// Reckon one civil date.
 #[pyfunction]
-#[pyo3(signature = (date, jurisdiction = None))]
-fn describe(date: &Bound<'_, PyDate>, jurisdiction: Option<&str>) -> PyResult<PyDay> {
-    let jur = resolve(jurisdiction)?;
+#[pyo3(signature = (date, jurisdiction = None, tradition = None, typikon = None))]
+fn describe(
+    date: &Bound<'_, PyDate>,
+    jurisdiction: Option<&str>,
+    tradition: Option<&str>,
+    typikon: Option<bool>,
+) -> PyResult<PyDay> {
+    let jur = resolve(jurisdiction, tradition, typikon)?;
     Ok(PyDay { inner: day::describe(to_date(date)?, jur) })
 }
 
 /// Reckon today, by the system clock in local time.
 #[pyfunction]
-#[pyo3(signature = (jurisdiction = None))]
-fn today(py: Python<'_>, jurisdiction: Option<&str>) -> PyResult<PyDay> {
+#[pyo3(signature = (jurisdiction = None, tradition = None, typikon = None))]
+fn today(
+    py: Python<'_>,
+    jurisdiction: Option<&str>,
+    tradition: Option<&str>,
+    typikon: Option<bool>,
+) -> PyResult<PyDay> {
     // Python owns the notion of "local", and it already handles the timezone
     // database. Asking it is both shorter and more correct than reimplementing
     // the lookup here.
@@ -270,21 +321,23 @@ fn today(py: Python<'_>, jurisdiction: Option<&str>) -> PyResult<PyDay> {
     let date = date.cast::<PyDate>().map_err(|_| {
         PyOSError::new_err("datetime.date.today() did not return a date")
     })?;
-    describe(date, jurisdiction)
+    describe(date, jurisdiction, tradition, typikon)
 }
 
 /// Reckon a run of consecutive days starting at `start`.
 #[pyfunction]
-#[pyo3(signature = (start, days = 7, jurisdiction = None))]
+#[pyo3(signature = (start, days = 7, jurisdiction = None, tradition = None, typikon = None))]
 fn week(
     start: &Bound<'_, PyDate>,
     days: i32,
     jurisdiction: Option<&str>,
+    tradition: Option<&str>,
+    typikon: Option<bool>,
 ) -> PyResult<Vec<PyDay>> {
     if days < 1 {
         return Err(PyValueError::new_err("days must be at least 1"));
     }
-    let jur = resolve(jurisdiction)?;
+    let jur = resolve(jurisdiction, tradition, typikon)?;
     Ok(day::week(to_date(start)?, days, jur)
         .into_iter()
         .map(|inner| PyDay { inner })
@@ -299,7 +352,9 @@ fn pascha<'py>(
     year: i32,
     jurisdiction: Option<&str>,
 ) -> PyResult<Bound<'py, PyDate>> {
-    let jur = resolve(jurisdiction)?;
+    // Pascha depends on the paschalion alone; tradition and discipline cannot
+    // move it, so they are not arguments here.
+    let jur = resolve(jurisdiction, None, None)?;
     let (movables, _) = day::year_of(year, jur);
     from_date(py, movables.pascha)
 }

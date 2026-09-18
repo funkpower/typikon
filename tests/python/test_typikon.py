@@ -27,10 +27,13 @@ BINARY = Path(__file__).resolve().parents[2] / "target" / "release" / "typikon"
 # Pascha, Nativity, Theophany and an ordinary weekday: the movable cycle, the
 # fixed calendar, the julian offset and the plain case.
 DATES = [
-    datetime.date(2026, 4, 12),
-    datetime.date(2026, 12, 25),
-    datetime.date(2027, 1, 7),
-    datetime.date(2026, 3, 18),
+    datetime.date(2026, 4, 12),   # Pascha
+    datetime.date(2026, 12, 25),  # Nativity
+    datetime.date(2027, 1, 7),    # Theophany on the old calendar
+    datetime.date(2026, 3, 18),   # a Wednesday of the Great Fast
+    datetime.date(2026, 11, 20),  # the Nativity Fast
+    datetime.date(2026, 8, 6),    # Transfiguration, fish permitted
+    datetime.date(2026, 6, 10),   # an ordinary weekday
 ]
 
 
@@ -69,6 +72,25 @@ def test_week_length_and_order() -> None:
 def test_week_rejects_nonsense() -> None:
     with pytest.raises(ValueError):
         typikon.week(datetime.date(2026, 4, 10), 0)
+
+
+def test_tradition_and_typikon_reach_the_answer() -> None:
+    # A Jurisdiction is not just a key: it carries a tradition and a discipline,
+    # and config supplies all three. The bindings resolved only the key once, and
+    # reported wine_oil where the CLI said xerophagy on a Lenten Wednesday — the
+    # tool's whole job, answered differently in the two front ends.
+    lent = datetime.date(2026, 3, 18)
+    assert typikon.describe(lent, tradition="greek").tradition == "greek"
+    assert typikon.describe(lent, tradition="slavic").tradition == "slavic"
+    # The Typikon's full discipline can only tighten a relaxed rule, never relax it.
+    strict = typikon.describe(lent, jurisdiction="ruthenian", typikon=True)
+    normal = typikon.describe(lent, jurisdiction="ruthenian", typikon=False)
+    assert (strict.fast, strict.fast_label) != (normal.fast, normal.fast_label)
+
+
+def test_unknown_tradition_raises() -> None:
+    with pytest.raises(ValueError, match="unknown tradition"):
+        typikon.describe(datetime.date(2026, 4, 12), tradition="martian")
 
 
 def test_unknown_jurisdiction_raises() -> None:

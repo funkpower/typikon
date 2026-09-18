@@ -61,10 +61,23 @@ class Day:
     def to_dict(self) -> dict[str, Any]:
         """The same fields as ``typikon --json``."""
 
-def describe(date: datetime.date, jurisdiction: str | None = None) -> Day: ...
-def today(jurisdiction: str | None = None) -> Day: ...
+def describe(
+    date: datetime.date,
+    jurisdiction: str | None = None,
+    tradition: str | None = None,
+    typikon: bool | None = None,
+) -> Day: ...
+def today(
+    jurisdiction: str | None = None,
+    tradition: str | None = None,
+    typikon: bool | None = None,
+) -> Day: ...
 def week(
-    start: datetime.date, days: int = 7, jurisdiction: str | None = None
+    start: datetime.date,
+    days: int = 7,
+    jurisdiction: str | None = None,
+    tradition: str | None = None,
+    typikon: bool | None = None,
 ) -> list[Day]: ...
 def pascha(year: int, jurisdiction: str | None = None) -> datetime.date: ...
 def jurisdictions() -> list[dict[str, str]]: ...

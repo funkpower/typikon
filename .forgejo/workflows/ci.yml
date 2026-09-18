@@ -41,6 +41,9 @@ jobs:
         run: |
           rustup component add clippy
           cargo clippy --all-targets -- -D warnings
+          # The binding code only exists under the feature, so a bare clippy
+          # run never looks at src/python.rs.
+          cargo clippy --features python --all-targets -- -D warnings
 
       - name: Rust tests
         run: cargo test
