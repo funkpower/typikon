@@ -12,8 +12,9 @@ name: ci
 # branch yourself once you have read the diff.
 on:
   push:
+    # Branches only. A tag push does not match a branch filter, so release.yml
+    # owns tags and this owns everything else.
     branches: ['**']
-    tags-ignore: ['**']
 
 jobs:
   test:
