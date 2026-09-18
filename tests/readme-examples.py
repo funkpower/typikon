@@ -51,9 +51,13 @@ def main():
         print(f"  {BINARY} not built; run cargo build --release", file=sys.stderr)
         return 77
     env = dict(os.environ, COLUMNS="88")
-    # The examples must not depend on whatever this machine remembers.
+    # The examples must not depend on whatever this machine remembers, nor on
+    # a menaion this machine happens to have fetched. A reader running them
+    # after a fresh install has neither, and the README should show what they
+    # get: without this the Ruthenian examples passed here and failed in CI.
     env.pop("TYPIKON_JURISDICTION", None)
     env["XDG_CONFIG_HOME"] = str(ROOT / "target" / "readme-config")
+    env["XDG_DATA_HOME"] = str(ROOT / "target" / "readme-data")
 
     text = (ROOT / "README.md").read_text(encoding="utf-8")
     checked = bad = skipped = 0
