@@ -19,23 +19,42 @@ _cache = {}
 
 
 class Menologion:
+    """A fixed calendar, plus whatever a jurisdiction overlays on it.
+
+    ``_meta`` is a reserved key, not a day. It carries ``mode``:
+
+        add      the set's commemorations join the common ones (the default,
+                 right for a local set that adds a few of its own saints)
+        replace  the set's commemorations stand in for them, because it is
+                 itself a complete calendar published by that church
+
+    Either way the common set's ``rank`` and ``cycle`` survive unless the
+    overlay gives its own, since a published list of saints usually carries
+    neither and the fasting rules need the rank.
+    """
+
     def __init__(self, entries):
-        self.entries = entries
+        self.meta = entries.get("_meta", {})
+        self.entries = {k: v for k, v in entries.items() if k != "_meta"}
 
     def get(self, month, day):
         return self.entries.get(f"{month:02d}-{day:02d}", {})
 
     def overlay(self, other):
-        """Add another set on top of this one, keeping both days' entries."""
+        replace = other.meta.get("mode") == "replace"
         merged = {k: dict(v) for k, v in self.entries.items()}
         for key, add in other.entries.items():
             if key not in merged:
                 merged[key] = dict(add)
                 continue
             base = merged[key]
-            base["commemorations"] = (list(base.get("commemorations", []))
-                                      + list(add.get("commemorations", [])))
-            # A supplementary set may raise a day's rank but never lower it.
+            extra = list(add.get("commemorations", []))
+            if replace:
+                base["commemorations"] = extra or base.get("commemorations", [])
+            else:
+                seen = list(base.get("commemorations", []))
+                base["commemorations"] = seen + [c for c in extra if c not in seen]
+            # A supplementary set may state a rank or a cycle; it never erases one.
             for field in ("rank", "cycle"):
                 if add.get(field):
                     base[field] = add[field]

@@ -72,20 +72,42 @@ def _parse_mci(html):
     dated = re.compile(r"^(" + "|".join(MONTHS) + r")\s+(\d{1,2})\s*(.*)$")
     heading = re.compile(r"^(" + "|".join(MONTHS) + r")\.?$")
 
+    # MCI writes the festal cycle inline, as a commemoration among the saints:
+    # "Pre-festive Day of the Theophany". It repeats for days at a time and is
+    # not a saint, so it becomes the day's cycle and leaves the list alone.
+    festal = re.compile(r"^(Pre-festive|Post-festive|Fore-feast|After-feast|"
+                        r"Leave-taking)\b[ ,]*(?:Day\s+)?(?:of\s+)?(.*)$", re.I)
+    cycle_word = {"pre-festive": "forefeast", "fore-feast": "forefeast",
+                  "post-festive": "afterfeast", "after-feast": "afterfeast",
+                  "leave-taking": "leave-taking"}
+
     out, cur, buf, corrections = {}, None, [], []
     prev_month = prev_day = None
 
     def flush():
         if not (cur and buf):
             return
-        items = []
+        items, cycle = [], None
         for piece in buf:
             for part in re.split(r"(?<=\.)\s+(?=[A-Z(])", piece):
                 part = part.strip(" .;")
-                if len(part) > 3 and not dated.match(part) and not heading.match(part):
-                    items.append(part)
+                if len(part) <= 3 or dated.match(part) or heading.match(part):
+                    continue
+                m = festal.match(part)
+                if m:
+                    if cycle is None:
+                        word = cycle_word[m.group(1).lower()]
+                        rest = m.group(2).strip(" .,")
+                        cycle = f"{word} of {rest}" if rest else word
+                    continue
+                items.append(part)
+        entry = {}
         if items:
-            out[cur] = {"commemorations": items}
+            entry["commemorations"] = items
+        if cycle:
+            entry["cycle"] = cycle
+        if entry:
+            out[cur] = entry
 
     for line in lines:
         if heading.match(line):
@@ -135,9 +157,15 @@ def update(name):
                 pass
     missing = sorted(expected - set(entries))
 
+    # This is a complete calendar published by that church, so it stands in
+    # for the common commemorations rather than piling on top of them.
+    payload = {"_meta": {"mode": "replace", "source": source["url"],
+                         "title": source["title"]}}
+    payload.update(entries)
+
     path = os.path.join(target_dir(), f"{name}.json")
     with open(path, "w", encoding="utf-8") as fh:
-        json.dump(entries, fh, ensure_ascii=False, indent=1, sort_keys=True)
+        json.dump(payload, fh, ensure_ascii=False, indent=1, sort_keys=True)
 
     return {"path": path, "days": len(entries), "corrections": corrections,
             "missing": missing, "source": source}
