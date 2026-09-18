@@ -2,6 +2,7 @@
 
 import argparse
 import datetime as dt
+import shutil
 import sys
 
 from . import config
@@ -31,6 +32,16 @@ def _list_jurisdictions():
             for line in _wrap(j.note, 66):
                 print(f"    {'':{width}}  {line}")
         print()
+
+
+def _elide(text, width):
+    """Cut on a word boundary and say so, rather than stopping mid-word."""
+    if len(text) <= width:
+        return text
+    cut = text[:width - 1]
+    if " " in cut[width // 2:]:
+        cut = cut[:cut.rstrip().rfind(" ")]
+    return cut.rstrip(" ,;") + "\u2026"
 
 
 def _wrap(text, width):
@@ -81,10 +92,14 @@ def _print_days(days, jur, rule, source, verbose):
         return
 
     print(f"\n  {jur.name} · {rule['title']}\n")
+    # The glyph is two columns wide in a terminal and one character to Python,
+    # which is why the arithmetic below looks off by one.
+    fixed = 2 + 2 + 10 + 1 + 1 + 32
+    room = max(24, shutil.get_terminal_size((100, 24)).columns - fixed - 1)
     for d in days:
         mark = "*" if d.obligation == OBLIGATORY else " "
         when = d.date.strftime("%a %-d %b")
-        print(f"  {d.emoji} {when:>10}{mark} {d.fast_label:<32}{d.title[:44]}")
+        print(f"  {d.emoji} {when:>10}{mark} {d.fast_label:<32}{_elide(d.title, room)}")
     if any(d.obligation == OBLIGATORY for d in days):
         print("\n  * obligatory. Everything unmarked is customary and does not bind.")
     print()

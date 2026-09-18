@@ -7,6 +7,8 @@ Everything derives from the paschalion and the fixed calendar, so it needs no
 network, cannot go stale, and answers for any year you ask about. No API key,
 no service that might be gone next year, no cache to invalidate.
 
+![typikon on the command line](docs/cli.png)
+
 ```console
 $ typikon
   Wednesday 18 March 2026   — 5 March in the church calendar
@@ -178,7 +180,9 @@ prints, your parish is right. Please open an issue.
 ## Front ends
 
 [`horologion`](https://git.pumpin.online/funkpower/horologion) — desktop
-widgets for Hyprland (Quickshell), waybar and eww.
+widgets for Hyprland (Quickshell), waybar and eww, all reading the JSON above.
+
+![The horologion widget](https://git.pumpin.online/funkpower/horologion/raw/branch/main/docs/nativity-fast.png)
 
 ## Licence
 
