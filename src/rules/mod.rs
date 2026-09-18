@@ -59,9 +59,10 @@ pub struct Rule {
     pub fast_for: fn(&Context) -> Fast,
     /// What this tradition's particular law binds, where it has one, asked
     /// separately from how the day is kept.
+    /// What this tradition's particular law binds, where it has one. `None`
+     /// where the tradition legislates no binding fast at all, which is every
+     /// Orthodox jurisdiction: the fast is kept as tradition, not as precept.
     pub obligation_for: Option<fn(&Context) -> Binding>,
-    /// Whether this tradition legislates the fast as precept at all.
-    pub has_obligation: bool,
 }
 
 pub fn get(kind: RuleKind) -> &'static Rule {

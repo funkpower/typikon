@@ -202,9 +202,10 @@ pub fn describe_with(date: Date, jur: &'static Jurisdiction, men: &Menologion) -
     // one tradition answers both. When `discipline` names another, the level
     // and its reason come from that one and the obligation still comes from
     // this church's own law, because that is the part only it can say.
+    let overridden = jur.discipline.is_some_and(|d| d != jur.rule);
     let shown = jur.discipline.map(rules::get).unwrap_or(rule);
     let mut fast = (shown.fast_for)(&ctx);
-    if !std::ptr::eq(shown, rule) {
+    if overridden {
         fast.obligation = match rule.obligation_for.and_then(|f| f(&ctx)) {
             Some((reason, binds)) => {
                 fast.binds = Some(binds);
@@ -237,18 +238,20 @@ pub fn describe_with(date: Date, jur: &'static Jurisdiction, men: &Menologion) -
         reason,
         obligation,
         binds,
-        shown_at_typikon: !std::ptr::eq(shown, rule),
+        shown_at_typikon: overridden,
         pascha: mv.pascha,
         days_to_pascha: mv.pascha - date,
         julian_offset: date.julian_offset(),
     }
 }
 
-/// `days` consecutive days from `start`.
+/// `days` consecutive days from `start`, stopping at the end of the years this
+/// calendar answers for rather than repeating the last of them.
 pub fn week(start: Date, days: i32, jur: &'static Jurisdiction) -> Vec<Day> {
     let men = menologion::for_jurisdiction(jur.tradition, jur.menaia);
     (0..days.max(1))
-        .map(|n| describe_with(start + n, jur, &men))
+        .map_while(|n| start.checked_add(n))
+        .map(|date| describe_with(date, jur, &men))
         .collect()
 }
 

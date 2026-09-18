@@ -263,8 +263,7 @@ pub static RULE: Rule = Rule {
     title: "the Typikon",
     vocabulary: Vocabulary { label, emoji },
     fast_for,
-    obligation_for: None,
     // The Orthodox Church does not legislate the fast as precept, so nothing
     // here is reported as binding. See the module docs.
-    has_obligation: false,
+    obligation_for: None,
 };

@@ -170,5 +170,4 @@ pub static RULE: Rule = Rule {
     vocabulary: Vocabulary { label, emoji },
     fast_for,
     obligation_for: Some(obligation_for),
-    has_obligation: true,
 };

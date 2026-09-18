@@ -664,3 +664,45 @@ fn only_the_church_whose_law_was_sourced_reports_an_obligation() {
         .count();
     assert_eq!(binding, 14);
 }
+
+// ───────────────────── the edges of the supported years ───────────────────
+
+#[test]
+fn dates_outside_the_supported_years_cannot_be_made() {
+    use typikon::calendars::{MAX_YEAR, MIN_YEAR};
+    assert!(Date::from_ymd(MIN_YEAR, 1, 1).is_some());
+    assert!(Date::from_ymd(MAX_YEAR, 12, 31).is_some());
+    assert!(Date::from_ymd(MIN_YEAR - 1, 12, 31).is_none());
+    assert!(Date::from_ymd(MAX_YEAR + 1, 1, 1).is_none());
+    assert!(Date::from_ymd(2026, 2, 30).is_none());
+    assert!(Date::from_jdn(i32::MAX).is_none());
+    assert!(Date::from_jdn(i32::MIN).is_none());
+}
+
+#[test]
+fn a_walk_off_the_end_stops_rather_than_wrapping() {
+    let jur = resolve(Some("new")).unwrap();
+    // Every date emitted is a real one, and the year never leaves the range.
+    let days = week(d("9999-12-29"), 10, jur);
+    assert_eq!(days.len(), 3, "the walk should stop at 9999-12-31");
+    for day in &days {
+        assert_eq!(day.date.iso().len(), 10, "{}", day.date);
+        assert!(day.date.year() <= 9999);
+    }
+    // And the other end.
+    assert_eq!(week(d("0001-01-01") , 3, jur).len(), 3);
+}
+
+#[test]
+fn date_arithmetic_saturates_instead_of_overflowing() {
+    // In a release build an unchecked add wraps silently, which put a date in
+    // antiquity and an ISO string that was not ten characters long.
+    assert_eq!(Date::MAX + 1, Date::MAX);
+    assert_eq!(Date::MIN - 1, Date::MIN);
+    assert_eq!(Date::MAX + i32::MAX, Date::MAX);
+    assert_eq!(Date::MIN - i32::MAX, Date::MIN);
+    assert!(Date::MAX.checked_add(1).is_none());
+    for d in [Date::MIN, Date::MAX] {
+        assert_eq!(d.iso().len(), 10);
+    }
+}

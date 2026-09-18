@@ -39,6 +39,25 @@ Everything below changes what a day reports against pre-1.0 versions.
   no longer report any day as binding. They had borrowed Ruthenian particular
   law, which is not their law.
 
+### Hardened
+
+- The years this calendar answers for are 1 to 9999, enforced. `Date::from_ymd`
+  and `from_jdn` reject anything outside them, arithmetic saturates rather than
+  wrapping, and a seven-day walk stops at the boundary instead of running past
+  it into dates whose ISO form was not ten characters long.
+- `--days` is bounded at a hundred years and `--indent` at sixteen. Both took
+  any integer and aborted the process on allocation.
+- `--update-menaion` bounds the day it parses by the month it is in, and
+  refuses to write when most of the year comes back empty. The page is fetched,
+  so its contents are not this program's to trust: an unbounded parse wrote
+  keys no lookup could match, and a page redesign would have blanked a year of
+  commemorations in a calendar that had been working.
+- `today()` says on stderr when it cannot read the local offset, rather than
+  silently reporting UTC and so the wrong day either side of midnight.
+- The Ukrainian Greek Catholic Church no longer loads the Ruthenian calendar of
+  saints. It is Pittsburgh's, and lending it was the same error as lending the
+  law.
+
 ### Interfaces
 
 - `binds` is null unless the day binds, rather than the string `"none"`. Most

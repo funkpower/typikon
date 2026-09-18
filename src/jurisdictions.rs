@@ -201,8 +201,8 @@ pub const JURISDICTIONS: &[Jurisdiction] = &[
     // eastern catholic
     Jurisdiction { key: "ruthenian", name: "Byzantine Catholic Metropolia of Pittsburgh", paschalion: GregP, menologion: RevJul, rule: Ruth, discipline: None, tradition: Sl, menaia: RUTHENIAN_MENAIA,
         note: "Gregorian throughout. Fasting is reported under Ruthenian particular law, which binds far less than the Typikon prescribes." },
-    Jurisdiction { key: "ugcc", name: "Ukrainian Greek Catholic Church", paschalion: JulP, menologion: RevJul, rule: Orth, discipline: None, tradition: Sl, menaia: RUTHENIAN_MENAIA,
-        note: "Moved the fixed feasts to the Revised Julian calendar on 1 September 2023, keeping the Julian Paschalion. Eparchies outside Ukraine vary; several keep the Gregorian Paschalion. Its particular law on fasting is its own and is not modelled here, so the days are shown at the Typikon and nothing is reported as binding." },
+    Jurisdiction { key: "ugcc", name: "Ukrainian Greek Catholic Church", paschalion: JulP, menologion: RevJul, rule: Orth, discipline: None, tradition: Sl, menaia: NO_MENAIA,
+        note: "Moved the fixed feasts to the Revised Julian calendar on 1 September 2023, keeping the Julian Paschalion. Eparchies outside Ukraine vary; several keep the Gregorian Paschalion. Its particular law on fasting and its own calendar of saints are not modelled here, so the common menologion is used and nothing is reported as binding." },
     Jurisdiction { key: "melkite", name: "Melkite Greek Catholic Church", paschalion: GregP, menologion: RevJul, rule: Orth, discipline: None, tradition: Gk, menaia: NO_MENAIA,
         note: "Practice is not uniform: parishes in the Middle East commonly keep the Julian Paschalion for the sake of the local Orthodox. Its particular law on fasting is its own and is not modelled here, so the days are shown at the Typikon and nothing is reported as binding." },
     Jurisdiction { key: "romanian-catholic", name: "Romanian Greek Catholic Church", paschalion: GregP, menologion: RevJul, rule: Orth, discipline: None, tradition: Gk, menaia: NO_MENAIA,

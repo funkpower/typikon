@@ -24,6 +24,13 @@ use std::fmt;
 ///
 /// A newtype over the JDN rather than a (y, m, d) triple, so that day
 /// arithmetic cannot go wrong at a month or year boundary.
+/// The years this calendar answers for. The lower bound is the first year the
+/// Julian reckoning is meaningful for a Christian calendar; the upper is the
+/// one `datetime.date` stops at, so the Python bindings cannot be handed a day
+/// they could not return.
+pub const MIN_YEAR: i32 = 1;
+pub const MAX_YEAR: i32 = 9999;
+
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
 pub struct Date(i32);
 
@@ -128,16 +135,30 @@ impl Date {
         self.0
     }
 
-    /// A date from a Julian Day Number.
-    pub fn from_jdn(jdn: i32) -> Date {
-        Date(jdn)
+    /// A date from a Julian Day Number, if it lands in the supported years.
+    ///
+    /// Range-checked on the number itself, because `jdn_to_gregorian` adds a
+    /// constant to it and would overflow on the way to finding out.
+    pub fn from_jdn(jdn: i32) -> Option<Date> {
+        (Date::MIN.0..=Date::MAX.0).contains(&jdn).then_some(Date(jdn))
     }
 
     pub fn from_ymd(year: i32, month: u32, day: u32) -> Option<Date> {
-        if !(1..=12).contains(&month) || day == 0 || day > days_in_month(year, month) {
+        if !(MIN_YEAR..=MAX_YEAR).contains(&year)
+            || !(1..=12).contains(&month)
+            || day == 0
+            || day > days_in_month(year, month)
+        {
             return None;
         }
         Some(Date(gregorian_to_jdn(year, month, day)))
+    }
+
+    /// `days` later, or `None` past the end of the supported years. Ordinary
+    /// `+` saturates at the boundary instead, so a walk off the end stops
+    /// rather than wrapping into a year the rest of the program cannot hold.
+    pub fn checked_add(self, days: i32) -> Option<Date> {
+        self.0.checked_add(days).and_then(Date::from_jdn)
     }
 
     pub fn ymd(self) -> (i32, u32, u32) {
@@ -218,18 +239,30 @@ impl JulianDate {
     }
 }
 
+/// Saturating at the supported range, because a liturgical year is walked by
+/// adding days to it and an overflow there would wrap a date into antiquity.
 impl std::ops::Add<i32> for Date {
     type Output = Date;
     fn add(self, days: i32) -> Date {
-        Date(self.0 + days)
+        self.checked_add(days).unwrap_or(if days < 0 { Date::MIN } else { Date::MAX })
     }
 }
 
 impl std::ops::Sub<i32> for Date {
     type Output = Date;
     fn sub(self, days: i32) -> Date {
-        Date(self.0 - days)
+        self.0
+            .checked_sub(days)
+            .and_then(Date::from_jdn)
+            .unwrap_or(if days > 0 { Date::MIN } else { Date::MAX })
     }
+}
+
+impl Date {
+    /// The first day this calendar answers for.
+    pub const MIN: Date = Date(1721426);
+    /// The last.
+    pub const MAX: Date = Date(5373484);
 }
 
 /// Days between two dates, which is a count and not a date.

@@ -52,7 +52,7 @@ struct Args {
     date: Option<String>,
 
     /// How many days from the start date, inclusive
-    #[arg(short = 'n', long, default_value_t = 1)]
+    #[arg(short = 'n', long, default_value_t = 1, value_parser = clap::value_parser!(i32).range(1..=36600))]
     days: i32,
 
     /// How to print it
@@ -60,11 +60,11 @@ struct Args {
     format: Format,
 
     /// Shorthand for --format json
-    #[arg(long, conflicts_with = "ics")]
+    #[arg(long, conflicts_with_all = ["ics", "format"])]
     json: bool,
 
     /// Shorthand for --format ics
-    #[arg(long)]
+    #[arg(long, conflicts_with = "format")]
     ics: bool,
 
     /// Leave the glyphs out, for a terminal or a bar without them
@@ -80,8 +80,8 @@ struct Args {
     list_fields: bool,
 
     /// Indent JSON output
-    #[arg(long)]
-    indent: Option<usize>,
+    #[arg(long, value_parser = clap::value_parser!(u8).range(0..=16))]
+    indent: Option<u8>,
 
     /// Print a year's key dates and exit
     #[arg(long)]
@@ -189,11 +189,9 @@ pub fn elide(text: &str, width: usize) -> String {
 /// How this run's reckoning reads, for the header of either view.
 fn describe_reckoning(jur: &Jurisdiction) -> String {
     let rule = rules::get(jur.rule);
-    let shown = jur.discipline.map(rules::get).unwrap_or(rule);
-    if std::ptr::eq(shown, rule) {
-        rule.title.to_string()
-    } else {
-        format!("{}, obliging under {}", shown.title, rule.title)
+    match jur.discipline.filter(|d| *d != jur.rule) {
+        None => rule.title.to_string(),
+        Some(d) => format!("{}, obliging under {}", rules::get(d).title, rule.title),
     }
 }
 
@@ -441,7 +439,7 @@ fn run() -> Result<i32, String> {
 
     match format {
         Format::Json => {
-            println!("{}", to_json(&days, args.indent));
+            println!("{}", to_json(&days, args.indent.map(usize::from)));
             return Ok(0);
         }
         Format::Ics => {
@@ -475,30 +473,41 @@ fn run() -> Result<i32, String> {
     Ok(0)
 }
 
-/// Today, from the system clock, without pulling in a date library for it.
+/// Today, from the system clock, in local time.
+///
+/// The local offset comes from `date +%z`, because working it out from
+/// /etc/localtime means parsing TZif and this program would rather shell out
+/// than carry a time zone database. Where `date` is absent, as in a scratch
+/// container, the answer is UTC and it says so on stderr rather than quietly
+/// reporting the wrong day either side of midnight.
 fn today() -> Date {
     let secs = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_secs() as i64)
         .unwrap_or(0);
-    // Local midnight, via the offset the system reports for now.
-    let local = secs + local_offset_secs(secs);
-    Date::from_jdn(2440588 + (local.div_euclid(86400)) as i32)
+    let local = secs + local_offset_secs();
+    // Unix epoch is JDN 2440588. The clock cannot reach either bound.
+    Date::from_jdn(2440588 + local.div_euclid(86400) as i32).unwrap_or(Date::MIN)
 }
 
-/// Seconds east of UTC, read from /etc/localtime through the `date` command
-/// only if TZ arithmetic is needed. Falls back to UTC.
-fn local_offset_secs(_now: i64) -> i64 {
-    if let Ok(out) = std::process::Command::new("date").arg("+%z").output() {
-        let s = String::from_utf8_lossy(&out.stdout);
-        let s = s.trim();
-        if s.len() == 5 {
-            if let (Ok(h), Ok(m)) = (s[1..3].parse::<i64>(), s[3..5].parse::<i64>()) {
-                let mag = h * 3600 + m * 60;
-                return if s.starts_with('-') { -mag } else { mag };
-            }
-        }
+/// Seconds east of UTC, or None when it could not be determined.
+fn local_offset_secs() -> i64 {
+    let Ok(out) = std::process::Command::new("date").arg("+%z").output() else {
+        eprintln!("typikon: `date` is not on PATH; reckoning today in UTC");
+        return 0;
+    };
+    let text = String::from_utf8_lossy(&out.stdout);
+    let s = text.trim();
+    // "+HHMM". Checked as bytes so a short or multi-byte reply cannot panic a
+    // slice, which a str index here would.
+    let b = s.as_bytes();
+    if b.len() == 5 && (b[0] == b'+' || b[0] == b'-') && b[1..].iter().all(u8::is_ascii_digit) {
+        let h = (s[1..3].parse::<i64>()).unwrap_or(0);
+        let m = (s[3..5].parse::<i64>()).unwrap_or(0);
+        let mag = h * 3600 + m * 60;
+        return if b[0] == b'-' { -mag } else { mag };
     }
+    eprintln!("typikon: could not read the local time offset; reckoning today in UTC");
     0
 }
 

@@ -97,10 +97,17 @@ fn month_index(word: &str) -> Option<u32> {
 }
 
 /// Split a line into (month, day, rest) when it opens a dated entry.
+///
+/// The day is bounded by the month it is in. This page is fetched, so its
+/// contents are not under this program's control, and an unbounded parse here
+/// wrote keys like `01-4294967295` that no lookup could ever match.
 fn dated(line: &str) -> Option<(u32, u32, String)> {
     let mut it = line.splitn(3, ' ');
     let month = month_index(it.next()?)?;
     let day: u32 = it.next()?.trim_end_matches(['.', ',']).parse().ok()?;
+    if day == 0 || day > crate::calendars::days_in_month(2024, month) {
+        return None;
+    }
     Some((month, day, it.next().unwrap_or("").trim().to_string()))
 }
 
@@ -198,7 +205,12 @@ pub fn update(name: &str) -> Result<Fetched, String> {
         if let Some((month, mut day, rest)) = dated(line) {
             flush(&cur, &mut buf, &mut out);
             if let Some((pm, pd)) = prev {
-                if pm == month && day <= pd {
+                // A date going backwards inside a month is the page's own
+                // typo, corrected to follow the previous entry. Only where
+                // that lands on a real day of the month: the source is remote,
+                // and pd + 1 must not run off the end of it.
+                let last = crate::calendars::days_in_month(2024, month);
+                if pm == month && day <= pd && pd < last {
                     corrections.push(format!("{month:02}-{day:02} -> {month:02}-{:02}", pd + 1));
                     day = pd + 1;
                 }
@@ -233,6 +245,18 @@ pub fn update(name: &str) -> Result<Fetched, String> {
     );
     for (k, v) in &out {
         payload.insert(k.clone(), v.clone());
+    }
+
+    // A page redesign turns into an empty parse, and this set is written with
+    // mode=replace: writing it anyway would quietly blank a year of
+    // commemorations in someone's calendar. Refuse instead.
+    if missing.len() > 30 {
+        return Err(format!(
+            "{} of 366 days came back empty, so {} has probably changed shape; \
+             nothing written",
+            missing.len(),
+            source.url
+        ));
     }
 
     let dir = crate::menologion::data_dir();
