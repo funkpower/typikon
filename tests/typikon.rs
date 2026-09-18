@@ -371,7 +371,7 @@ fn ics_is_well_formed() {
 #[test]
 fn every_jurisdiction_holds_together_for_twenty_years() {
     for jur in JURISDICTIONS.iter().chain(CALENDARS.iter()) {
-        for day in week(d("2020-01-01"), 366 * 21 / 4, jur) {
+        for day in week(d("2020-01-01"), 366 * 21, jur) {
             assert!(!day.commemorations.is_empty(), "{} {}", jur.key, day.date);
             assert!(!day.title().is_empty(), "{} {}", jur.key, day.date);
             // `binds` may never be stricter than the level it sits under.

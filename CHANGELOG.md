@@ -49,6 +49,16 @@ Everything below changes what a day reports against pre-1.0 versions.
 - `--set-default` remembers the tradition and the discipline alongside the
   jurisdiction.
 
+### Packaging
+
+- Requires Rust 1.85, which is what the dependency tree has needed since clap
+  4.6. `rust-version` had said 1.74, so the source distribution claimed to
+  build on toolchains where cargo refuses outright.
+- Classified as production/stable, with the Python version and platform
+  classifiers PyPI indexes on, and Changelog, Documentation and Issues links.
+- README links are absolute, because PyPI does not resolve relative ones and
+  every one of them 404'd on the project page.
+
 ### Changed
 
 - Rewritten in Rust. It ships as one static binary with the menologion compiled

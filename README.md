@@ -45,6 +45,10 @@ One static binary, no runtime to install first.
 $ cargo install --git https://git.pumpin.online/funkpower/typikon
 ```
 
+Rust 1.85 or newer. The name `typikon` on crates.io belongs to an unrelated
+project, so `cargo install typikon` and a `typikon = "1"` dependency will not
+get you this; install and depend on it by git URL.
+
 Or build it from a checkout:
 
 ```console
@@ -63,7 +67,9 @@ $ pip install typikon
 ```
 
 The menologion is compiled into that too, so it carries no data files and needs
-no network either.
+no network either. Wheels are built for Linux on x86-64 and aarch64; everywhere
+else pip falls back to the source distribution, which needs a Rust toolchain of
+1.85 or newer on the installing machine.
 
 ## Which calendar?
 
@@ -176,7 +182,7 @@ will want.
 
 Ten of the fourteen Byzantine-rite Eastern Catholic churches have no entry of
 their own. Each keeps one of the three reckonings, and
-[docs/calendars.md](docs/calendars.md) sets out which questions decide it.
+[docs/calendars.md](https://git.pumpin.online/funkpower/typikon/src/branch/main/docs/calendars.md) sets out which questions decide it.
 
 ## The fast
 
@@ -425,22 +431,18 @@ It lands in `~/.local/share/typikon/` and is overlaid automatically.
 
 ## Further reading
 
-- [docs/calendars.md](docs/calendars.md) sets out which churches keep which
+- [docs/calendars.md](https://git.pumpin.online/funkpower/typikon/src/branch/main/docs/calendars.md) sets out which churches keep which
   reckoning, how the split came about, what is modelled here and what is not.
-- [docs/versioning.md](docs/versioning.md) says what counts as the public
+- [docs/versioning.md](https://git.pumpin.online/funkpower/typikon/src/branch/main/docs/versioning.md) says what counts as the public
   surface, and how a correction to the calendar itself is announced.
-- [CHANGELOG.md](CHANGELOG.md) carries those announcements.
+- [CHANGELOG.md](https://git.pumpin.online/funkpower/typikon/src/branch/main/CHANGELOG.md) carries those announcements.
 
 ## Accuracy
 
-`typikon` is pinned against published calendars: the paschalion for six years
-by both reckonings and its invariants across two centuries, 146,000 calendar
-round-trips from 1800 to 2200, the fast on every day that is not open to
-interpretation, and every jurisdiction over twenty years.
-
-It was ported from a Python implementation, and the port was checked by
-running both over 199,446 day-records, 26 jurisdictions across 21 years, and
-requiring every field of every record to match.
+`typikon` is pinned against published calendars: the paschalion for eleven
+named years and its invariants across the two centuries from 1900, 146,000
+calendar round-trips from 1800 to 2200, the fast on every day that is not open
+to interpretation, and every jurisdiction over the twenty-one years from 2020.
 
 It is a calendar, not an authority. If it disagrees with the one your parish
 prints, your parish is right. Please open an issue.
@@ -455,10 +457,12 @@ widgets for Hyprland (Quickshell), waybar and eww, all reading the JSON above.
 ## Releasing
 
 `main` is always releasable; a `vX.Y.Z` tag on it builds the wheels and publishes
-to PyPI. [docs/releasing.md](docs/releasing.md) has the workflow, and what has to
+to PyPI. [docs/releasing.md](https://git.pumpin.online/funkpower/typikon/src/branch/main/docs/releasing.md) has the workflow, and what has to
 be set up before the first one.
 
 ## Licence
 
-GPL-2.0-only. See [LICENSE](LICENSE). The menologion is under it too;
+GPL-2.0-only. The source for any published release is the source distribution
+beside it on PyPI, and `Cargo.lock` pins every dependency to an exact version.
+See [LICENSE](https://git.pumpin.online/funkpower/typikon/src/branch/main/LICENSE). The menologion is under it too;
 `data/LICENSE` says so and notes what the fetched sets are not.

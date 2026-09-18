@@ -110,7 +110,8 @@ developers, a wall for everyone else.
 ## Checking a release without publishing
 
 ```console
-$ maturin build --release --out dist && maturin sdist --out dist
+$ rm -rf dist          # a wheel left in dist/ gets packed into the sdist
+$ maturin sdist --out dist && maturin build --release --out dist
 $ twine check dist/*
 $ python -m venv /tmp/v && /tmp/v/bin/pip install --no-binary :all: dist/*.tar.gz
 $ /tmp/v/bin/python -c 'import typikon, datetime; print(typikon.today())'

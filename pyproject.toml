@@ -11,10 +11,19 @@ license-files = ["LICENSE"]
 requires-python = ">=3.9"
 keywords = ["orthodox", "liturgical", "calendar", "byzantine", "pascha", "fasting"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
     "Intended Audience :: Developers",
-    "Programming Language :: Rust",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Rust",
     "Topic :: Religion",
     "Topic :: Software Development :: Libraries",
     "Typing :: Typed",
@@ -25,6 +34,9 @@ dynamic = ["version"]
 [project.urls]
 Homepage = "https://git.pumpin.online/funkpower/typikon"
 Repository = "https://git.pumpin.online/funkpower/typikon"
+Changelog = "https://git.pumpin.online/funkpower/typikon/src/branch/main/CHANGELOG.md"
+Documentation = "https://git.pumpin.online/funkpower/typikon/src/branch/main/docs/calendars.md"
+Issues = "https://git.pumpin.online/funkpower/typikon/issues"
 
 [tool.maturin]
 bindings = "pyo3"
