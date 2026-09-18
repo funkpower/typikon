@@ -18,6 +18,9 @@ mod python;
 #[cfg(feature = "capi")]
 pub mod capi;
 
+#[cfg(feature = "wasm")]
+pub mod wasm;
+
 /// Today, from the system clock, in local time.
 ///
 /// The local offset comes from `date +%z`, because working it out from

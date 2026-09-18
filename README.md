@@ -71,6 +71,15 @@ no network either. Wheels are built for Linux on x86-64 and aarch64; everywhere
 else pip falls back to the source distribution, which needs a Rust toolchain of
 1.85 or newer on the installing machine.
 
+For JavaScript and TypeScript, there is a package:
+
+```console
+$ npm install typikon
+```
+
+WebAssembly, so the one package serves Node, Deno, Bun and the browser with no
+native build to go wrong.
+
 ## Which calendar?
 
 Three things get conflated constantly, and keeping them apart is most of what
@@ -454,6 +463,45 @@ day.fast          -- "xerophagy"
 day.title         -- "The Holy Prophet Zachariah, father of the Forerunner"
 day.commemorations
 ```
+
+## From JavaScript and TypeScript
+
+```sh
+npm install typikon
+```
+
+```js
+import { today } from "typikon";
+
+const day = today({ jurisdiction: "rocor" });
+
+day.churchDate;   // "5 September"
+day.fast;         // "xerophagy"
+day.emoji;        // the glyph for the level
+day.title;        // "The Holy Prophet Zachariah, father of the Forerunner"
+day.season;       // null in ordinary time
+day.daysToPascha;
+```
+
+```js
+import { describe, describeIso, week, pascha, jurisdictions } from "typikon";
+
+describeIso("2026-04-12", { jurisdiction: "moscow" });
+describe(new Date(), { jurisdiction: "goarch", tradition: "greek" });
+week(new Date(), 7, { jurisdiction: "oca" });   // seven consecutive days
+pascha(2027, "old");                            // 2027-05-02
+```
+
+It is WebAssembly, so it is one package for Node, Deno, Bun, a browser and
+anything built on them, with no native build to go wrong. Node loads it itself;
+in a browser or a bundler, `await init()` first. A day comes back as a plain
+object, not a handle: the same document `--json` emits, with nothing to free
+and `JSON.stringify` working on it. TypeScript types ship with the package and
+`tsc --strict` is clean against them.
+
+There is no remembered default here, because a browser has nowhere to keep one:
+the default is the New Calendar, and anything else is passed. That is the only
+place this binding differs from the others.
 
 ## The menologion
 

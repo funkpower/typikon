@@ -47,6 +47,8 @@ jobs:
           # run never looks at src/python.rs.
           cargo clippy --features python --all-targets -- -D warnings
           cargo clippy --features capi --all-targets -- -D warnings
+          rustup target add wasm32-unknown-unknown
+          cargo clippy --lib --features wasm --target wasm32-unknown-unknown -- -D warnings
 
       - name: Rust tests
         run: |
@@ -96,6 +98,22 @@ jobs:
           n: int = d.days_to_pascha
           EOF
           /tmp/venv/bin/python -m mypy --strict /tmp/typecheck.py
+
+      # The npm package is the same engine again, so it has to agree with the
+      # command line again. The test compares a year of days field by field
+      # for four jurisdictions, and type-checks the published .d.ts the way the
+      # Python bindings are type-checked.
+      - name: JavaScript package
+        run: |
+          apt-get update && apt-get install -y --no-install-recommends nodejs npm
+          version=$(awk '/^name = "wasm-bindgen"$/{getline; gsub(/[",]/,""); print $3; exit}' Cargo.lock)
+          curl -sSfL "https://github.com/rustwasm/wasm-bindgen/releases/download/$version/wasm-bindgen-$version-x86_64-unknown-linux-musl.tar.gz" \
+            | tar xz -C /tmp
+          export PATH="/tmp/wasm-bindgen-$version-x86_64-unknown-linux-musl:$PATH"
+          npm install --global typescript@5
+          cargo build --release
+          npm/build.sh
+          node npm/test.mjs
 
       - name: README examples
         run: |

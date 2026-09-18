@@ -91,6 +91,17 @@ every package the account owns.
 
 Rotate it at `pypi.org/manage/account/token/` if the forge is ever suspect.
 
+### 4. An npm token
+
+Also under **funkpower**, also scoped to the one package, added as the
+repository secret `NPM_TOKEN`. Make it a **granular access token** with write
+on `typikon` alone; a classic automation token is account-wide.
+
+npm has trusted publishing too, and it does not know this forge either, so the
+same tradeoff applies. Without the secret the release still succeeds and the
+npm step warns and skips, so the first release of a version after the token
+lapses is a PyPI release and nothing else. Check the run.
+
 ## What gets published
 
 | | |
@@ -101,6 +112,12 @@ Rotate it at `pypi.org/manage/account/token/` if the forge is ever suspect.
 
 abi3, so one wheel per platform covers every Python from 3.9 up rather than one
 per interpreter.
+
+And on npm, one package with two WebAssembly builds in it: `node/` for Node,
+which loads the module itself, and `web/` for browsers and bundlers, which
+cannot compile WebAssembly synchronously on the main thread and so has to be
+awaited. The exports map picks between them. There are no per-platform
+artefacts, because WebAssembly has no platforms.
 
 **No macOS or Windows wheels.** Forgejo has no hosted runners, so those need a
 Mac and a Windows box registered as runners. Until then both fall back to the
@@ -119,3 +136,17 @@ $ /tmp/v/bin/python -c 'import typikon, datetime; print(typikon.today())'
 
 Installing from the sdist with `--no-binary` is the one that catches a missing
 file, because it builds the crate from exactly what PyPI would hand someone.
+
+For the npm package:
+
+```console
+$ npm/build.sh && node npm/test.mjs
+$ npm pack --dry-run npm/dist
+```
+
+`npm/test.mjs` resolves `typikon` through a staged `node_modules`, so it tests
+the exports map and the built files rather than a lucky relative import. It
+compares a year of days field by field against the command line, runs the web
+build the way a browser would, and type-checks the published `.d.ts` under
+`tsc --strict`. It needs `wasm-bindgen` on PATH at the version `Cargo.lock`
+pins, and `tsc` for the last of those.

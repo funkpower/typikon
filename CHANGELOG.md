@@ -20,6 +20,13 @@ does.
   the usage and the discipline. The Python bindings and the C ABI now share it
   rather than each keeping a copy, and it interns the combinations instead of
   leaking one per call.
+- A JavaScript and TypeScript package, behind the `wasm` feature and published
+  to npm as `typikon`. One WebAssembly build serves Node, Deno, Bun and the
+  browser. A day comes back as a plain object rather than a handle: the same
+  document `--json` emits, with nothing to free. The types are hand-written
+  rather than inferred, and `tsc --strict` is a release gate the way `mypy
+  --strict` already is. There is no remembered default jurisdiction there,
+  because a browser has nowhere to keep one; the default is the New Calendar.
 
 ## 1.0.0
 

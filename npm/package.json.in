@@ -1,0 +1,49 @@
+{
+  "name": "typikon",
+  "version": "@VERSION@",
+  "description": "The Orthodox liturgical day: feasts, seasons and the fast, computed rather than fetched",
+  "license": "GPL-2.0-only",
+  "homepage": "https://git.pumpin.online/funkpower/typikon",
+  "repository": {
+    "type": "git",
+    "url": "git+https://git.pumpin.online/funkpower/typikon.git"
+  },
+  "keywords": [
+    "orthodox",
+    "liturgical",
+    "calendar",
+    "byzantine",
+    "pascha",
+    "fasting",
+    "wasm"
+  ],
+  "type": "module",
+  "types": "./web/typikon.d.ts",
+  "exports": {
+    ".": {
+      "node": {
+        "types": "./node/typikon.d.ts",
+        "default": "./node/typikon.js"
+      },
+      "default": {
+        "types": "./web/typikon.d.ts",
+        "default": "./web/typikon.js"
+      }
+    },
+    "./node": {
+      "types": "./node/typikon.d.ts",
+      "default": "./node/typikon.js"
+    },
+    "./web": {
+      "types": "./web/typikon.d.ts",
+      "default": "./web/typikon.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "node/",
+    "web/",
+    "README.md",
+    "LICENSE"
+  ]
+}

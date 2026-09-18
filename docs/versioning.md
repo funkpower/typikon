@@ -72,6 +72,27 @@ and in Python, the module's functions and the attributes of `Day`.
 `Day.to_dict()` in Python carries the same fields as the JSON, in snake_case
 rather than camelCase, which is the one deliberate difference between them.
 
+### The C ABI
+
+Every `typikon_*` symbol declared in `include/typikon.h`, and the meaning of
+what it returns. `typikon_abi_version()` is bumped when any of that changes;
+additions leave it alone, so a caller can require a minimum and get everything
+after it.
+
+Dates cross as Julian Day Numbers and a day is opaque, so the ABI carries no
+struct layout and a rebuilt library stays loadable against a header that has
+not moved.
+
+### The JavaScript package
+
+The functions the npm package exports, and the `Day`, `Options` and
+`JurisdictionInfo` types in its `.d.ts`. A day is the JSON above, with the same
+field names; `undefined` never appears where the JSON has `null`.
+
+The one deliberate difference from every other binding: there is no remembered
+default jurisdiction, because a browser has nowhere to keep one. The default is
+the New Calendar.
+
 ## What is not stable
 
 - **The text output.** It is for a person to read, and it changes when a better
@@ -98,8 +119,8 @@ So: **every change to what a day reports is called out in the changelog under
 "Calendar"**, with the days affected, whatever the version number does. If a
 correction changes a day you care about, the changelog is where it will say so.
 
-Adding a jurisdiction, a menaion or a tradition is a minor version. Correcting
-an existing one is a patch, and is announced.
+Adding a jurisdiction, a menaion, a tradition or a binding is a minor version.
+Correcting an existing one is a patch, and is announced.
 
 ## Releasing
 

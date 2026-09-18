@@ -16,6 +16,12 @@ serde_json = "1"
 clap = { version = "4", features = ["derive"] }
 pyo3 = { version = "0.27.2", features = ["extension-module", "abi3-py39"], optional = true }
 
+# The JavaScript build. `js-sys` is here only for the clock: WebAssembly has no
+# time of its own, so `today()` has to ask the host what day it is.
+wasm-bindgen = { version = "0.2", optional = true }
+serde-wasm-bindgen = { version = "0.6", optional = true }
+js-sys = { version = "0.3", optional = true }
+
 [profile.release]
 strip = true
 lto = true
@@ -38,3 +44,6 @@ python = ["dep:pyo3"]
 # The C ABI. Off by default so an ordinary `cargo build` of the CLI does not
 # also compile and link a shared library nobody asked for.
 capi = []
+# The JavaScript and TypeScript build, via WebAssembly. Only ever compiled for
+# a wasm32 target.
+wasm = ["dep:wasm-bindgen", "dep:serde-wasm-bindgen", "dep:js-sys"]
