@@ -17,9 +17,19 @@ version="$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)"
 bindgen="${WASM_BINDGEN:-wasm-bindgen}"
 dist="npm/dist"
 
+# The generator has to be the exact version the crate was built against, or it
+# refuses the module. Cargo.lock is where that version actually is.
+want="$(awk '/^name = "wasm-bindgen"$/{getline; gsub(/[",]/,""); print $3; exit}' Cargo.lock)"
 command -v "$bindgen" >/dev/null || {
-  echo "wasm-bindgen is not on PATH. cargo install wasm-bindgen-cli --version \
-$(sed -n 's/^wasm-bindgen = { version = "\(.*\)".*/\1/p' Cargo.toml)" >&2
+  echo "wasm-bindgen is not on PATH." >&2
+  echo "  cargo install wasm-bindgen-cli --version $want" >&2
+  echo "or take the prebuilt one from" >&2
+  echo "  https://github.com/rustwasm/wasm-bindgen/releases/tag/$want" >&2
+  exit 1
+}
+have="$("$bindgen" --version | awk '{print $2}')"
+[ "$have" = "$want" ] || {
+  echo "wasm-bindgen $have, but Cargo.lock pins $want" >&2
   exit 1
 }
 
