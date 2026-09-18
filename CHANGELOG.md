@@ -4,7 +4,10 @@ Notable changes, in the terms [docs/versioning.md](docs/versioning.md) sets out.
 **Calendar** entries change what a day reports, whatever the version number
 does.
 
-## Unreleased
+## 1.1.0
+
+New ways in, and no change to any day: nothing here moves a feast, a fast
+or a commemoration.
 
 ### Added
 

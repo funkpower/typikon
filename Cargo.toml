@@ -1,6 +1,6 @@
 [package]
 name = "typikon"
-version = "1.0.0"
+version = "1.1.0"
 edition = "2021"
 rust-version = "1.85"
 description = "The Orthodox liturgical day: feasts, seasons and the fast, computed rather than fetched"
