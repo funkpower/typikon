@@ -69,27 +69,33 @@ fn off_weekend(day: Date) -> Date {
     }
 }
 
-pub fn fast_for(ctx: &Context) -> Fast {
+/// What the law actually binds, asked independently of how the day is kept.
+///
+/// Four kinds of day, and nothing else in the year. Returning the binding
+/// minimum separately is what lets the Typikon's own discipline be shown over
+/// the top of it without losing the one fact the law contributes.
+pub fn obligation_for(ctx: &Context) -> super::Binding {
     let mv = ctx.mv;
-
-    // The two days the Church binds strictly.
     if ctx.civil == mv.clean_monday {
-        return Fast::binding(Level::WineOil, "the first day of the Great Fast", Level::WineOil);
+        return Some(("the first day of the Great Fast", Level::WineOil));
     }
     if ctx.civil == mv.great_friday {
-        return Fast::binding(Level::WineOil, "Great and Holy Friday", Level::WineOil);
+        return Some(("Great and Holy Friday", Level::WineOil));
     }
-
-    // And the days it binds to abstinence from meat. Kept strictly by
-    // tradition; binding only as far as meat.
     if ctx.season == Some(Season::GreatFast)
         && matches!(ctx.weekday, Weekday::Wednesday | Weekday::Friday)
     {
-        return Fast::binding(
-            Level::WineOil,
-            "Wednesday and Friday of the Great Fast",
-            Level::Dairy,
-        );
+        // Kept strictly by tradition; binding only as far as meat.
+        return Some(("Wednesday and Friday of the Great Fast", Level::Dairy));
+    }
+    None
+}
+
+pub fn fast_for(ctx: &Context) -> Fast {
+    let mv = ctx.mv;
+
+    if let Some((reason, binds)) = obligation_for(ctx) {
+        return Fast::binding(Level::WineOil, reason, binds);
     }
 
     // Fixed vigils and the Exaltation, moved off a weekend where the rule says.
@@ -157,5 +163,6 @@ pub static RULE: Rule = Rule {
     title: "Ruthenian particular law",
     vocabulary: Vocabulary { label, emoji },
     fast_for,
+    obligation_for: Some(obligation_for),
     has_obligation: true,
 };

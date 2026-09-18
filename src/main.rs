@@ -37,6 +37,11 @@ struct Args {
     #[arg(short = 't', long)]
     tradition: Option<String>,
 
+    /// Show the day at the Typikon's full discipline rather than only what
+    /// your church's particular law requires. Obligations are still reported.
+    #[arg(long)]
+    typikon: bool,
+
     /// YYYY-MM-DD (default: today)
     #[arg(short, long)]
     date: Option<String>,
@@ -171,7 +176,13 @@ fn print_days(days: &[Day], jur: &Jurisdiction, source: Source, verbose: bool) {
             Source::Config => "   (from config)".into(),
             Source::Default => String::new(),
         };
-        println!("  {} \u{b7} {} \u{b7} {} usage{from}", jur.name, rule.title, jur.tradition.key());
+        let shown = jur.discipline.map(rules::get).unwrap_or(rule);
+        let discipline = if std::ptr::eq(shown, rule) {
+            rule.title.to_string()
+        } else {
+            format!("{}, obliging under {}", shown.title, rule.title)
+        };
+        println!("  {} \u{b7} {discipline} \u{b7} {} usage{from}", jur.name, jur.tradition.key());
         println!();
         let sign = d.rank.map(|r| format!("{} ", r.sign())).unwrap_or_default();
         if d.emoji.is_empty() {
@@ -296,14 +307,22 @@ fn run() -> Result<i32, String> {
     // carries. Leaked as a 'static because a Jurisdiction is otherwise a
     // compile-time constant, and one override per run is not worth threading
     // a lifetime through the whole library for.
-    let jur: &'static Jurisdiction = match &args.tradition {
-        None => base,
-        Some(t) => {
-            let tradition = jurisdictions::Tradition::parse(t)
-                .ok_or_else(|| format!("unknown tradition {t:?}; try slavic or greek"))?;
-            Box::leak(Box::new(Jurisdiction { tradition, ..*base }))
-        }
+    let tradition = match &args.tradition {
+        None => base.tradition,
+        Some(t) => jurisdictions::Tradition::parse(t)
+            .ok_or_else(|| format!("unknown tradition {t:?}; try slavic or greek"))?,
     };
+    let discipline = if args.typikon {
+        Some(jurisdictions::RuleKind::Orthodox)
+    } else {
+        base.discipline
+    };
+    let jur: &'static Jurisdiction =
+        if tradition == base.tradition && discipline == base.discipline {
+            base
+        } else {
+            Box::leak(Box::new(Jurisdiction { tradition, discipline, ..*base }))
+        };
 
     if let Some(year) = args.year {
         if !(1..=9999).contains(&year) {

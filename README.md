@@ -136,6 +136,25 @@ binds. A calendar saying "obligatory" where nothing obliges is worse than no
 calendar; one reporting only the binding minimum makes the obligatory days look
 laxer than the voluntary ones beside them.
 
+### The law and the fast are not the same question
+
+For an Eastern Catholic church the two come apart sharply, and reporting only
+the law makes the Great Fast look like four days of abstinence a year. That is
+what binds; it is not what is kept.
+
+```console
+$ typikon -j ruthenian --typikon
+```
+
+shows the day at the Typikon's full discipline while still reporting what your
+own church's law obliges, and still marking it. A week of the Great Fast under
+Ruthenian law is seven days of "no meat, fish, eggs or dairy" with three of
+them starred; the same week at the Typikon's discipline runs from a total fast
+on Clean Monday through xerophagy, wine and oil, and a saint's relaxation, with
+the same three days starred. Nothing about the obligation changes.
+
+It is a no-op for a jurisdiction already reckoning by the Typikon.
+
 Where usages differ (Great Thursday, the Exaltation, Lazarus Saturday), this
 follows the common published rule and names it in the day's reason so you can
 disagree with it. Monastic practice, and the Holy Mountain in particular, is

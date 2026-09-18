@@ -518,3 +518,70 @@ fn tradition_parses_the_names_people_use() {
     assert_eq!(Tradition::parse("GREEK"), Some(Tradition::Greek));
     assert_eq!(Tradition::parse("coptic"), None);
 }
+
+// ─────────────── the law that binds vs the discipline shown ───────────────
+
+fn ruthenian_at_typikon() -> &'static typikon::jurisdictions::Jurisdiction {
+    use typikon::jurisdictions::{Jurisdiction, RuleKind};
+    let base = *resolve(Some("ruthenian")).unwrap();
+    Box::leak(Box::new(Jurisdiction { discipline: Some(RuleKind::Orthodox), ..base }))
+}
+
+#[test]
+fn the_typikon_discipline_can_be_shown_without_losing_the_obligation() {
+    let jur = ruthenian_at_typikon();
+    // Clean Monday: the Typikon's total fast, still binding under particular law.
+    let clean = describe(d("2026-02-16"), jur);
+    assert_eq!(clean.fast, Level::Strict);
+    assert_eq!(clean.obligation, Some(Obligation::Obligatory));
+    assert_eq!(clean.binds, Level::WineOil);
+
+    // A Wednesday of the Great Fast: xerophagy kept, meat alone binding.
+    let wed = describe(d("2026-02-18"), jur);
+    assert_eq!(wed.fast, Level::Xerophagy);
+    assert_eq!(wed.obligation, Some(Obligation::Obligatory));
+    assert_eq!(wed.binds, Level::Dairy);
+
+    // A Thursday of the Great Fast: kept, and binding on no one.
+    let thu = describe(d("2026-02-19"), jur);
+    assert_eq!(thu.fast, Level::Xerophagy);
+    assert_eq!(thu.obligation, Some(Obligation::Customary));
+    assert_eq!(thu.binds, Level::None);
+}
+
+#[test]
+fn showing_the_typikon_never_invents_an_obligation() {
+    let jur = ruthenian_at_typikon();
+    let native = resolve(Some("ruthenian")).unwrap();
+    for n in 0..365 {
+        let day = describe(d("2026-01-01") + n, jur);
+        let plain = describe(d("2026-01-01") + n, native);
+        // Exactly the same days bind, whichever discipline is displayed.
+        assert_eq!(day.is_obligatory(), plain.is_obligatory(), "{}", day.date);
+        assert_eq!(day.binds, plain.binds, "{}", day.date);
+    }
+}
+
+#[test]
+fn the_typikon_discipline_is_never_laxer_than_the_law_it_reports() {
+    let jur = ruthenian_at_typikon();
+    for n in 0..365 {
+        let day = describe(d("2026-01-01") + n, jur);
+        assert!(day.binds >= day.fast, "{}: binds {:?} stricter than kept {:?}",
+                day.date, day.binds, day.fast);
+    }
+}
+
+#[test]
+fn the_override_changes_nothing_for_a_jurisdiction_already_on_the_typikon() {
+    use typikon::jurisdictions::{Jurisdiction, RuleKind};
+    let base = *resolve(Some("rocor")).unwrap();
+    let forced: &'static Jurisdiction =
+        Box::leak(Box::new(Jurisdiction { discipline: Some(RuleKind::Orthodox), ..base }));
+    for n in 0..200 {
+        let a = describe(d("2026-01-01") + n, resolve(Some("rocor")).unwrap());
+        let b = describe(d("2026-01-01") + n, forced);
+        assert_eq!(a.fast, b.fast, "{}", a.date);
+        assert_eq!(a.obligation, b.obligation, "{}", a.date);
+    }
+}

@@ -185,7 +185,26 @@ pub fn describe_with(date: Date, jur: &'static Jurisdiction, men: &Menologion) -
         tradition: jur.tradition,
     };
 
-    let Fast { level, reason, obligation, binds } = (rule.fast_for)(&ctx);
+    // The discipline shown and the law that binds are two questions. Normally
+    // one tradition answers both. When `discipline` names another, the level
+    // and its reason come from that one and the obligation still comes from
+    // this church's own law, because that is the part only it can say.
+    let shown = jur.discipline.map(rules::get).unwrap_or(rule);
+    let mut fast = (shown.fast_for)(&ctx);
+    if !std::ptr::eq(shown, rule) {
+        fast.obligation = match rule.obligation_for.and_then(|f| f(&ctx)) {
+            Some((reason, binds)) => {
+                fast.binds = binds;
+                fast.reason = format!("{} \u{2014} {reason}", fast.reason);
+                Some(Obligation::Obligatory)
+            }
+            None => {
+                fast.binds = Level::None;
+                if fast.level == Level::None { None } else { Some(Obligation::Customary) }
+            }
+        };
+    }
+    let Fast { level, reason, obligation, binds } = fast;
 
     Day {
         date,
@@ -200,8 +219,8 @@ pub fn describe_with(date: Date, jur: &'static Jurisdiction, men: &Menologion) -
         tradition: jur.tradition.key(),
         commemorations,
         fast: level,
-        fast_label: (rule.vocabulary.label)(level),
-        emoji: (rule.vocabulary.emoji)(level),
+        fast_label: (shown.vocabulary.label)(level),
+        emoji: (shown.vocabulary.emoji)(level),
         reason,
         obligation,
         binds,

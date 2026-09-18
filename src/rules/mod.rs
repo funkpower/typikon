@@ -48,11 +48,18 @@ pub struct Vocabulary {
     pub emoji: fn(Level) -> &'static str,
 }
 
+/// What a particular law binds on a given day: the rule that binds, and the
+/// minimum it binds to. `None` when the day obliges no one.
+pub type Binding = Option<(&'static str, Level)>;
+
 pub struct Rule {
     pub name: &'static str,
     pub title: &'static str,
     pub vocabulary: Vocabulary,
     pub fast_for: fn(&Context) -> Fast,
+    /// What this tradition's particular law binds, where it has one, asked
+    /// separately from how the day is kept.
+    pub obligation_for: Option<fn(&Context) -> Binding>,
     /// Whether this tradition legislates the fast as precept at all.
     pub has_obligation: bool,
 }
