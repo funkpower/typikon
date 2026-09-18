@@ -174,6 +174,29 @@ See [the law and the fast](#the-law-and-the-fast-are-not-the-same-question)
 for what `--typikon` does with this, which is the flag most Byzantine Catholics
 will want.
 
+### The other ten
+
+There are fourteen Byzantine-rite Eastern Catholic churches. The Slovak,
+Hungarian, Krizevci, Italo-Albanian, Greek, Bulgarian, Macedonian, Belarusian,
+Russian and Albanian ones are **not** here, and the reason is worth stating:
+their calendars could not be verified against anything published. General
+references do not record them, and the churches' own sites render their
+liturgical calendars in JavaScript. Guessing from geography would put an
+unsourced claim in the one place this program is actually for.
+
+You do not need an entry to get a correct calendar. Ask your parish one
+question, and the answer picks a reckoning:
+
+| is Pascha kept with… | and the fixed feasts… | |
+|---|---|---|
+| Rome | on the civil calendar | `--calendar western` |
+| the local Orthodox | on the civil calendar | `--calendar new` |
+| the local Orthodox | thirteen days behind | `--calendar old` |
+
+Add `--tradition slavic` or `--tradition greek` for the usage your books
+follow. A patch adding your church, with a source for its calendar, is
+welcome.
+
 ## The fast
 
 Six levels, ordered from strictest to laxest. They are the Typikon's own
