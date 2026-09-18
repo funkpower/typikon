@@ -97,10 +97,20 @@ Also under **funkpower**, also scoped to the one package, added as the
 repository secret `NPM_TOKEN`. Make it a **granular access token** with write
 on `typikon` alone; a classic automation token is account-wide.
 
-npm has trusted publishing too, and it does not know this forge either, so the
-same tradeoff applies. Without the secret the release still succeeds and the
-npm step warns and skips, so the first release of a version after the token
-lapses is a PyPI release and nothing else. Check the run.
+It does **not** need "bypass 2FA", and should not have it. npm is withdrawing
+direct publish from every token that bypasses 2FA: management operations went
+in July 2026, publishing goes in January 2027, after which such a token may
+only read private packages and stage a publish. Staging is what this workflow
+does, so an ordinary granular token is both sufficient and the one that
+survives.
+
+npm has trusted publishing too, and like PyPI's it is OIDC against GitHub
+Actions and GitLab, which this forge is neither. So the forge holds a
+long-lived credential and the scoping is the whole of the mitigation.
+
+Without the secret the release still succeeds and the npm step warns and
+skips, so the first release after the token lapses is a PyPI release and
+nothing else. Check the run.
 
 ## What gets published
 
@@ -118,6 +128,25 @@ which loads the module itself, and `web/` for browsers and bundlers, which
 cannot compile WebAssembly synchronously on the main thread and so has to be
 awaited. The exports map picks between them. There are no per-platform
 artefacts, because WebAssembly has no platforms.
+
+### The npm half needs a hand
+
+The tag does not finish the npm release. The runner **stages** the tarball; it
+is not on the registry and `npm install typikon` will not see it until someone
+approves it with 2FA:
+
+```console
+$ npm stage list
+$ npm stage view <stage-id>      # what is in it
+$ npm stage approve <stage-id>   # asks for the code
+```
+
+Or the **Staged Packages** tab on npmjs.com. Either way a code is asked for,
+which is the point: the forge holds a credential that can propose a release and
+cannot make one.
+
+`npm stage` wants npm 11.15 or newer on Node 22.14 or newer, on the approving
+machine as well as the runner.
 
 **No macOS or Windows wheels.** Forgejo has no hosted runners, so those need a
 Mac and a Windows box registered as runners. Until then both fall back to the

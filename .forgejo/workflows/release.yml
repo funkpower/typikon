@@ -61,7 +61,11 @@ jobs:
 
       - name: Build the npm package
         run: |
-          apt-get install -y --no-install-recommends nodejs npm
+          # Node from nodesource rather than apt. `npm stage` below wants npm
+          # 11.15 and Node 22.14, and bookworm ships Node 18.
+          curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+          apt-get install -y --no-install-recommends nodejs
+          npm install --global npm@^11.15
           rustup target add wasm32-unknown-unknown
           version=$(awk '/^name = "wasm-bindgen"$/{getline; gsub(/[",]/,""); print $3; exit}' Cargo.lock)
           curl -sSfL "https://github.com/rustwasm/wasm-bindgen/releases/download/$version/wasm-bindgen-$version-x86_64-unknown-linux-musl.tar.gz" \
@@ -91,22 +95,28 @@ jobs:
           # so a half-published release would otherwise burn it.
           /tmp/venv/bin/twine upload --non-interactive --skip-existing dist/*
 
-      - name: Publish to npm
+      # Staged, not published. npm is withdrawing direct publish from any token
+      # that bypasses 2FA, and its trusted publishing is OIDC against GitHub
+      # Actions and GitLab, which this forge is neither. So the runner does the
+      # part a token may do and stages the tarball, and a maintainer approves it
+      # with 2FA: `npm stage list`, then `npm stage approve <id>`, or the Staged
+      # Packages tab on npmjs.com. Nothing reaches the registry until then.
+      - name: Stage the npm release
         env:
-          # Scoped to this package, for the same reason the PyPI token is
-          # scoped to this project: npm has trusted publishing too, and it does
-          # not know this forge either.
+          # Granular, write on typikon alone, and it does not need to bypass
+          # 2FA, because staging is exactly what a token that cannot bypass it
+          # is still allowed to do.
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           if [ -z "$NPM_TOKEN" ]; then
-            echo "::warning::NPM_TOKEN is not set; skipping the npm publish"
+            echo "::warning::NPM_TOKEN is not set; nothing staged on npm"
             exit 0
           fi
           echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
-          # A version cannot be reused on npm either, so a re-run after a
-          # partial release must not die on the version already being there.
-          npm publish --access public npm/dist || {
-            npm view "typikon@${GITHUB_REF_NAME#v}" version >/dev/null 2>&1 \
-              && echo "::notice::already published" \
-              || exit 1
-          }
+          version="${GITHUB_REF_NAME#v}"
+          if npm view "typikon@$version" version >/dev/null 2>&1; then
+            echo "::notice::typikon@$version is already published"
+            exit 0
+          fi
+          cd npm/dist && npm stage publish --access public
+          echo "::notice::staged typikon@$version; approve it with 2FA to publish"
