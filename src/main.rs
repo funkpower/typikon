@@ -33,6 +33,10 @@ struct Args {
     #[arg(short = 'j', long, visible_alias = "calendar", short_alias = 'c')]
     jurisdiction: Option<String>,
 
+    /// Greek or Slavic usage, overriding the jurisdiction's own
+    #[arg(short = 't', long)]
+    tradition: Option<String>,
+
     /// YYYY-MM-DD (default: today)
     #[arg(short, long)]
     date: Option<String>,
@@ -167,12 +171,13 @@ fn print_days(days: &[Day], jur: &Jurisdiction, source: Source, verbose: bool) {
             Source::Config => "   (from config)".into(),
             Source::Default => String::new(),
         };
-        println!("  {} \u{b7} {}{from}", jur.name, rule.title);
+        println!("  {} \u{b7} {} \u{b7} {} usage{from}", jur.name, rule.title, jur.tradition.key());
         println!();
+        let sign = d.rank.map(|r| format!("{} ", r.sign())).unwrap_or_default();
         if d.emoji.is_empty() {
-            println!("  {}", d.title());
+            println!("  {sign}{}", d.title());
         } else {
-            println!("  {}  {}", d.emoji, d.title());
+            println!("  {}  {sign}{}", d.emoji, d.title());
         }
         if let Some(c) = &d.cycle {
             println!("      {c}");
@@ -284,8 +289,21 @@ fn run() -> Result<i32, String> {
         Some(j) => (Some(j.clone()), Source::Flag),
         None => config::default_jurisdiction(),
     };
-    let jur = jurisdictions::resolve(name.as_deref())
+    let base = jurisdictions::resolve(name.as_deref())
         .map_err(|n| format!("unknown jurisdiction {n:?}; try --list"))?;
+
+    // A tradition given on the command line overrides the one the jurisdiction
+    // carries. Leaked as a 'static because a Jurisdiction is otherwise a
+    // compile-time constant, and one override per run is not worth threading
+    // a lifetime through the whole library for.
+    let jur: &'static Jurisdiction = match &args.tradition {
+        None => base,
+        Some(t) => {
+            let tradition = jurisdictions::Tradition::parse(t)
+                .ok_or_else(|| format!("unknown tradition {t:?}; try slavic or greek"))?;
+            Box::leak(Box::new(Jurisdiction { tradition, ..*base }))
+        }
+    };
 
     if let Some(year) = args.year {
         if !(1..=9999).contains(&year) {

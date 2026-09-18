@@ -23,6 +23,7 @@ pub struct Context<'a> {
     pub feast: String,
     pub rank: Option<Rank>,
     pub jurisdiction: &'a Jurisdiction,
+    pub tradition: crate::jurisdictions::Tradition,
 }
 
 impl Context<'_> {

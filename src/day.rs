@@ -27,6 +27,7 @@ pub struct Day {
     pub cycle: Option<String>,
     pub feast: Option<String>,
     pub rank: Option<Rank>,
+    pub tradition: &'static str,
     pub commemorations: Vec<String>,
     pub fast: Level,
     pub fast_label: &'static str,
@@ -69,6 +70,9 @@ pub struct DayJson<'a> {
     pub cycle: Option<&'a str>,
     pub feast: Option<&'a str>,
     pub rank: Option<&'a str>,
+    /// The mark the books print beside a day of this rank.
+    pub sign: Option<&'a str>,
+    pub tradition: &'a str,
     pub title: &'a str,
     pub commemorations: &'a [String],
     pub fast: &'a str,
@@ -94,6 +98,8 @@ impl Day {
             cycle: self.cycle.as_deref(),
             feast: self.feast.as_deref(),
             rank: self.rank.map(|r| r.key()),
+            sign: self.rank.map(|r| r.sign()),
+            tradition: self.tradition,
             title: self.title(),
             commemorations: &self.commemorations,
             fast: self.fast.key(),
@@ -114,7 +120,7 @@ impl Day {
 
 /// Reckon one civil date in one jurisdiction.
 pub fn describe(date: Date, jur: &'static Jurisdiction) -> Day {
-    let men = menologion::for_jurisdiction(jur.menaia);
+    let men = menologion::for_jurisdiction(jur.tradition, jur.menaia);
     describe_with(date, jur, &men)
 }
 
@@ -176,6 +182,7 @@ pub fn describe_with(date: Date, jur: &'static Jurisdiction, men: &Menologion) -
             .unwrap_or_default(),
         rank,
         jurisdiction: jur,
+        tradition: jur.tradition,
     };
 
     let Fast { level, reason, obligation, binds } = (rule.fast_for)(&ctx);
@@ -190,6 +197,7 @@ pub fn describe_with(date: Date, jur: &'static Jurisdiction, men: &Menologion) -
         cycle: entry.cycle,
         feast,
         rank,
+        tradition: jur.tradition.key(),
         commemorations,
         fast: level,
         fast_label: (rule.vocabulary.label)(level),
@@ -205,7 +213,7 @@ pub fn describe_with(date: Date, jur: &'static Jurisdiction, men: &Menologion) -
 
 /// `days` consecutive days from `start`.
 pub fn week(start: Date, days: i32, jur: &'static Jurisdiction) -> Vec<Day> {
-    let men = menologion::for_jurisdiction(jur.menaia);
+    let men = menologion::for_jurisdiction(jur.tradition, jur.menaia);
     (0..days.max(1))
         .map(|n| describe_with(start + n, jur, &men))
         .collect()

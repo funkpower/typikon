@@ -67,6 +67,22 @@ which agrees with the Gregorian for every date until 2800. So a new-calendar
 church keeps the Nativity with the West and Pascha with the East, not a
 compromise but exactly what the 1923 congress decided.
 
+### Greek or Slavic usage
+
+Both keep the same Typikon and read it a little differently. Two of those
+differences are modelled, and each is visible in the output:
+
+| | Slavic | Greek |
+|---|---|---|
+| The Protection, 1 October | great feast | lower rank; Greece keeps it on 28 October besides |
+| Fish in the Nativity Fast | Saturdays and Sundays | any day but Wednesday and Friday, until 17 December |
+
+Every jurisdiction carries the usage its books follow. `--tradition slavic` or
+`--tradition greek` overrides it, which is what you want for a parish that does
+not match its jurisdiction's default.
+
+### Which calendar?
+
 Pick a reckoning without naming a church:
 
 ```console
@@ -136,6 +152,10 @@ $ typikon --format tsv --fields date,fast,title
 $ typikon --format ics --days 365 > orthodox.ics
 $ typikon --year 2027                    # a year's key dates, to check against yours
 ```
+
+Every day of vigil rank or above carries the mark its books print beside it:
+⊕ for a great feast, ✚ for a vigil, ☩ for a polyeleos. It is the `sign`
+field in the JSON and a column in the delimited formats.
 
 `--no-emoji` drops the glyphs from every format, for a terminal or a bar
 without them. `--list-fields` prints the columns `csv` and `tsv` can take, and

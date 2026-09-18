@@ -8,7 +8,7 @@ use crate::day::Day;
 
 pub const COLUMNS: &[&str] = &[
     "date", "weekday", "jurisdiction", "calendar", "church_date", "season",
-    "cycle", "feast", "rank", "title", "fast", "fast_label", "emoji",
+    "cycle", "feast", "rank", "sign", "tradition", "title", "fast", "fast_label", "emoji",
     "reason", "obligation", "binds", "pascha", "days_to_pascha",
     "julian_offset", "commemorations",
 ];
@@ -35,6 +35,8 @@ fn cell(day: &Day, column: &str) -> String {
         "cycle" => day.cycle.clone().unwrap_or_default(),
         "feast" => day.feast.clone().unwrap_or_default(),
         "rank" => day.rank.map(|r| r.key()).unwrap_or("").to_string(),
+        "sign" => day.rank.map(|r| r.sign()).unwrap_or("").to_string(),
+        "tradition" => day.tradition.to_string(),
         "title" => day.title().to_string(),
         "fast" => day.fast.key().to_string(),
         "fast_label" => day.fast_label.to_string(),

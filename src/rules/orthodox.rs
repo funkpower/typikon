@@ -24,6 +24,8 @@
 //!   addition, which this vocabulary has no level for.
 //! - **Great Week** is kept at xerophagy on its weekdays whatever saint falls
 //!   in it, because the days of the Passion outrank the menologion.
+//! - **Fish in the Nativity Fast** follows the usage, Greek or Slavic. See
+//!   `Tradition`.
 //! - **Monastic practice**, and the Holy Mountain in particular, is stricter
 //!   than any of this throughout.
 //!
@@ -32,6 +34,7 @@
 use super::{Context, Rule, Vocabulary};
 use crate::calendars::Weekday;
 use crate::fasting::{Fast, Level};
+use crate::jurisdictions::Tradition;
 use crate::menologion::Rank;
 use crate::seasons::Season;
 
@@ -182,6 +185,16 @@ pub fn fast_for(ctx: &Context) -> Fast {
                 return Fast::customary(Level::WineOil, "the forefeast of the Nativity");
             }
             return for_feast(Level::Xerophagy, ctx, Level::WineOil, "the forefeast of the Nativity");
+        }
+        // Greek practice permits fish on any day but Wednesday and Friday
+        // until 17 December; Slavic practice keeps it to Saturdays and
+        // Sundays. This is the one place the two usages part on the fast.
+        if ctx.tradition == Tradition::Greek && md <= (12, 17) {
+            if matches!(ctx.weekday, Weekday::Wednesday | Weekday::Friday) {
+                return for_feast(Level::Xerophagy, ctx, Level::Fish,
+                                 "Wednesday and Friday of the Nativity Fast");
+            }
+            return Fast::customary(Level::Fish, "the Nativity Fast, Greek usage");
         }
         if weekend {
             return Fast::customary(Level::Fish, "Saturday and Sunday of the Nativity Fast");

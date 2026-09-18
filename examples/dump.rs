@@ -10,7 +10,7 @@ fn main() {
     let start = Date::parse_iso(&args[1]).expect("start date");
     let days: i32 = args[2].parse().expect("days");
     for jur in JURISDICTIONS.iter().chain(CALENDARS.iter()) {
-        let men = menologion::for_jurisdiction(jur.menaia);
+        let men = menologion::for_jurisdiction(jur.tradition, jur.menaia);
         for n in 0..days {
             let d = describe_with(start + n, jur, &men);
             println!("{}", serde_json::to_string(&d.to_json()).unwrap());

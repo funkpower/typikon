@@ -1,0 +1,10 @@
+{
+ "_meta": {
+  "mode": "add",
+  "title": "Slavic usage",
+  "note": "Where Slavic books differ from Greek ones. Ranks stated here override the common menologion; local commemorations would be added the same way."
+ },
+ "10-01": {
+  "rank": "great"
+ }
+}

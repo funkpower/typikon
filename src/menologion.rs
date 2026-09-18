@@ -15,6 +15,7 @@ use std::collections::BTreeMap;
 use serde::Deserialize;
 
 use crate::calendars::Date;
+use crate::jurisdictions::Tradition;
 use crate::paschalion::Movables;
 
 /// The degrees of solemnity the menologion marks, and the order they rank in.
@@ -39,6 +40,20 @@ impl Rank {
     /// commemorated on it.
     pub fn names_the_day(self) -> bool {
         matches!(self, Rank::Great | Rank::Vigil)
+    }
+
+    /// The mark the liturgical books print beside the day.
+    ///
+    /// In the Slavic books these are printed in red: a cross in a circle for a
+    /// great feast, a plain cross for a vigil, a cross over a half-circle for
+    /// a polyeleos. Unicode has no glyph for the last, so the Jerusalem cross
+    /// stands in for it, which is what digital calendars generally settle on.
+    pub fn sign(self) -> &'static str {
+        match self {
+            Rank::Great => "\u{2295}",
+            Rank::Vigil => "\u{271a}",
+            Rank::Polyeleos => "\u{2629}",
+        }
     }
 }
 
@@ -80,6 +95,11 @@ pub struct Menologion {
 /// The common Byzantine menologion, compiled in. No file to find, no path to
 /// get wrong, and the binary answers for every day of the year on its own.
 const COMMON: &str = include_str!("../data/menologion.json");
+
+/// Where the two usages part company. Compiled in beside the common set, and
+/// laid over it according to the jurisdiction's tradition.
+const SLAVIC: &str = include_str!("../data/tradition-slavic.json");
+const GREEK: &str = include_str!("../data/tradition-greek.json");
 
 fn parse(text: &str) -> Result<Menologion, String> {
     let raw: BTreeMap<String, serde_json::Value> =
@@ -165,10 +185,21 @@ pub fn data_dir() -> std::path::PathBuf {
     base.join("typikon")
 }
 
-/// The common menologion with a jurisdiction's supplementary sets overlaid.
-/// A missing set is not an error: it simply has not been fetched.
-pub fn for_jurisdiction(menaia: &[&str]) -> Menologion {
-    let mut m = Menologion::common().clone();
+fn tradition_overlay(t: Tradition) -> &'static Menologion {
+    use std::sync::OnceLock;
+    static SL: OnceLock<Menologion> = OnceLock::new();
+    static GK: OnceLock<Menologion> = OnceLock::new();
+    match t {
+        Tradition::Slavic => SL.get_or_init(|| parse(SLAVIC).expect("slavic usage parses")),
+        Tradition::Greek => GK.get_or_init(|| parse(GREEK).expect("greek usage parses")),
+    }
+}
+
+/// The common menologion, the jurisdiction's usage laid over it, then any
+/// supplementary sets. A missing fetched set is not an error: it simply has
+/// not been fetched.
+pub fn for_jurisdiction(tradition: Tradition, menaia: &[&str]) -> Menologion {
+    let mut m = Menologion::common().overlay(tradition_overlay(tradition));
     for name in menaia {
         let path = data_dir().join(format!("{name}.json"));
         if let Ok(extra) = Menologion::load_file(&path) {

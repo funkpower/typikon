@@ -465,3 +465,56 @@ fn every_advertised_column_actually_renders() {
     assert_eq!(lines[0].split('\t').count(), COLUMNS.len());
     assert_eq!(lines[1].split('\t').count(), COLUMNS.len());
 }
+
+// ───────────────────────── Greek and Slavic usage ─────────────────────────
+
+#[test]
+fn the_protection_is_a_great_feast_in_slavic_usage_only() {
+    use typikon::jurisdictions::{Jurisdiction, Tradition};
+    let base = *resolve(Some("goarch")).unwrap();
+    let slavic: &'static Jurisdiction =
+        Box::leak(Box::new(Jurisdiction { tradition: Tradition::Slavic, ..base }));
+    let greek: &'static Jurisdiction =
+        Box::leak(Box::new(Jurisdiction { tradition: Tradition::Greek, ..base }));
+    assert_eq!(describe(d("2026-10-01"), slavic).rank, Some(Rank::Great));
+    assert_eq!(describe(d("2026-10-01"), greek).rank, Some(Rank::Vigil));
+}
+
+#[test]
+fn greek_usage_admits_fish_in_the_nativity_fast_where_slavic_does_not() {
+    // A Tuesday before 17 December.
+    assert_eq!(at("2026-12-01", "rocor").fast, Level::WineOil);
+    assert_eq!(at("2026-12-01", "goarch").fast, Level::Fish);
+    // Wednesday is a fast day in both.
+    assert!(at("2026-12-02", "goarch").fast <= Level::WineOil);
+    // And after the 17th the Greek relaxation stops.
+    assert_eq!(at("2026-12-22", "goarch").fast, Level::WineOil);
+}
+
+#[test]
+fn a_jurisdiction_carries_the_usage_its_books_follow() {
+    use typikon::jurisdictions::Tradition;
+    for key in ["moscow", "rocor", "serbian", "oca", "ruthenian", "ukrainian"] {
+        assert_eq!(resolve(Some(key)).unwrap().tradition, Tradition::Slavic, "{key}");
+    }
+    for key in ["goarch", "greece", "constantinople", "antiochian", "cyprus"] {
+        assert_eq!(resolve(Some(key)).unwrap().tradition, Tradition::Greek, "{key}");
+    }
+}
+
+#[test]
+fn every_rank_has_a_mark_and_they_are_distinct() {
+    let signs: Vec<&str> = [Rank::Great, Rank::Vigil, Rank::Polyeleos]
+        .iter().map(|r| r.sign()).collect();
+    assert!(signs.iter().all(|s| !s.is_empty()));
+    assert_eq!(signs.iter().collect::<std::collections::HashSet<_>>().len(), 3);
+}
+
+#[test]
+fn tradition_parses_the_names_people_use() {
+    use typikon::jurisdictions::Tradition;
+    assert_eq!(Tradition::parse("Slavic"), Some(Tradition::Slavic));
+    assert_eq!(Tradition::parse("russian"), Some(Tradition::Slavic));
+    assert_eq!(Tradition::parse("GREEK"), Some(Tradition::Greek));
+    assert_eq!(Tradition::parse("coptic"), None);
+}
