@@ -149,17 +149,10 @@ fn list_jurisdictions() {
         }
         println!();
     }
-    println!("  Not listed? There are fourteen Byzantine-rite Eastern Catholic");
-    println!("  churches and ten of them are not here, because their calendars");
-    println!("  could not be verified against anything published. Ask your parish");
-    println!("  one question: is Pascha kept with Rome or with the local");
-    println!("  Orthodox? The answer picks a reckoning above:\n");
-    println!("    with Rome, fixed feasts on the civil calendar   --calendar western");
-    println!("    with the Orthodox, fixed feasts on the civil     --calendar new");
-    println!("    with the Orthodox, fixed feasts thirteen days    --calendar old");
-    println!("                                                     behind\n");
-    println!("  A patch adding your church, with a source for its calendar, is");
-    println!("  welcome.\n");
+    println!("  A church not listed here keeps one of the three reckonings above.");
+    println!("  Which one follows from two questions: is Pascha kept with Rome or");
+    println!("  with the local Orthodox, and are the fixed feasts on the civil");
+    println!("  calendar or thirteen days behind it?\n");
 }
 
 fn elide(text: &str, width: usize) -> String {
