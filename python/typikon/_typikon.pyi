@@ -28,6 +28,12 @@ class Day:
     @property
     def rank(self) -> str | None: ...
     @property
+    def sign(self) -> str | None:
+        """The mark the liturgical books print beside a day of this rank."""
+    @property
+    def tradition(self) -> str:
+        """Greek or Slavic usage, as this jurisdiction reads the Typikon."""
+    @property
     def title(self) -> str:
         """The feast if there is one, else the principal commemoration."""
     @property

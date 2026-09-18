@@ -124,6 +124,18 @@ impl PyDay {
         self.inner.rank.map(|r| r.key())
     }
 
+    /// The mark the liturgical books print beside a day of this rank.
+    #[getter]
+    fn sign(&self) -> Option<&'static str> {
+        self.inner.rank.map(|r| r.sign())
+    }
+
+    /// Greek or Slavic usage, as this jurisdiction reads the Typikon.
+    #[getter]
+    fn tradition(&self) -> &'static str {
+        self.inner.tradition
+    }
+
     /// The feast if there is one, else the principal commemoration.
     #[getter]
     fn title(&self) -> &str {
@@ -201,6 +213,8 @@ impl PyDay {
         d.set_item("cycle", j.cycle)?;
         d.set_item("feast", j.feast)?;
         d.set_item("rank", j.rank)?;
+        d.set_item("sign", j.sign)?;
+        d.set_item("tradition", j.tradition)?;
         d.set_item("title", j.title)?;
         d.set_item("commemorations", j.commemorations)?;
         d.set_item("fast", j.fast)?;
