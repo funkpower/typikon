@@ -291,8 +291,31 @@ fn run() -> Result<i32, String> {
     if let Some(name) = &args.set_default {
         let jur = jurisdictions::resolve(Some(name))
             .map_err(|n| format!("unknown jurisdiction {n:?}; try --list"))?;
-        let where_ = config::write(jur.key).map_err(|e| e.to_string())?;
+        // Whatever else was given alongside is remembered too, so that
+        // `--set-default ruthenian --typikon` records the whole setup rather
+        // than half of it and leaves a terminal disagreeing with a widget.
+        let tradition = match &args.tradition {
+            None => None,
+            Some(t) => Some(
+                jurisdictions::Tradition::parse(t)
+                    .ok_or_else(|| format!("unknown tradition {t:?}; try slavic or greek"))?
+                    .key()
+                    .to_string(),
+            ),
+        };
+        let saved = config::Saved {
+            jurisdiction: Some(jur.key.to_string()),
+            tradition,
+            typikon: args.typikon,
+        };
+        let where_ = config::write(&saved).map_err(|e| e.to_string())?;
         println!("  {} \u{2014} written to {}", jur.name, where_.display());
+        if let Some(t) = &saved.tradition {
+            println!("  {t} usage");
+        }
+        if saved.typikon {
+            println!("  shown at the Typikon's discipline");
+        }
         return Ok(0);
     }
 
@@ -307,12 +330,13 @@ fn run() -> Result<i32, String> {
     // carries. Leaked as a 'static because a Jurisdiction is otherwise a
     // compile-time constant, and one override per run is not worth threading
     // a lifetime through the whole library for.
-    let tradition = match &args.tradition {
+    let saved = config::saved();
+    let tradition = match args.tradition.as_deref().or(saved.tradition.as_deref()) {
         None => base.tradition,
         Some(t) => jurisdictions::Tradition::parse(t)
             .ok_or_else(|| format!("unknown tradition {t:?}; try slavic or greek"))?,
     };
-    let discipline = if args.typikon {
+    let discipline = if args.typikon || saved.typikon {
         Some(jurisdictions::RuleKind::Orthodox)
     } else {
         base.discipline
@@ -399,7 +423,11 @@ fn run() -> Result<i32, String> {
 
     // The first run should say what it assumed, and then stop saying it.
     if source == Source::Default {
-        if let Ok(p) = config::write(jur.key) {
+        let first = config::Saved {
+            jurisdiction: Some(jur.key.to_string()),
+            ..Default::default()
+        };
+        if let Ok(p) = config::write(&first) {
             println!("  Reckoning by the {}, written to {}.", jur.name.to_lowercase(), p.display());
             println!("  Change it with `typikon --set-default <jurisdiction>`, or see `typikon --list`.\n");
         }

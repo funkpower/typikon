@@ -585,3 +585,43 @@ fn the_override_changes_nothing_for_a_jurisdiction_already_on_the_typikon() {
         assert_eq!(a.obligation, b.obligation, "{}", a.date);
     }
 }
+
+// ────────────────────────── what gets remembered ──────────────────────────
+
+#[test]
+fn the_config_round_trips_all_three_axes() {
+    use typikon::config::{self, Saved};
+    // A scratch XDG_CONFIG_HOME, so the test cannot touch a real one.
+    let dir = std::env::temp_dir().join(format!("typikon-test-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    // SAFETY: single-threaded test, and the variable is restored below.
+    let prev = std::env::var_os("XDG_CONFIG_HOME");
+    unsafe { std::env::set_var("XDG_CONFIG_HOME", &dir) };
+
+    config::write(&Saved {
+        jurisdiction: Some("ruthenian".into()),
+        tradition: Some("slavic".into()),
+        typikon: true,
+    })
+    .unwrap();
+    let back = config::saved();
+    assert_eq!(back.jurisdiction.as_deref(), Some("ruthenian"));
+    assert_eq!(back.tradition.as_deref(), Some("slavic"));
+    assert!(back.typikon);
+
+    // Remembering only a jurisdiction leaves the other two unset, rather than
+    // inventing a default that would disagree with the flags.
+    config::write(&Saved { jurisdiction: Some("rocor".into()), ..Default::default() }).unwrap();
+    let plain = config::saved();
+    assert_eq!(plain.jurisdiction.as_deref(), Some("rocor"));
+    assert_eq!(plain.tradition, None);
+    assert!(!plain.typikon);
+
+    unsafe {
+        match prev {
+            Some(v) => std::env::set_var("XDG_CONFIG_HOME", v),
+            None => std::env::remove_var("XDG_CONFIG_HOME"),
+        }
+    }
+    let _ = std::fs::remove_dir_all(&dir);
+}

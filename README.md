@@ -100,8 +100,17 @@ $ typikon --list                # every accepted value
 ```
 
 The first run writes your choice to `~/.config/typikon/config.toml` and stops
-asking. Change it with `--set-default`, override it for one run with the flag,
-or set `TYPIKON_JURISDICTION`.
+asking. `--set-default` remembers the whole invocation, not just the
+jurisdiction:
+
+```console
+$ typikon --set-default ruthenian --typikon
+```
+
+records the discipline and the usage alongside the church, so a terminal and a
+desktop widget on the same machine cannot end up disagreeing about the same
+day. Override any of it for one run with the flags, or set
+`TYPIKON_JURISDICTION`.
 
 Twenty-three jurisdictions ship: the old-calendar churches (Moscow, ROCOR,
 Serbia, Georgia, Jerusalem, the Holy Mountain, Poland, Macedonia), the
