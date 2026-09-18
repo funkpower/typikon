@@ -4,6 +4,35 @@ Notable changes, in the terms [docs/versioning.md](docs/versioning.md) sets out.
 **Calendar** entries change what a day reports, whatever the version number
 does.
 
+## Unreleased
+
+### Fixed
+
+- The npm package's files are reachable through its exports map. A bundler
+  asked for `typikon/web/typikon_bg.wasm` was told no such path is exported,
+  so a web app that wants to hand the WebAssembly to `init()` as an asset had
+  to reach around the package into `node_modules`. The documented call, `await
+  init()` with no argument, was never affected.
+
+### Added
+
+- `tests/parity.sh`: every binding asked the same twelve days and compared
+  field by field against the command line. The days are the ones where the
+  bindings could plausibly differ, and the surfaces are the command line, the
+  Python wheel, Node by import and by require, TypeScript under `--strict`, a
+  real browser, Deno, Bun, the C ABI and LuaJIT over it. A surface whose
+  toolchain is absent is named as skipped rather than silently counted.
+  `--published` runs the same checks against PyPI and npm instead of the
+  checkout.
+
+### Changed
+
+- A release runs what a push runs. The release workflow had been gated on
+  `cargo test` alone, so the C ABI, the Lua binding, the Python parity check
+  and the README examples were checked on the branch that led to a release but
+  not on the release itself. A version cannot be reused on either registry, so
+  the gate belongs before the upload.
+
 ## 1.1.0
 
 New ways in, and no change to any day: nothing here moves a feast, a fast

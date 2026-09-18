@@ -1,0 +1,14 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>typikon parity</title>
+<pre id="out">running</pre>
+<script type="module">
+import "./entry.js";
+const probes = await (await fetch("./probes.json")).json();
+try {
+  document.getElementById("out").textContent =
+    JSON.stringify(await window.typikonProbe(probes));
+} catch (e) {
+  document.getElementById("out").textContent = "ERROR " + (e && e.stack || e);
+}
+</script>

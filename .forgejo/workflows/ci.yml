@@ -119,3 +119,18 @@ jobs:
         run: |
           cargo build --release
           python3 tests/readme-examples.py
+
+      # Every binding is the same engine reached by a different door, so the
+      # answers have to be identical, and the only way to know is to ask them
+      # all the same question. Twelve days chosen where they could plausibly
+      # differ, twenty-two fields each, against what the command line says.
+      #
+      # Chromium is installed for this: the web build is the one artifact whose
+      # real home is somewhere Node cannot stand in for, and loading it with
+      # Node's bytes proves the glue, not the fetch.
+      - name: Every binding agrees
+        run: |
+          apt-get install -y --no-install-recommends chromium
+          version=$(awk '/^name = "wasm-bindgen"$/{getline; gsub(/[",]/,""); print $3; exit}' Cargo.lock)
+          export PATH="/tmp/wasm-bindgen-$version-x86_64-unknown-linux-musl:$PATH"
+          tests/parity.sh

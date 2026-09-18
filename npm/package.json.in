@@ -38,6 +38,8 @@
       "types": "./web/typikon.d.ts",
       "default": "./web/typikon.js"
     },
+    "./node/*": "./node/*",
+    "./web/*": "./web/*",
     "./package.json": "./package.json"
   },
   "files": [

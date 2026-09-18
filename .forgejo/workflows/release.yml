@@ -32,8 +32,20 @@ jobs:
           echo "tag=$tag crate=$crate"
           [ "$tag" = "$crate" ] || { echo "::error::tag $tag != Cargo.toml $crate"; exit 1; }
 
+      # What CI runs on every push, run again here. A release is the one build
+      # nobody gets to re-run after the fact: PyPI will not reuse a version and
+      # neither will npm, so the gate belongs before the upload rather than
+      # only on the branch that led to it.
       - name: Tests
-        run: cargo test
+        run: |
+          rustup component add clippy
+          cargo clippy --all-targets -- -D warnings
+          cargo clippy --features python --all-targets -- -D warnings
+          cargo clippy --features capi --all-targets -- -D warnings
+          rustup target add wasm32-unknown-unknown
+          cargo clippy --lib --features wasm --target wasm32-unknown-unknown -- -D warnings
+          cargo test
+          cargo test --features capi
 
       - name: Build wheels and sdist
         run: |
@@ -75,6 +87,17 @@ jobs:
           cargo build --release
           npm/build.sh
           node npm/test.mjs
+
+      # The whole point of a release is that every door leads to the same
+      # engine. Checked here against what is about to be uploaded, and again
+      # after the fact with --published against what actually was.
+      - name: Every binding agrees
+        run: |
+          apt-get install -y --no-install-recommends chromium luajit
+          version=$(awk '/^name = "wasm-bindgen"$/{getline; gsub(/[",]/,""); print $3; exit}' Cargo.lock)
+          export PATH="/tmp/wasm-bindgen-$version-x86_64-unknown-linux-musl:$PATH"
+          tests/parity.sh
+          python3 tests/readme-examples.py
 
       - name: Publish
         env:

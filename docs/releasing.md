@@ -166,6 +166,25 @@ $ /tmp/v/bin/python -c 'import typikon, datetime; print(typikon.today())'
 Installing from the sdist with `--no-binary` is the one that catches a missing
 file, because it builds the crate from exactly what PyPI would hand someone.
 
+### Every binding agrees
+
+`tests/parity.sh` asks every binding for the same twelve days and compares all
+twenty-two fields against what the command line says. It runs in CI on every
+push and again in the release job before anything is uploaded.
+
+```console
+$ tests/parity.sh              # against this checkout
+$ tests/parity.sh --published  # against what is on PyPI and npm
+```
+
+Run the second one after a release. It is the only check that exercises the
+artefacts people will actually install rather than the ones the build produced.
+
+A surface whose toolchain is missing is skipped by name, and the script refuses
+to report a pass if fewer than three ran, so a container with nothing installed
+cannot look like a green run. Everything it wants: `python3` with `venv`, `node`
+and `npm`, `cc`, `luajit`, `chromium`, and optionally `deno` and `bun`.
+
 For the npm package:
 
 ```console

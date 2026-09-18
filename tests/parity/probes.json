@@ -1,0 +1,14 @@
+[
+  ["2026-04-12", "moscow",         false],
+  ["2026-04-12", "goarch",         false],
+  ["2026-01-07", "moscow",         false],
+  ["2025-12-25", "old",            false],
+  ["2026-03-04", "ruthenian",      false],
+  ["2026-03-04", "ruthenian",      true],
+  ["2025-12-09", "old",            false],
+  ["2026-02-16", "oca",            false],
+  ["2026-08-15", "antiochian",     false],
+  ["2026-09-18", "finnish",        false],
+  ["2027-05-02", "serbian",        false],
+  ["2026-06-28", "constantinople", false]
+]
