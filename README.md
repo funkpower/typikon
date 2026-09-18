@@ -1,6 +1,6 @@
 # typikon
 
-The Orthodox liturgical day — feasts, seasons and the fast — computed rather
+The Orthodox liturgical day: feasts, seasons and the fast, computed rather
 than fetched.
 
 Everything derives from the paschalion and the fixed calendar, so it needs no
@@ -27,7 +27,7 @@ $ typikon
 $ pipx install git+https://git.pumpin.online/funkpower/typikon
 ```
 
-Or run it straight out of a checkout — it has no dependencies and needs only
+Or run it straight out of a checkout. It has no dependencies and needs only
 Python 3.9.
 
 ```console
@@ -42,7 +42,7 @@ this library is for:
 
 | | |
 |---|---|
-| **Paschalion** | which table gives Pascha — Julian or Gregorian |
+| **Paschalion** | which table gives Pascha, Julian or Gregorian |
 | **Menologion** | which calendar the fixed feasts are read on |
 | **Rule** | which fasting discipline is kept |
 
@@ -50,7 +50,7 @@ Almost every Orthodox Church keeps the **Julian Paschalion**. What divides them
 is the menologion. The old-calendar churches read the fixed feasts on the
 Julian calendar too; the new-calendar churches read them on the Revised Julian,
 which agrees with the Gregorian for every date until 2800. So a new-calendar
-church keeps the Nativity with the West and Pascha with the East — not a
+church keeps the Nativity with the West and Pascha with the East, not a
 compromise but exactly what the 1923 congress decided.
 
 Pick a reckoning without naming a church:
@@ -76,8 +76,8 @@ or set `TYPIKON_JURISDICTION`.
 Twenty-three jurisdictions ship: the old-calendar churches (Moscow, ROCOR,
 Serbia, Georgia, Jerusalem, the Holy Mountain, Poland, Macedonia), the
 new-calendar ones (Constantinople, Greece, GOARCH, Antioch, the OCA, Romania,
-Bulgaria, Cyprus, Albania, Ukraine), the Finnish Orthodox Church — alone among
-the Orthodox in keeping the Gregorian Paschalion — and, as an add-on, four
+Bulgaria, Cyprus, Albania, Ukraine), the Finnish Orthodox Church, alone among
+the Orthodox in keeping the Gregorian Paschalion, and, as an add-on, four
 Byzantine Catholic churches.
 
 ## The fast
@@ -100,13 +100,13 @@ away the information its reader wanted.
 **Level and obligation are separate questions.** The Orthodox Church legislates
 fasting as tradition rather than as precept, so every Orthodox day here reports
 as customary. The Eastern Catholic churches do have law about it, and it
-requires very much less than the Typikon describes — so those jurisdictions
+requires very much less than the Typikon describes, so those jurisdictions
 report both the level at which the day is kept and the minimum that actually
 binds. A calendar saying "obligatory" where nothing obliges is worse than no
 calendar; one reporting only the binding minimum makes the obligatory days look
 laxer than the voluntary ones beside them.
 
-Where usages differ — Great Thursday, the Exaltation, Lazarus Saturday — this
+Where usages differ (Great Thursday, the Exaltation, Lazarus Saturday), this
 follows the common published rule and names it in the day's reason so you can
 disagree with it. Monastic practice, and the Holy Mountain in particular, is
 stricter than all of it. A calendar cannot settle that; your bishop and your
@@ -169,7 +169,7 @@ It lands beside the packaged menologion and is overlaid automatically.
 
 ## Accuracy
 
-`typikon` is pinned by 60 tests against published calendars — the paschalion
+`typikon` is pinned by 60 tests against published calendars: the paschalion
 for six years by both reckonings, the Julian drift across the 2100 boundary,
 the fast on every day that is not open to interpretation, and a full year in
 every jurisdiction.
@@ -179,12 +179,12 @@ prints, your parish is right. Please open an issue.
 
 ## Front ends
 
-[`horologion`](https://git.pumpin.online/funkpower/horologion) — desktop
+[`menologion`](https://git.pumpin.online/funkpower/menologion): desktop
 widgets for Hyprland (Quickshell), waybar and eww, all reading the JSON above.
 
-![The horologion widget](https://git.pumpin.online/funkpower/horologion/raw/branch/main/docs/nativity-fast.png)
+![The menologion widget](https://git.pumpin.online/funkpower/menologion/raw/branch/main/docs/nativity-fast.png)
 
 ## Licence
 
-GPL-2.0-only — see [LICENSE](LICENSE). The menologion is under it too;
+GPL-2.0-only. See [LICENSE](LICENSE). The menologion is under it too;
 `typikon/data/LICENSE` says so and notes what the fetched sets are not.
