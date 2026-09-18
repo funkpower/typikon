@@ -70,8 +70,10 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
-          twine check --strict dist/*
+          # By absolute path: each step gets its own shell, so the PATH the
+          # build step exported for zig's sake does not reach this one.
+          /tmp/venv/bin/twine check --strict dist/*
           # --skip-existing so a retry after a partial upload finishes the job
           # instead of dying on the first file. A version cannot be reused,
           # so a half-published release would otherwise burn it.
-          twine upload --non-interactive --skip-existing dist/*
+          /tmp/venv/bin/twine upload --non-interactive --skip-existing dist/*
