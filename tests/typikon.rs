@@ -625,3 +625,38 @@ fn the_config_round_trips_all_three_axes() {
     }
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+// ─────────────── no church is told another church's law binds ─────────────
+
+#[test]
+fn only_the_church_whose_law_was_sourced_reports_an_obligation() {
+    use typikon::jurisdictions::{RuleKind, JURISDICTIONS};
+    // Ruthenian particular law is sourced from the Metropolia of Pittsburgh.
+    // No other jurisdiction may borrow it: telling a Melkite that fourteen
+    // days a year bind him under a law that was never his is the error the
+    // level/obligation split exists to prevent.
+    for jur in JURISDICTIONS.iter() {
+        if jur.rule == RuleKind::Ruthenian {
+            assert_eq!(jur.key, "ruthenian", "{} borrows another church's law", jur.key);
+        }
+    }
+
+    for key in ["melkite", "romanian-catholic", "ugcc"] {
+        let jur = resolve(Some(key)).unwrap();
+        let binding = week(d("2026-01-01"), 365, jur)
+            .into_iter()
+            .filter(|x| x.is_obligatory())
+            .count();
+        assert_eq!(binding, 0, "{key} claims {binding} binding days it has no source for");
+        // And the entry has to say why nothing binds.
+        assert!(jur.note.contains("not modelled"), "{key}: the note must say so");
+    }
+
+    // The one church whose law is sourced still reports it.
+    let ruthenian = resolve(Some("ruthenian")).unwrap();
+    let binding = week(d("2026-01-01"), 365, ruthenian)
+        .into_iter()
+        .filter(|x| x.is_obligatory())
+        .count();
+    assert_eq!(binding, 14);
+}

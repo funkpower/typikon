@@ -1,7 +1,8 @@
 # typikon
 
 The Orthodox liturgical day: feasts, seasons and the fast, computed rather
-than fetched.
+than fetched. The Byzantine Catholic churches are here too, on their own
+calendars and, where the law has been sourced, under their own particular law.
 
 Everything derives from the paschalion and the fixed calendar, so it needs no
 network, cannot go stale, and answers for any year you ask about. No API key,
@@ -148,6 +149,30 @@ new-calendar ones (Constantinople, Greece, GOARCH, Antioch, the OCA, Romania,
 Bulgaria, Cyprus, Albania, Ukraine), the Finnish Orthodox Church, alone among
 the Orthodox in keeping the Gregorian Paschalion, and, as an add-on, four
 Byzantine Catholic churches.
+
+## The Byzantine Catholic churches
+
+Four are modelled, and they are not a footnote on the Orthodox ones: they keep
+different paschalions, and their fasting is a different kind of thing.
+
+| | calendar | fasting |
+|---|---|---|
+| `ruthenian` | Gregorian throughout | Ruthenian particular law, sourced |
+| `ugcc` | Revised Julian feasts, Julian Pascha since 2023 | its own; not modelled |
+| `melkite` | Gregorian; Middle Eastern parishes often keep Julian Pascha | its own; not modelled |
+| `romanian-catholic` | Gregorian throughout | its own; not modelled |
+
+**A church's law is never borrowed from another.** Ruthenian particular law is
+sourced from the Metropolia of Pittsburgh and is reported for that church only.
+The rest are shown at the Typikon's discipline with **nothing reported as
+binding**, because their own law has not been sourced and inventing one would
+tell a Melkite that fourteen days a year oblige him under a law that was never
+his. When a church's law is added, its entry will say so and its obligations
+will appear. A test holds that line.
+
+See [the law and the fast](#the-law-and-the-fast-are-not-the-same-question)
+for what `--typikon` does with this, which is the flag most Byzantine Catholics
+will want.
 
 ## The fast
 

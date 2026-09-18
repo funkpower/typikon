@@ -27,9 +27,15 @@
 //! only Great and Holy Wednesday turns on the reading. If your eparchy reads it
 //! the other way, that Wednesday binds too.
 //!
-//! Source: the Byzantine Catholic Metropolitan Church of Pittsburgh. Other
-//! Eastern Catholic churches legislate their own; where this library maps them
-//! onto this ruleset it is an approximation, and the jurisdiction entry says so.
+//! Source: the Byzantine Catholic Metropolitan Church of Pittsburgh, and that
+//! church only.
+//!
+//! Every Eastern Catholic church legislates its own fasting discipline, and
+//! this ruleset is **not** lent to the others. Borrowing it told a Melkite
+//! that fourteen days a year bound him under a law that was never his, which
+//! is precisely the error the level/obligation split exists to prevent. A
+//! church whose particular law has not been sourced is shown at the Typikon
+//! with no obligation claimed, and its entry says so.
 
 use super::{Context, Rule, Vocabulary};
 use crate::calendars::{Date, Weekday};
