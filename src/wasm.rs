@@ -164,7 +164,14 @@ fn from_js_date(d: &js_sys::Date) -> Result<Date, JsError> {
 
 fn to_js_date(d: Date) -> js_sys::Date {
     let (y, m, day) = d.ymd();
-    js_sys::Date::new_with_year_month_day(y as u32, m as i32 - 1, day as i32)
+    let out = js_sys::Date::new_with_year_month_day(y as u32, m as i32 - 1, day as i32);
+    // `new Date(50, 0, 1)` is 1950, not the year 50: the two-digit-year rule is
+    // in the constructor and not in the setter. This calendar answers from the
+    // year 1, so the rule has to be undone rather than lived with.
+    if (0..=99).contains(&y) {
+        out.set_full_year(y as u32);
+    }
+    out
 }
 
 // ──────────────────────────────── the api ─────────────────────────────────

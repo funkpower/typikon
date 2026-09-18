@@ -129,6 +129,14 @@ check("pascha matches the published dates", () => {
   assert.equal(iso(typikon.pascha(2027, "old")), "2027-05-02");
 });
 
+check("a two-digit year is that year, not 19xx", () => {
+  // The Date constructor reads 0..99 as 1900 + n, which would have made the
+  // Paschalion for the year 50 answer for 1950 without a word.
+  assert.equal(typikon.pascha(50, "old").getFullYear(), 50);
+  assert.equal(typikon.pascha(99, "old").getFullYear(), 99);
+  assert.equal(typikon.pascha(100, "old").getFullYear(), 100);
+});
+
 check("every listed jurisdiction reckons", () => {
   const all = typikon.jurisdictions();
   assert.ok(all.length > 20);
