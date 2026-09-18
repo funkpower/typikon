@@ -14,8 +14,6 @@ use pyo3::exceptions::{PyValueError, PyOSError};
 use pyo3::prelude::*;
 use pyo3::types::{PyDate, PyDict, PyList};
 
-use std::collections::HashMap;
-use std::sync::{Mutex, OnceLock};
 
 use crate::calendars::Date;
 use crate::day;
@@ -44,67 +42,15 @@ fn from_date<'py>(py: Python<'py>, d: Date) -> PyResult<Bound<'py, PyDate>> {
     PyDate::new(py, y, m as u8, day as u8)
 }
 
-/// jurisdiction key, tradition key, and whether the Typikon's full discipline was
-/// asked for — enough to tell one override from another.
-type Interned = HashMap<(&'static str, &'static str, bool), &'static Jurisdiction>;
-
-/// Build the jurisdiction a call should reckon by: the named one, or the saved
-/// default, with the saved tradition and discipline applied on top.
-///
-/// This mirrors main.rs deliberately and has to keep mirroring it. A Jurisdiction
-/// is no longer just a key — it carries a tradition and a discipline, and the CLI
-/// reads all three from config before it reckons anything. A binding that resolved
-/// only the key would answer a different fast than the command line does on the
-/// same machine for the same date: xerophagy on a Lenten Wednesday reads as
-/// wine_oil, which is not a cosmetic difference in a tool whose whole job is to
-/// say what may be eaten.
-///
-/// The overridden jurisdictions are interned rather than leaked per call. main.rs
-/// leaks one per run and is then done; a library gets called in a loop, and one
-/// leak per call is a slow leak. The set of combinations is bounded by
-/// jurisdictions x traditions x discipline, so a map of them is small and never
-/// grows past it.
+/// The jurisdiction a call should reckon by, resolved the same way the command
+/// line resolves it: the named one or the remembered default, with the
+/// remembered usage and discipline applied on top.
 fn resolve(
     jurisdiction: Option<&str>,
     tradition: Option<&str>,
     typikon: Option<bool>,
 ) -> PyResult<&'static Jurisdiction> {
-    let saved = crate::config::saved();
-
-    // The environment beats the file, which is the order main.rs uses. Reading
-    // only the file meant TYPIKON_JURISDICTION moved the command line and left
-    // the bindings behind, so the two answered for different churches on the
-    // same machine, which is the exact failure the note above is about.
-    let (default_name, _) = crate::config::default_jurisdiction();
-    let name = jurisdiction.map(str::to_owned).or(default_name);
-    let base = jurisdictions::resolve(name.as_deref())
-        .map_err(|n| PyValueError::new_err(format!("unknown jurisdiction {n:?}")))?;
-
-    let trad = match tradition.map(str::to_owned).or(saved.tradition) {
-        None => base.tradition,
-        Some(t) => jurisdictions::Tradition::parse(&t).ok_or_else(|| {
-            PyValueError::new_err(format!("unknown tradition {t:?}; try slavic or greek"))
-        })?,
-    };
-    let full = typikon.unwrap_or(saved.typikon);
-    let discipline = if full {
-        Some(jurisdictions::RuleKind::Orthodox)
-    } else {
-        base.discipline
-    };
-
-    if trad == base.tradition && discipline == base.discipline {
-        return Ok(base);
-    }
-
-    static INTERNED: OnceLock<Mutex<Interned>> = OnceLock::new();
-    let mut map = INTERNED
-        .get_or_init(|| Mutex::new(HashMap::new()))
-        .lock()
-        .map_err(|_| PyValueError::new_err("jurisdiction cache poisoned"))?;
-    Ok(map.entry((base.key, trad.key(), full)).or_insert_with(|| {
-        Box::leak(Box::new(Jurisdiction { tradition: trad, discipline, ..*base }))
-    }))
+    jurisdictions::resolve_full(jurisdiction, tradition, typikon).map_err(PyValueError::new_err)
 }
 
 /// One day, fully reckoned.

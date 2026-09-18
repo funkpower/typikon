@@ -46,9 +46,25 @@ jobs:
           # The binding code only exists under the feature, so a bare clippy
           # run never looks at src/python.rs.
           cargo clippy --features python --all-targets -- -D warnings
+          cargo clippy --features capi --all-targets -- -D warnings
 
       - name: Rust tests
-        run: cargo test
+        run: |
+          cargo test
+          cargo test --features capi
+
+      # The header and the LuaJIT cdef are checked against the library by the
+      # Rust tests; this checks that a C compiler agrees, which they cannot.
+      - name: C ABI
+        run: |
+          apt-get update && apt-get install -y --no-install-recommends gcc luajit
+          cargo build --release --features capi
+          cc -Wall -Wextra -Werror -Iinclude examples/c/demo.c \
+             -Ltarget/release -ltypikon -o /tmp/demo
+          LD_LIBRARY_PATH=target/release /tmp/demo rocor
+          LD_LIBRARY_PATH=target/release /tmp/demo --list
+          TYPIKON_LIB=target/release/libtypikon.so \
+            luajit examples/lua/statusline.lua rocor
 
       # The CLI and the bindings are the same engine, so they have to agree. This
       # is the check that caught the bindings resolving their own default

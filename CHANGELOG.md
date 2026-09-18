@@ -4,6 +4,23 @@ Notable changes, in the terms [docs/versioning.md](docs/versioning.md) sets out.
 **Calendar** entries change what a day reports, whatever the version number
 does.
 
+## Unreleased
+
+### Added
+
+- A C ABI, behind the `capi` feature, with a header in `include/typikon.h`.
+  Dates cross it as Julian Day Numbers, so no struct layout is part of the
+  contract. A day is opaque and owns its strings: an accessor returns the same
+  borrowed pointer every time and allocates nothing, so reading one in a render
+  loop is free. The accessors carry every field of the JSON, so a statusline
+  does not need a parser. Errors go to a thread-local `typikon_last_error()`.
+- A LuaJIT FFI binding in `examples/lua/typikon.lua`, for AwesomeWM, WezTerm
+  and Neovim, and a worked C example in `examples/c/demo.c`.
+- `jurisdictions::resolve_full`, which resolves a jurisdiction together with
+  the usage and the discipline. The Python bindings and the C ABI now share it
+  rather than each keeping a copy, and it interns the combinations instead of
+  leaking one per call.
+
 ## 1.0.0
 
 First stable release. The public surface is now the one described in

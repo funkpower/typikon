@@ -404,6 +404,57 @@ the kind of disagreement nobody notices until a fast day is wrong.
 The wheel is abi3, so one build serves every Python from 3.9 up. It ships
 `py.typed` and a stub file, and `mypy --strict` is clean against it.
 
+## From C, and anything with an FFI
+
+```sh
+cargo build --release --features capi   # target/release/libtypikon.so
+cc -Iinclude yours.c -ltypikon
+```
+
+```c
+#include <typikon.h>
+
+typikon_day *d = typikon_describe(typikon_today(), "rocor");
+if (!d) { fputs(typikon_last_error(), stderr); return 1; }
+
+typikon_day_church_date(d);    /* "5 September" */
+typikon_day_fast(d);           /* "xerophagy" */
+typikon_day_emoji(d);          /* the glyph for the level */
+typikon_day_title(d);          /* the feast, else the principal commemoration */
+typikon_day_is_obligatory(d);  /* 0 */
+
+typikon_day_free(d);
+```
+
+Dates cross the boundary as **Julian Day Numbers**, so no struct layout is part
+of the ABI and there is nothing for a caller to keep in step;
+`typikon_jdn_from_ymd` converts. A day is opaque and owns its strings: an
+accessor returns the same borrowed pointer every time, so reading one in a
+render loop allocates nothing, and nothing it returns should be freed. NULL
+from an accessor means the day has no such field, which is not an error. A call
+that can fail returns NULL or 0 and leaves a message in `typikon_last_error()`.
+
+[`include/typikon.h`](https://git.pumpin.online/funkpower/typikon/src/branch/main/include/typikon.h)
+is the whole surface: it carries every field of the JSON, so a statusline does
+not need a parser. [`examples/c/demo.c`](https://git.pumpin.online/funkpower/typikon/src/branch/main/examples/c/demo.c)
+is a working one.
+
+### From Lua
+
+[`examples/lua/typikon.lua`](https://git.pumpin.online/funkpower/typikon/src/branch/main/examples/lua/typikon.lua)
+is a LuaJIT FFI binding, for AwesomeWM, WezTerm, Neovim and anything else that
+embeds LuaJIT and should not be spawning a process on every redraw.
+
+```lua
+local typikon = require("typikon")
+
+local day = assert(typikon.today({ jurisdiction = "rocor" }))
+day.church_date   -- "5 September"
+day.fast          -- "xerophagy"
+day.title         -- "The Holy Prophet Zachariah, father of the Forerunner"
+day.commemorations
+```
+
 ## The menologion
 
 The fixed calendar ships as data and is indexed by **ecclesiastical** date, so

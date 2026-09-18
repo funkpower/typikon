@@ -221,3 +221,56 @@ pub fn resolve(name: Option<&str>) -> Result<&'static Jurisdiction, String> {
         .find(|j| j.key == key)
         .ok_or_else(|| name.to_string())
 }
+
+/// Resolve a jurisdiction together with the usage and the discipline, the way
+/// every caller that is not the command line needs it.
+///
+/// Shared, not duplicated. The Python bindings and the C ABI had every reason
+/// to answer identically and one earlier copy of this logic read the config
+/// file where the CLI read the environment first, so the same machine gave two
+/// different churches depending on which door you came in by.
+///
+/// `jurisdiction` and `tradition` of `None` fall back to what was remembered;
+/// `typikon` of `None` does the same.
+///
+/// Overridden combinations are interned rather than leaked per call. The
+/// command line leaks one per run and is then done; a library is called in a
+/// loop, and one leak per call is a slow leak that shows up as a shell's
+/// resident size climbing all day. The set of combinations is bounded by
+/// jurisdictions x traditions x discipline, so the map is small and never
+/// grows past it.
+pub fn resolve_full(
+    jurisdiction: Option<&str>,
+    tradition: Option<&str>,
+    typikon: Option<bool>,
+) -> Result<&'static Jurisdiction, String> {
+    use std::collections::HashMap;
+    use std::sync::{Mutex, OnceLock};
+
+    let saved = crate::config::saved();
+    let (default_name, _) = crate::config::default_jurisdiction();
+    let name = jurisdiction.map(str::to_owned).or(default_name);
+    let base = resolve(name.as_deref()).map_err(|n| format!("unknown jurisdiction {n:?}"))?;
+
+    let trad = match tradition.map(str::to_owned).or(saved.tradition) {
+        None => base.tradition,
+        Some(t) => Tradition::parse(&t)
+            .ok_or_else(|| format!("unknown tradition {t:?}; try slavic or greek"))?,
+    };
+    let full = typikon.unwrap_or(saved.typikon);
+    let discipline = if full { Some(RuleKind::Orthodox) } else { base.discipline };
+
+    if trad == base.tradition && discipline == base.discipline {
+        return Ok(base);
+    }
+
+    type Interned = HashMap<(&'static str, &'static str, bool), &'static Jurisdiction>;
+    static INTERNED: OnceLock<Mutex<Interned>> = OnceLock::new();
+    let mut map = INTERNED
+        .get_or_init(|| Mutex::new(HashMap::new()))
+        .lock()
+        .map_err(|_| "jurisdiction cache poisoned".to_string())?;
+    Ok(map.entry((base.key, trad.key(), full)).or_insert_with(|| {
+        Box::leak(Box::new(Jurisdiction { tradition: trad, discipline, ..*base }))
+    }))
+}

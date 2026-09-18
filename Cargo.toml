@@ -35,3 +35,6 @@ crate-type = ["cdylib", "rlib"]
 # symbols to be resolved by the interpreter at load time, so a normal `cargo
 # build` of the CLI would fail to link if it were on by default.
 python = ["dep:pyo3"]
+# The C ABI. Off by default so an ordinary `cargo build` of the CLI does not
+# also compile and link a shared library nobody asked for.
+capi = []
