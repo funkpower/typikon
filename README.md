@@ -1,8 +1,8 @@
 # typikon
 
 The Orthodox liturgical day: feasts, seasons and the fast, computed rather
-than fetched. The Byzantine Catholic churches are here too, on their own
-calendars and, where the law has been sourced, under their own particular law.
+than fetched. Twenty Orthodox jurisdictions and four Byzantine Catholic
+churches, across the Julian, Revised Julian and Gregorian reckonings.
 
 Everything derives from the paschalion and the fixed calendar, so it needs no
 network, cannot go stale, and answers for any year you ask about. No API key,

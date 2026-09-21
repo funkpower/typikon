@@ -1,7 +1,10 @@
 # typikon
 
 The Orthodox liturgical day: feasts, seasons and the fast, computed rather
-than fetched. No network, no data files, no service to be up.
+than fetched. Twenty Orthodox jurisdictions and four Byzantine Catholic
+churches, across the Julian, Revised Julian and Gregorian reckonings.
+
+No network, no data files, no service to be up.
 
 ```sh
 npm install typikon

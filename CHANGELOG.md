@@ -4,6 +4,17 @@ Notable changes, in the terms [docs/versioning.md](docs/versioning.md) sets out.
 **Calendar** entries change what a day reports, whatever the version number
 does.
 
+## 1.1.2
+
+### Fixed
+
+- The published description says what the package covers, and says the same
+  thing in both registries. PyPI takes its summary from `pyproject.toml`, which
+  1.1.1 did not update, so it went out with the old one-line text while npm got
+  the new one. The two READMEs had drifted apart as well: npm's opened without
+  mentioning the Byzantine Catholic churches at all. All four now carry one
+  sentence, and a test fails if any of them moves without the others.
+
 ## 1.1.1
 
 ### Fixed
