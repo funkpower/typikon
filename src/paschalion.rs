@@ -9,7 +9,7 @@
 //! agree in some years, 2025 falls on 20 April by both, and can diverge by as
 //! much as five weeks.
 
-use crate::calendars::{Date, JulianDate};
+use crate::calendars::{Date, JulianDate, Weekday, MAX_YEAR, MIN_YEAR};
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Paschalion {
@@ -95,7 +95,10 @@ pub struct Movables {
     pub bright_week_end: Date,
     pub thomas_sunday: Date,
     pub myrrhbearers: Date,
+    pub paralytic: Date,
     pub midfeast: Date,
+    pub samaritan_woman: Date,
+    pub blind_man: Date,
     pub ascension: Date,
     pub fathers_first_council: Date,
     pub pentecost: Date,
@@ -131,7 +134,10 @@ pub fn movable_cycle(year: i32, p: Paschalion) -> Movables {
         bright_week_end: d + 6,
         thomas_sunday: d + 7,
         myrrhbearers: d + 14,
+        paralytic: d + 21,
         midfeast: d + 24,
+        samaritan_woman: d + 28,
+        blind_man: d + 35,
         ascension: d + 39,
         fathers_first_council: d + 42,
         pentecost: d + 49,
@@ -139,4 +145,56 @@ pub fn movable_cycle(year: i32, p: Paschalion) -> Movables {
         all_saints: d + 56,
         apostles_start: d + 57,
     }
+}
+
+/// Where a day falls in the count of weeks from Pentecost, which is how the
+/// books head the long ordinary stretch of the year: "the 32nd Sunday after
+/// Pentecost".
+///
+/// The count runs from the Monday after Pentecost to the eve of the next
+/// Sunday of the Publican and the Pharisee, and it is `None` outside that,
+/// through the Triodion and the Pentecostarion, where the Sundays have names
+/// of their own instead of a number.
+///
+/// The governing Pentecost is not always the one in this day's civil year: a
+/// day in January is counted from the Pentecost of the year before. That is
+/// the one place this differs from `days_to_pascha`, which is always reckoned
+/// against its own year's Pascha.
+pub fn week_after_pentecost(date: Date, p: Paschalion) -> Option<i32> {
+    let year = date.year();
+    // A day at either end of the range this calendar answers for would need a
+    // Pascha outside it. One week unlabelled beats a panic.
+    if !(MIN_YEAR + 1..=MAX_YEAR - 1).contains(&year) {
+        return None;
+    }
+    let this = movable_cycle(year, p);
+    let (pentecost, next_publican) = if date > this.pentecost {
+        (this.pentecost, movable_cycle(year + 1, p).publican_pharisee)
+    } else {
+        (movable_cycle(year - 1, p).pentecost, this.publican_pharisee)
+    };
+    if date <= pentecost || date >= next_publican {
+        return None;
+    }
+    Some((date - pentecost + 6) / 7)
+}
+
+/// The same count, worded. Lowercase and article-first, like `cycle`, because
+/// both are phrases a front end drops into a sentence of its own.
+pub fn week_after_pentecost_label(date: Date, weekday: Weekday, p: Paschalion) -> Option<String> {
+    let n = week_after_pentecost(date, p)?;
+    let unit = if weekday == Weekday::Sunday { "Sunday" } else { "week" };
+    Some(format!("the {} {unit} after Pentecost", ordinal(n)))
+}
+
+/// English ordinals, for the one place this calendar has to count out loud.
+fn ordinal(n: i32) -> String {
+    let suffix = match (n % 100, n % 10) {
+        (11..=13, _) => "th",
+        (_, 1) => "st",
+        (_, 2) => "nd",
+        (_, 3) => "rd",
+        _ => "th",
+    };
+    format!("{n}{suffix}")
 }

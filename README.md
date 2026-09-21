@@ -277,6 +277,16 @@ $ typikon --format json --days 7         # for a bar, a widget, a script
 $ typikon --format ics --days 365 > orthodox.ics
 ```
 
+The calendar is thinned to the days worth marking: a subscription that fills
+all 365 squares is one nobody keeps. `--every-day` is for the other kind of
+reader, who wants the saint of each morning and does not mind a full year.
+Either way the description carries the day's commemorations, the fast and its
+reason, and where the day sits in the year.
+
+```console
+$ typikon -j ruthenian --days 467 --ics --every-day > byzantine.ics
+```
+
 Delimited output, for a spreadsheet or a pipeline. RFC 4180 quoting, one header
 row, one row per day:
 
@@ -309,6 +319,11 @@ $ typikon --year 2027 -j goarch
     …
 ```
 
+Outside the Triodion and the Pentecostarion, whose Sundays carry names, `week`
+says where the day falls in the count from Pentecost: `the 32nd Sunday after
+Pentecost`, or `the 32nd week after Pentecost` on the days between. It is a
+column in the delimited formats and a line in the single-day view.
+
 Every day of vigil rank or above carries the mark its books print beside it:
 ⊕ for a great feast, ✚ for a vigil, ☩ for a polyeleos. It is the `sign`
 field in the JSON and a column in the delimited formats.
@@ -332,6 +347,7 @@ $ typikon -j rocor --date 2026-03-18 --json --indent 2
   "churchDate": "5 March",
   "season": "Great Fast",
   "cycle": null,
+  "week": null,
   "feast": null,
   "rank": null,
   "sign": null,

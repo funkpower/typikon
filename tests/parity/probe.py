@@ -18,6 +18,7 @@ for date, jurisdiction, tk in json.load(open(probes_path)):
         "churchDate": day.church_date,
         "season": day.season,
         "cycle": day.cycle,
+        "week": day.week,
         "feast": day.feast,
         "rank": day.rank,
         "sign": day.sign,

@@ -40,6 +40,7 @@ const char *typikon_day_emoji(const typikon_day *day);
 const char *typikon_day_reason(const typikon_day *day);
 const char *typikon_day_season(const typikon_day *day);
 const char *typikon_day_cycle(const typikon_day *day);
+const char *typikon_day_week(const typikon_day *day);
 const char *typikon_day_feast(const typikon_day *day);
 const char *typikon_day_rank(const typikon_day *day);
 const char *typikon_day_sign(const typikon_day *day);
@@ -79,7 +80,7 @@ end
 local FIELDS = {
   "iso", "weekday", "jurisdiction", "calendar", "tradition", "church_date",
   "title", "fast", "fast_label", "emoji", "reason",
-  "season", "cycle", "feast", "rank", "sign", "obligation", "binds",
+  "season", "cycle", "week", "feast", "rank", "sign", "obligation", "binds",
 }
 
 -- Copy the day into a plain Lua table and free it. The C day owns its strings

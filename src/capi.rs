@@ -171,6 +171,7 @@ pub struct typikon_day {
     reason: CString,
     season: Option<CString>,
     cycle: Option<CString>,
+    week: Option<CString>,
     feast: Option<CString>,
     rank: Option<CString>,
     sign: Option<CString>,
@@ -223,6 +224,7 @@ fn build(
         reason: cs(&inner.reason),
         season: inner.season.map(|s| cs(s.name())),
         cycle: inner.cycle.as_deref().map(&cs),
+        week: inner.week.as_deref().map(&cs),
         feast: inner.feast.as_deref().map(&cs),
         rank: inner.rank.map(|r| cs(r.key())),
         sign: inner.rank.map(|r| cs(r.sign())),
@@ -326,6 +328,7 @@ accessor!(typikon_day_emoji, "The glyph for the fasting level.", |d| Some(&d.emo
 accessor!(typikon_day_reason, "Why the day fasts as it does.", |d| Some(&d.reason));
 accessor!(typikon_day_season, "The season, or NULL in ordinary time.", |d| d.season.as_ref());
 accessor!(typikon_day_cycle, "The place in the movable cycle, or NULL outside it.", |d| d.cycle.as_ref());
+accessor!(typikon_day_week, "The count of weeks from Pentecost, or NULL outside it.", |d| d.week.as_ref());
 accessor!(typikon_day_feast, "The feast, or NULL if the day has none.", |d| d.feast.as_ref());
 accessor!(typikon_day_rank, "The rank of the feast, or NULL if the day has none.", |d| d.rank.as_ref());
 accessor!(typikon_day_sign, "The mark the books print beside a day of this rank, or NULL.", |d| d.sign.as_ref());

@@ -17,7 +17,7 @@ for (const [date, jurisdiction, typikon] of JSON.parse(readFileSync(probesPath, 
   out[`${date}|${jurisdiction}|${typikon ? 1 : 0}`] = {
     date: d.date, weekday: d.weekday, jurisdiction: d.jurisdiction,
     calendar: d.calendar, churchDate: d.churchDate, season,
-    cycle: d.cycle, feast: d.feast, rank: d.rank, sign: d.sign,
+    cycle: d.cycle, week: d.week, feast: d.feast, rank: d.rank, sign: d.sign,
     tradition: d.tradition, title: d.title, commemorations,
     fast: d.fast, fastLabel: d.fastLabel, emoji: d.emoji, reason: d.reason,
     obligation: d.obligation, binds: d.binds, pascha: d.pascha,

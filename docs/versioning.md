@@ -21,13 +21,16 @@ tradition title commemorations fast fastLabel emoji reason obligation binds
 pascha daysToPascha julianOffset
 ```
 
+`week` was added in 1.2.0.
+
 `fastLabel`, `emoji` and `reason` are **presentation**: the fields are always
 there, and their wording is not stable. Key on `fast`, `season`, `rank`,
 `obligation` and `binds`.
 
 Adding a field is a **minor** change, so read the object by key and ignore what
 you do not recognise. `season`, `cycle`, `feast`, `rank`, `sign` and
-`obligation` are null on ordinary days.
+`obligation` are null on ordinary days, and `week` is null through the Triodion
+and the Pentecostarion.
 
 Two semantics worth stating because the names do not carry them:
 

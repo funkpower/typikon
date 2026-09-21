@@ -6,7 +6,7 @@ import sys
 
 FIELDS = [
     "date", "weekday", "jurisdiction", "calendar", "churchDate", "season",
-    "cycle", "feast", "rank", "sign", "tradition", "title", "commemorations",
+    "cycle", "week", "feast", "rank", "sign", "tradition", "title", "commemorations",
     "fast", "fastLabel", "emoji", "reason", "obligation", "binds", "pascha",
     "daysToPascha", "julianOffset",
 ]

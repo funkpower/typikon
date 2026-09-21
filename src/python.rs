@@ -107,6 +107,11 @@ impl PyDay {
     }
 
     #[getter]
+    fn week(&self) -> Option<&str> {
+        self.inner.week.as_deref()
+    }
+
+    #[getter]
     fn feast(&self) -> Option<&str> {
         self.inner.feast.as_deref()
     }
@@ -203,6 +208,7 @@ impl PyDay {
         d.set_item("church_date", j.church_date)?;
         d.set_item("season", j.season)?;
         d.set_item("cycle", j.cycle)?;
+        d.set_item("week", j.week)?;
         d.set_item("feast", j.feast)?;
         d.set_item("rank", j.rank)?;
         d.set_item("sign", j.sign)?;

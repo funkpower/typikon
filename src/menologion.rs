@@ -14,7 +14,7 @@ use std::collections::BTreeMap;
 
 use serde::Deserialize;
 
-use crate::calendars::Date;
+use crate::calendars::{Date, Weekday};
 use crate::jurisdictions::Tradition;
 use crate::paschalion::Movables;
 
@@ -212,7 +212,7 @@ pub fn for_jurisdiction(tradition: Tradition, menaia: &[&str]) -> Menologion {
 /// The movable feasts, named by their offset from Pascha. These outrank
 /// whatever the fixed calendar holds for the day.
 pub fn movable_feast_for(civil: Date, mv: &Movables) -> Option<(&'static str, Option<Rank>)> {
-    let table: [(Date, &'static str, Option<Rank>); 24] = [
+    let table: [(Date, &'static str, Option<Rank>); 27] = [
         (mv.pascha, "The Radiant and Life-giving Resurrection of our Lord \u{2014} Holy Pascha", Some(Rank::Great)),
         (mv.palm_sunday, "The Entry of our Lord into Jerusalem", Some(Rank::Great)),
         (mv.ascension, "The Ascension of our Lord, God and Saviour Jesus Christ", Some(Rank::Great)),
@@ -223,6 +223,9 @@ pub fn movable_feast_for(civil: Date, mv: &Movables) -> Option<(&'static str, Op
         (mv.holy_saturday, "Great and Holy Saturday", Some(Rank::Vigil)),
         (mv.thomas_sunday, "Thomas Sunday \u{2014} the Antipascha", Some(Rank::Polyeleos)),
         (mv.myrrhbearers, "The Sunday of the Holy Myrrh-bearing Women", Some(Rank::Polyeleos)),
+        (mv.paralytic, "The Sunday of the Paralytic", Some(Rank::Polyeleos)),
+        (mv.samaritan_woman, "The Sunday of the Samaritan Woman", Some(Rank::Polyeleos)),
+        (mv.blind_man, "The Sunday of the Blind Man", Some(Rank::Polyeleos)),
         (mv.midfeast, "The Midfeast of Pentecost", Some(Rank::Polyeleos)),
         (mv.all_saints, "The Sunday of All Saints", Some(Rank::Polyeleos)),
         (mv.publican_pharisee, "The Sunday of the Publican and the Pharisee", None),
@@ -244,4 +247,47 @@ pub fn movable_feast_for(civil: Date, mv: &Movables) -> Option<(&'static str, Op
         .iter()
         .find(|(d, _, _)| *d == civil)
         .map(|(_, title, rank)| (*title, *rank))
+}
+
+/// The Sundays reckoned from a fixed feast rather than from Pascha.
+///
+/// Six of them, hung off the Exaltation, the Nativity and the Theophany. They
+/// are named by the **ecclesiastical** date, so one table serves the old
+/// calendar and the new alike, and they are found by the civil weekday,
+/// because a Sunday is a Sunday in both reckonings.
+///
+/// These are commemorations, not feasts: they carry no rank and never displace
+/// the saint of the day. The books print both, and on 26 December the Synaxis
+/// of the Theotokos still names the day.
+///
+/// Three of the windows are shorter than a week and so can miss their Sunday
+/// altogether:
+///
+/// - The Nativity on a Sunday leaves 26–31 December without one. The Typikon
+///   settles this: the Sunday after the Nativity is kept on 26 December, and
+///   that is the one day here that is not a Sunday.
+/// - 1 January on a Sunday leaves 2–5 January without one, and the Sunday
+///   before the Theophany is kept on 1 January, with the Circumcision.
+/// - The Theophany itself on a Sunday, and the Exaltation on a Sunday, leave
+///   their windows empty with nowhere agreed to put what belongs in them.
+///   Those two years go unmarked: an answer this calendar cannot defend is
+///   worse than none.
+pub fn fixed_cycle_sunday(fixed: (u32, u32), weekday: Weekday) -> Option<&'static str> {
+    let sunday = weekday == Weekday::Sunday;
+    let title = match fixed {
+        (9, 8..=13) if sunday => "The Sunday before the Exaltation",
+        (9, 15..=21) if sunday => "The Sunday after the Exaltation",
+        (12, 11..=17) if sunday => "The Sunday of the Holy Forefathers",
+        (12, 18..=24) if sunday => "The Sunday before the Nativity \u{2014} the Holy Fathers",
+        (12, 26..=31) if sunday => "The Sunday after the Nativity",
+        // 26 December falls on a Monday only in a year whose Nativity was a
+        // Sunday, which is exactly the year the window above is empty.
+        (12, 26) if weekday == Weekday::Monday => "The Sunday after the Nativity",
+        // 2 to 5 January is the window. 1 January is a Sunday only in a year
+        // where that window holds none, so the two fold into one range.
+        (1, 1..=5) if sunday => "The Sunday before the Theophany",
+        (1, 7..=13) if sunday => "The Sunday after the Theophany",
+        _ => return None,
+    };
+    Some(title)
 }

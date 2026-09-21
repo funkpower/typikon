@@ -5,7 +5,7 @@ use clap::{Parser, ValueEnum};
 use typikon::calendars::Date;
 use typikon::config::{self, Source};
 use typikon::day::{week, year_of, Day};
-use typikon::export::{to_delimited, to_ics, to_json};
+use typikon::export::{to_delimited, to_ics_with, to_json, Ics};
 use typikon::jurisdictions::{self, Jurisdiction, CALENDARS, JURISDICTIONS};
 use typikon::menaia;
 use typikon::rules;
@@ -66,6 +66,11 @@ struct Args {
     /// Shorthand for --format ics
     #[arg(long, conflicts_with = "format")]
     ics: bool,
+
+    /// Give every day an event in ics, ferias included, rather than only the
+    /// days carrying a feast or a fast
+    #[arg(long)]
+    every_day: bool,
 
     /// Leave the glyphs out, for a terminal or a bar without them
     #[arg(long)]
@@ -221,6 +226,9 @@ fn print_days(days: &[Day], jur: &Jurisdiction, source: Source, verbose: bool) {
             println!("  {sign}{}", d.title());
         } else {
             println!("  {}  {sign}{}", d.emoji, d.title());
+        }
+        if let Some(w) = &d.week {
+            println!("      {w}");
         }
         if let Some(c) = &d.cycle {
             println!("      {c}");
@@ -443,7 +451,12 @@ fn run() -> Result<i32, String> {
             return Ok(0);
         }
         Format::Ics => {
-            print!("{}", to_ics(&days, &format!("{} \u{2014} Typikon", jur.name), &stamp()));
+            let opts = Ics {
+                name: &format!("{} \u{2014} Typikon", jur.name),
+                stamp: &stamp(),
+                every_day: args.every_day,
+            };
+            print!("{}", to_ics_with(&days, &opts));
             return Ok(0);
         }
         Format::Csv | Format::Tsv => {

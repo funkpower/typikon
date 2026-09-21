@@ -30,7 +30,7 @@ local probes = {
 local fields = {
   {"date","iso"}, {"weekday","weekday"}, {"jurisdiction","jurisdiction"},
   {"calendar","calendar"}, {"churchDate","church_date"}, {"season","season"},
-  {"cycle","cycle"}, {"feast","feast"}, {"rank","rank"}, {"sign","sign"},
+  {"cycle","cycle"}, {"week","week"}, {"feast","feast"}, {"rank","rank"}, {"sign","sign"},
   {"tradition","tradition"}, {"title","title"}, {"fast","fast"},
   {"fastLabel","fast_label"}, {"emoji","emoji"}, {"reason","reason"},
   {"obligation","obligation"}, {"binds","binds"},

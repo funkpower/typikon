@@ -108,6 +108,7 @@ const char *typikon_day_reason(const typikon_day *day);       /* why the day fas
 /* NULL where the day has no such thing, which is not an error. */
 const char *typikon_day_season(const typikon_day *day);       /* NULL in ordinary time */
 const char *typikon_day_cycle(const typikon_day *day);        /* NULL outside the movable cycle */
+const char *typikon_day_week(const typikon_day *day);         /* NULL outside the count from Pentecost */
 const char *typikon_day_feast(const typikon_day *day);        /* NULL if the day has none */
 const char *typikon_day_rank(const typikon_day *day);         /* NULL if the day has no feast */
 const char *typikon_day_sign(const typikon_day *day);         /* the mark the books print, else NULL */

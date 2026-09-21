@@ -50,6 +50,8 @@ export interface Day {
   season: string | null;
   /** The place in the movable cycle, or null outside it. */
   cycle: string | null;
+  /** "the 32nd Sunday after Pentecost", or null outside that count. */
+  week: string | null;
   feast: string | null;
   /** The rank of the feast, or null where there is none. */
   rank: string | null;

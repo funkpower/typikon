@@ -11,7 +11,7 @@ use crate::calendars::{Date, Weekday, MONTHS};
 use crate::fasting::{Fast, Level, Obligation};
 use crate::jurisdictions::Jurisdiction;
 use crate::menologion::{self, Menologion, Rank};
-use crate::paschalion::{movable_cycle, Movables};
+use crate::paschalion::{movable_cycle, week_after_pentecost_label, Movables};
 use crate::rules::{self, Context};
 use crate::seasons::season_for;
 
@@ -25,6 +25,10 @@ pub struct Day {
     pub church_date: String,
     pub season: Option<crate::seasons::Season>,
     pub cycle: Option<String>,
+    /// Where the day falls in the count of weeks from Pentecost, worded: "the
+    /// 32nd Sunday after Pentecost". `None` through the Triodion and the
+    /// Pentecostarion, whose Sundays have names instead of numbers.
+    pub week: Option<String>,
     pub feast: Option<String>,
     pub rank: Option<Rank>,
     pub tradition: &'static str,
@@ -81,6 +85,7 @@ pub struct DayJson<'a> {
     pub church_date: &'a str,
     pub season: Option<&'a str>,
     pub cycle: Option<&'a str>,
+    pub week: Option<&'a str>,
     pub feast: Option<&'a str>,
     pub rank: Option<&'a str>,
     /// The mark the books print beside a day of this rank.
@@ -109,6 +114,7 @@ impl Day {
             church_date: &self.church_date,
             season: self.season.map(|s| s.name()),
             cycle: self.cycle.as_deref(),
+            week: self.week.as_deref(),
             feast: self.feast.as_deref(),
             rank: self.rank.map(|r| r.key()),
             sign: self.rank.map(|r| r.sign()),
@@ -182,6 +188,16 @@ pub fn describe_with(date: Date, jur: &'static Jurisdiction, men: &Menologion) -
         (None, fixed) => fixed.clone(),
     };
 
+    // The Sundays counted from the Exaltation, the Nativity and the Theophany
+    // join the day rather than naming it: the books print the saint and the
+    // Sunday both, and the saint keeps the title.
+    if let Some(sunday) = menologion::fixed_cycle_sunday((fm, fd), date.weekday()) {
+        let sunday = sunday.to_string();
+        if !commemorations.contains(&sunday) && feast.as_deref() != Some(sunday.as_str()) {
+            commemorations.insert(1.min(commemorations.len()), sunday);
+        }
+    }
+
     let ctx = Context {
         civil: date,
         fixed: (fm, fd),
@@ -228,6 +244,7 @@ pub fn describe_with(date: Date, jur: &'static Jurisdiction, men: &Menologion) -
         church_date: format!("{} {}", fd, MONTHS[(fm - 1) as usize]),
         season,
         cycle: entry.cycle,
+        week: week_after_pentecost_label(date, date.weekday(), jur.paschalion),
         feast,
         rank,
         tradition: jur.tradition.key(),

@@ -1,13 +1,28 @@
 //! iCalendar, so the calendar can live where the rest of your year does.
 //!
 //! Each day becomes one all-day event. The summary is the feast or the
-//! principal commemoration; the description carries the fast, the season and
-//! the rest of the day's commemorations. Days with nothing to say, no feast and
-//! no fast, are left out, because a subscribed calendar that marks all 365 days
-//! is one nobody keeps.
+//! principal commemoration; the description lists every commemoration, then the
+//! fast, then where the day sits in the year.
+//!
+//! By default the days with nothing to say, no feast and no fast, are left out,
+//! because a subscribed calendar that marks all 365 days is one nobody keeps.
+//! `Ics::every_day` is for the other kind of reader, who wants the saint of
+//! each morning and does not mind a full calendar: it gives every day an event,
+//! ferial ones included.
 
 use crate::day::Day;
 use crate::fasting::{Level, Obligation};
+
+/// How to write the calendar.
+pub struct Ics<'a> {
+    /// What a client shows the subscription as.
+    pub name: &'a str,
+    /// `DTSTAMP`, as `YYYYMMDDTHHMMSSZ`.
+    pub stamp: &'a str,
+    /// One event for every day, rather than only the days carrying a feast or
+    /// a fast.
+    pub every_day: bool,
+}
 
 /// A count of octets, which is what RFC 5545 measures content lines in.
 ///
@@ -61,54 +76,75 @@ fn fold(line: &str) -> String {
     out.join("\r\n")
 }
 
+/// The calendar as it has always been written: a subscription, thinned to the
+/// days worth marking.
 pub fn to_ics(days: &[Day], name: &str, stamp: &str) -> String {
+    to_ics_with(days, &Ics { name, stamp, every_day: false })
+}
+
+pub fn to_ics_with(days: &[Day], opts: &Ics<'_>) -> String {
     let mut lines: Vec<String> = vec![
         "BEGIN:VCALENDAR".into(),
         "VERSION:2.0".into(),
         "PRODID:-//typikon//EN".into(),
         "CALSCALE:GREGORIAN".into(),
         "METHOD:PUBLISH".into(),
-        format!("X-WR-CALNAME:{}", escape(name)),
+        format!("X-WR-CALNAME:{}", escape(opts.name)),
     ];
 
     for d in days {
-        if d.feast.is_none() && d.fast == Level::None {
+        if !opts.every_day && d.feast.is_none() && d.fast == Level::None {
             continue;
         }
         let start = d.date.iso().replace('-', "");
         let end = (d.date + 1).iso().replace('-', "");
-        let summary = if d.emoji.is_empty() {
-            d.title().to_string()
-        } else {
-            format!("{} {}", d.emoji, d.title())
-        };
+        // The glyph for the fast and the mark for the rank, in the order the
+        // text view prints them, so one is scannable down a month view and the
+        // other says at a glance whether the day is kept.
+        let sign = d.rank.map(|r| r.sign()).unwrap_or("");
+        let summary = [d.emoji, sign, d.title()]
+            .iter()
+            .filter(|p| !p.is_empty())
+            .copied()
+            .collect::<Vec<_>>()
+            .join(" ");
 
+        // Paragraphs, joined by a blank line. A calendar client shows this in
+        // a popover a few lines tall, and the saints are what the reader came
+        // for, so they go first.
         let mut body: Vec<String> = Vec::new();
-        if d.fast != Level::None {
-            body.push(if d.reason.is_empty() {
-                format!("Fast: {}", d.fast_label)
-            } else {
-                format!("Fast: {} ({})", d.fast_label, d.reason)
-            });
+        if !d.commemorations.is_empty() {
+            body.push(
+                d.commemorations
+                    .iter()
+                    .map(|c| format!("\u{2022} {c}"))
+                    .collect::<Vec<_>>()
+                    .join("\n"),
+            );
         }
+
+        let mut fast = if d.reason.is_empty() {
+            format!("Fast: {}", d.fast_label)
+        } else {
+            format!("Fast: {} ({})", d.fast_label, d.reason)
+        };
         if d.obligation == Some(Obligation::Obligatory) {
-            body.push("Obligatory.".into());
+            fast.push_str("\nObligatory.");
+        }
+        body.push(fast);
+
+        let mut where_ = Vec::new();
+        if let Some(w) = &d.week {
+            where_.push(capitalised(w));
         }
         if let Some(s) = d.season {
-            body.push(format!("Season: {}", s.name()));
+            where_.push(format!("Season: {}", s.name()));
         }
         if let Some(c) = &d.cycle {
-            let mut chars = c.chars();
-            let capped = match chars.next() {
-                Some(f) => f.to_uppercase().collect::<String>() + chars.as_str(),
-                None => String::new(),
-            };
-            body.push(capped);
+            where_.push(capitalised(c));
         }
-        body.push(format!("Church date: {}", d.church_date));
-        for c in &d.commemorations {
-            body.push(c.clone());
-        }
+        where_.push(format!("Church date: {}", d.church_date));
+        body.push(where_.join("\n"));
 
         lines.extend([
             "BEGIN:VEVENT".into(),
@@ -123,11 +159,11 @@ pub fn to_ics(days: &[Day], name: &str, stamp: &str) -> String {
                 d.tradition,
                 if d.shown_at_typikon { "typikon" } else { "particular" }
             ),
-            format!("DTSTAMP:{stamp}"),
+            format!("DTSTAMP:{}", opts.stamp),
             format!("DTSTART;VALUE=DATE:{start}"),
             format!("DTEND;VALUE=DATE:{end}"),
             fold(&format!("SUMMARY:{}", escape(&summary))),
-            fold(&format!("DESCRIPTION:{}", escape(&body.join("\n")))),
+            fold(&format!("DESCRIPTION:{}", escape(&body.join("\n\n")))),
             "TRANSP:TRANSPARENT".into(),
             "END:VEVENT".into(),
         ]);
@@ -137,4 +173,13 @@ pub fn to_ics(days: &[Day], name: &str, stamp: &str) -> String {
     let mut s = lines.join("\r\n");
     s.push_str("\r\n");
     s
+}
+
+/// A phrase written to sit inside a sentence, promoted to the start of a line.
+fn capitalised(phrase: &str) -> String {
+    let mut chars = phrase.chars();
+    match chars.next() {
+        Some(f) => f.to_uppercase().collect::<String>() + chars.as_str(),
+        None => String::new(),
+    }
 }

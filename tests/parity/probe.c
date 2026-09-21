@@ -62,6 +62,7 @@ int main(int argc, char **argv) {
         field(f, "churchDate",  typikon_day_church_date(day), &first);
         field(f, "season",      typikon_day_season(day), &first);
         field(f, "cycle",       typikon_day_cycle(day), &first);
+        field(f, "week",        typikon_day_week(day), &first);
         field(f, "feast",       typikon_day_feast(day), &first);
         field(f, "rank",        typikon_day_rank(day), &first);
         field(f, "sign",        typikon_day_sign(day), &first);

@@ -3,11 +3,11 @@
 
 use typikon::calendars::{Date, JulianDate, Weekday};
 use typikon::day::{describe, week, year_of};
-use typikon::export::to_ics;
+use typikon::export::{to_ics, to_ics_with, Ics};
 use typikon::fasting::{Level, Obligation};
 use typikon::jurisdictions::{resolve, Calendar, MenologionKind, CALENDARS, JURISDICTIONS};
 use typikon::menologion::Rank;
-use typikon::paschalion::{gregorian_pascha, julian_pascha, Paschalion};
+use typikon::paschalion::{gregorian_pascha, julian_pascha, week_after_pentecost, Paschalion};
 use typikon::seasons::Season;
 
 fn d(s: &str) -> Date {
@@ -364,6 +364,200 @@ fn ics_is_well_formed() {
     assert!(text.starts_with("BEGIN:VCALENDAR"));
     assert!(text.trim_end().ends_with("END:VCALENDAR"));
     assert_eq!(text.matches("BEGIN:VEVENT").count(), text.matches("END:VEVENT").count());
+}
+
+#[test]
+fn every_day_gives_every_day_an_event() {
+    let days = week(d("2026-09-21"), 60, resolve(Some("ruthenian")).unwrap());
+    let thin = to_ics(&days, "Typikon", "20260101T000000Z");
+    let full = to_ics_with(
+        &days,
+        &Ics { name: "Typikon", stamp: "20260101T000000Z", every_day: true },
+    );
+    assert!(thin.matches("BEGIN:VEVENT").count() < 60, "the thinned calendar drops days");
+    assert_eq!(full.matches("BEGIN:VEVENT").count(), 60);
+    for line in full.split("\r\n") {
+        assert!(line.len() <= 75, "{} octets: {line}", line.len());
+    }
+}
+
+#[test]
+fn an_event_carries_the_saints_and_the_fast() {
+    // A ferial Wednesday of the Great Fast: no feast, a fast that binds, and
+    // a saint the thinned calendar would keep but the old body did not name
+    // until after the church date.
+    let days = week(d("2027-03-17"), 1, resolve(Some("ruthenian")).unwrap());
+    let text = to_ics_with(
+        &days,
+        &Ics { name: "Typikon", stamp: "20260101T000000Z", every_day: true },
+    );
+    let unfolded = text.replace("\r\n ", "");
+    let description = unfolded
+        .lines()
+        .find(|l| l.starts_with("DESCRIPTION:"))
+        .expect("an event with a description");
+    assert!(description.contains("\u{2022} Our Venerable Father Alexis the Man of God"),
+            "{description}");
+    assert!(description.contains("Fast: no meat"), "{description}");
+    assert!(description.contains("Obligatory."), "{description}");
+    assert!(description.contains("Church date: 17 March"), "{description}");
+}
+
+// ────────────────────── the Sundays of the movable year ──────────────────────
+
+#[test]
+fn the_pentecostarion_names_all_of_its_sundays() {
+    // Pascha 2027 is 28 March by the Gregorian paschalion and 2 May by the
+    // Julian one, so the same Sundays are asked of both reckonings.
+    for (jur, pascha) in [("ruthenian", "2027-03-28"), ("rocor", "2027-05-02")] {
+        let pascha = d(pascha);
+        for (offset, name) in [
+            (7, "Thomas Sunday"),
+            (14, "The Sunday of the Holy Myrrh-bearing Women"),
+            (21, "The Sunday of the Paralytic"),
+            (28, "The Sunday of the Samaritan Woman"),
+            (35, "The Sunday of the Blind Man"),
+            (42, "The Sunday of the Fathers of the First Council"),
+        ] {
+            let day = describe(pascha + offset, resolve(Some(jur)).unwrap());
+            assert_eq!(day.weekday, Weekday::Sunday, "{jur} +{offset}");
+            let named = day.title().starts_with(name)
+                || day.commemorations.iter().any(|c| c.starts_with(name));
+            assert!(named, "{jur} {} ({}) does not name {name}: {:?}",
+                    day.date, offset, day.commemorations);
+        }
+    }
+}
+
+#[test]
+fn a_vigil_rank_saint_keeps_the_day_and_the_sunday_joins_it() {
+    // 25 April 2027 is both the Sunday of the Samaritan Woman and St Mark,
+    // whose feast is of vigil rank. The apostle names the day; the Sunday is
+    // commemorated on it.
+    let day = at("2027-04-25", "ruthenian");
+    assert_eq!(day.title(), "The Holy Apostle and Evangelist Mark");
+    assert_eq!(day.rank, Some(Rank::Vigil));
+    assert!(day.commemorations.iter().any(|c| c == "The Sunday of the Samaritan Woman"),
+            "{:?}", day.commemorations);
+}
+
+#[test]
+fn the_sundays_reckoned_from_a_fixed_feast_are_kept() {
+    for (date, jur, name) in [
+        ("2026-09-13", "ruthenian", "The Sunday before the Exaltation"),
+        ("2026-09-20", "ruthenian", "The Sunday after the Exaltation"),
+        ("2026-12-13", "ruthenian", "The Sunday of the Holy Forefathers"),
+        ("2026-12-20", "ruthenian", "The Sunday before the Nativity \u{2014} the Holy Fathers"),
+        ("2026-12-27", "ruthenian", "The Sunday after the Nativity"),
+        ("2027-01-03", "ruthenian", "The Sunday before the Theophany"),
+        ("2027-01-10", "ruthenian", "The Sunday after the Theophany"),
+        // The old calendar keeps the same windows thirteen days later, which
+        // is the whole point of reckoning them in ecclesiastical space.
+        ("2027-01-03", "moscow", "The Sunday before the Nativity \u{2014} the Holy Fathers"),
+        ("2027-01-10", "moscow", "The Sunday after the Nativity"),
+        ("2027-01-17", "moscow", "The Sunday before the Theophany"),
+    ] {
+        let day = at(date, jur);
+        assert!(day.commemorations.iter().any(|c| c == name),
+                "{jur} {date}: {name} missing from {:?}", day.commemorations);
+    }
+}
+
+#[test]
+fn a_nativity_on_a_sunday_moves_the_sunday_after_it_to_the_26th() {
+    // 25 December 2033 is a Sunday, so 26–31 December holds none and the
+    // Typikon keeps the Sunday after the Nativity on the Monday.
+    assert_eq!(at("2033-12-25", "ruthenian").weekday, Weekday::Sunday);
+    let monday = at("2033-12-26", "ruthenian");
+    assert_eq!(monday.weekday, Weekday::Monday);
+    assert!(monday.commemorations.iter().any(|c| c == "The Sunday after the Nativity"),
+            "{:?}", monday.commemorations);
+    // And it is kept once, not twice.
+    for n in 1..=6 {
+        let day = describe(d("2033-12-26") + n, resolve(Some("ruthenian")).unwrap());
+        assert!(!day.commemorations.iter().any(|c| c == "The Sunday after the Nativity"),
+                "{}", day.date);
+    }
+}
+
+#[test]
+fn a_new_year_on_a_sunday_keeps_the_sunday_before_the_theophany_with_it() {
+    let day = at("2034-01-01", "ruthenian");
+    assert_eq!(day.weekday, Weekday::Sunday);
+    assert!(day.commemorations.iter().any(|c| c == "The Sunday before the Theophany"),
+            "{:?}", day.commemorations);
+}
+
+#[test]
+fn no_sunday_of_the_year_is_named_twice() {
+    for jur in JURISDICTIONS.iter().chain(CALENDARS.iter()) {
+        for day in week(d("2024-01-01"), 366 * 12, jur) {
+            let mut seen = day.commemorations.clone();
+            seen.sort();
+            let before = seen.len();
+            seen.dedup();
+            assert_eq!(seen.len(), before, "{} {}: {:?}", jur.key, day.date, day.commemorations);
+        }
+    }
+}
+
+// ───────────────────── the count of weeks from Pentecost ─────────────────────
+
+#[test]
+fn the_weeks_after_pentecost_are_counted_from_all_saints() {
+    let p = Paschalion::Gregorian;
+    // Pascha 2026 is 5 April, so Pentecost is 24 May and All Saints 31 May.
+    assert_eq!(week_after_pentecost(d("2026-05-24"), p), None, "Pentecost itself");
+    assert_eq!(week_after_pentecost(d("2026-05-25"), p), Some(1), "the Monday after");
+    assert_eq!(week_after_pentecost(d("2026-05-31"), p), Some(1), "All Saints");
+    assert_eq!(week_after_pentecost(d("2026-06-07"), p), Some(2));
+    assert_eq!(week_after_pentecost(d("2026-09-27"), p), Some(18));
+    // The count does not restart at the new year: it runs on from last
+    // year's Pentecost until the Triodion opens.
+    assert_eq!(week_after_pentecost(d("2027-01-10"), p), Some(33));
+    assert_eq!(week_after_pentecost(d("2027-01-16"), p), Some(34));
+    // 17 January 2027 is the Publican and the Pharisee, and the Triodion
+    // names its own Sundays.
+    assert_eq!(week_after_pentecost(d("2027-01-17"), p), None);
+    assert_eq!(week_after_pentecost(d("2027-03-28"), p), None, "Pascha");
+}
+
+#[test]
+fn the_week_is_worded_for_the_day_it_falls_on() {
+    assert_eq!(at("2026-09-27", "ruthenian").week.as_deref(),
+               Some("the 18th Sunday after Pentecost"));
+    assert_eq!(at("2026-09-28", "ruthenian").week.as_deref(),
+               Some("the 19th week after Pentecost"));
+    // The Pentecostarion and the Triodion carry names instead of numbers.
+    assert_eq!(at("2027-04-18", "ruthenian").week, None);
+    assert_eq!(at("2027-02-14", "ruthenian").week, None);
+}
+
+#[test]
+fn the_week_count_never_skips_or_repeats_a_number() {
+    for jur in JURISDICTIONS.iter().chain(CALENDARS.iter()) {
+        // The walk starts mid-count, so the first run it sees is not a run
+        // that opened. Every later one is.
+        let mut last: Option<i32> = None;
+        let mut first_run = true;
+        for day in week(d("2025-01-01"), 366 * 6, jur) {
+            let Some(n) = week_after_pentecost(day.date, jur.paschalion) else {
+                if last.is_some() {
+                    first_run = false;
+                }
+                last = None;
+                continue;
+            };
+            match last {
+                Some(prev) => assert!(n == prev || n == prev + 1,
+                                      "{} {}: {prev} then {n}", jur.key, day.date),
+                None if !first_run => assert_eq!(n, 1,
+                                      "{} {}: the count opens at one", jur.key, day.date),
+                None => {}
+            }
+            last = Some(n);
+        }
+    }
 }
 
 // ─────────────────────────── every jurisdiction ───────────────────────────

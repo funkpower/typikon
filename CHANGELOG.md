@@ -4,6 +4,64 @@ Notable changes, in the terms [docs/versioning.md](docs/versioning.md) sets out.
 **Calendar** entries change what a day reports, whatever the version number
 does.
 
+## 1.2.0
+
+### Calendar
+
+- **The Pentecostarion keeps all of its Sundays.** The Sunday of the Paralytic,
+  the Sunday of the Samaritan Woman and the Sunday of the Blind Man were absent
+  from the movable cycle altogether, so the third, fourth and fifth Sundays
+  after Thomas Sunday reported only the saint of the fixed date. Every
+  jurisdiction was affected. In 2027 that is 18 and 25 April and 2 May by the
+  Gregorian paschalion, 23 and 30 May and 6 June by the Julian one. They rank
+  with Thomas Sunday and the Myrrh-bearing Women, so a fixed feast of vigil
+  rank still names the day and the Sunday is commemorated on it: 25 April 2027
+  stays St Mark and gains the Samaritan Woman.
+
+- **The Sundays reckoned from a fixed feast are kept.** Six more that the
+  calendar never named: the Sundays before and after the Exaltation, the Sunday
+  of the Holy Forefathers, the Sundays before and after the Nativity, and the
+  Sundays before and after the Theophany. They are found in ecclesiastical
+  space, so the old calendar and the new both get them on the right morning,
+  and they join the day's commemorations rather than displacing its saint.
+
+  Two years in the cycle leave a window without a Sunday in it, and the Typikon
+  says where those go: a Nativity on a Sunday puts the Sunday after it on 26
+  December, and a 1 January on a Sunday keeps the Sunday before the Theophany
+  with the Circumcision. The two remaining cases, the Theophany itself or the
+  Exaltation on a Sunday, go unmarked, because the books disagree about where
+  what belongs in them should land.
+
+### Added
+
+- `week`: where the day falls in the count from Pentecost, worded as the books
+  head it — `the 32nd Sunday after Pentecost`, or `the 32nd week after
+  Pentecost` on the days between. Null through the Triodion and the
+  Pentecostarion, whose Sundays carry names instead of numbers. The count runs
+  on across the new year from the Pentecost that opened it, and stops at the
+  next Sunday of the Publican and the Pharisee. It is in the JSON, a column in
+  `csv` and `tsv`, a line in the single-day view, and a getter on every
+  binding.
+
+- `--every-day`: one event per day in `--format ics`, ferias included. The
+  default still thins the calendar to the days carrying a feast or a fast,
+  which is right for a subscription and wrong for a reader who wants the saint
+  of each morning.
+
+### Changed
+
+- The iCalendar description leads with the day's commemorations, one to a line,
+  then the fast and its reason, then the season, the week and the church date.
+  They were last before, after the church date, and a client showing three
+  lines of a popover showed everything except what the day commemorates. The
+  summary now carries the rank's mark beside the fasting glyph, as the text
+  view has always done, and the fast is stated on every event rather than only
+  on the days that keep one.
+
+- `typikon::export::to_ics_with` and `Ics` are the way to reach the new option
+  from the library. `to_ics` is unchanged and still writes the thinned
+  calendar.
+
 ## 1.1.2
 
 ### Fixed
