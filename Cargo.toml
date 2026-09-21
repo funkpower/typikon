@@ -1,9 +1,9 @@
 [package]
 name = "typikon"
-version = "1.1.0"
+version = "1.1.1"
 edition = "2021"
 rust-version = "1.85"
-description = "The Orthodox liturgical day: feasts, seasons and the fast, computed rather than fetched"
+description = "The Orthodox liturgical day: feasts, seasons and the fast, computed rather than fetched. Twenty Orthodox jurisdictions and four Byzantine Catholic churches, across the Julian, Revised Julian and Gregorian reckonings."
 license = "GPL-2.0-only"
 repository = "https://git.pumpin.online/funkpower/typikon"
 readme = "README.md"

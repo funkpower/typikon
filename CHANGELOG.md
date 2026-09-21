@@ -4,7 +4,7 @@ Notable changes, in the terms [docs/versioning.md](docs/versioning.md) sets out.
 **Calendar** entries change what a day reports, whatever the version number
 does.
 
-## Unreleased
+## 1.1.1
 
 ### Fixed
 
@@ -27,6 +27,10 @@ does.
 
 ### Changed
 
+- The README no longer explains how the project tests or releases itself. That
+  belongs to whoever works on it, and it is in `docs/` where they will look;
+  a reader who came to find out what a day of the Great Fast permits does not
+  need it.
 - A release runs what a push runs. The release workflow had been gated on
   `cargo test` alone, so the C ABI, the Lua binding, the Python parity check
   and the README examples were checked on the branch that led to a release but

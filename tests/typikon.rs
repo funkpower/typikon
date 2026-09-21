@@ -706,3 +706,27 @@ fn date_arithmetic_saturates_instead_of_overflowing() {
         assert_eq!(d.iso().len(), 10);
     }
 }
+
+/// The published description counts the churches, on PyPI and on npm, where
+/// nobody editing this table will see it. Adding a jurisdiction without saying
+/// so makes that description quietly wrong, so the count is pinned here and
+/// the failure names the two places to correct.
+#[test]
+fn the_published_description_still_counts_the_churches_correctly() {
+    let catholic = ["ruthenian", "ugcc", "melkite", "romanian-catholic"];
+    let orthodox = JURISDICTIONS
+        .iter()
+        .filter(|j| !catholic.contains(&j.key))
+        .count();
+    let byzantine_catholic = JURISDICTIONS
+        .iter()
+        .filter(|j| catholic.contains(&j.key))
+        .count();
+
+    assert_eq!(
+        (orthodox, byzantine_catholic, CALENDARS.len()),
+        (20, 4, 3),
+        "the counts moved; update `description` in Cargo.toml (PyPI) and in \
+         npm/package.json.in (npm), and the README's opening"
+    );
+}

@@ -555,23 +555,6 @@ widgets for Hyprland (Quickshell), waybar and eww, all reading the JSON above.
 
 ![The menologion widget](https://git.pumpin.online/funkpower/menologion/raw/branch/main/docs/nativity-fast.png)
 
-## Every binding agrees
-
-There is one engine and several doors into it, so the doors have to agree.
-`tests/parity.sh` asks each one for the same twelve days, chosen where they
-could plausibly differ, and compares all twenty-two fields against what the
-command line says: the Python wheel, Node by import and by require, TypeScript
-under `--strict`, a real browser, Deno, Bun, the C ABI and LuaJIT over it. It
-runs on every push and again before a release is uploaded, and
-`tests/parity.sh --published` runs it against what is on PyPI and npm rather
-than against the checkout.
-
-## Releasing
-
-`main` is always releasable; a `vX.Y.Z` tag on it builds the wheels and publishes
-to PyPI. [docs/releasing.md](https://git.pumpin.online/funkpower/typikon/src/branch/main/docs/releasing.md) has the workflow, and what has to
-be set up before the first one.
-
 ## Licence
 
 GPL-2.0-only. The source for any published release is the source distribution

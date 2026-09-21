@@ -1,7 +1,7 @@
 {
   "name": "typikon",
   "version": "@VERSION@",
-  "description": "The Orthodox liturgical day: feasts, seasons and the fast, computed rather than fetched",
+  "description": "The Orthodox liturgical day: feasts, seasons and the fast, computed rather than fetched. Twenty Orthodox jurisdictions and four Byzantine Catholic churches, across the Julian, Revised Julian and Gregorian reckonings.",
   "license": "GPL-2.0-only",
   "homepage": "https://git.pumpin.online/funkpower/typikon",
   "repository": {
